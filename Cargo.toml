@@ -1,17 +1,53 @@
 [package]
 name = "tauri-plugin-holochain"
 version = "0.0.0"
-authors = [ "You" ]
+authors = ["guillem@darksoil.studio"]
 description = ""
 edition = "2021"
-rust-version = "1.70"
-exclude = ["/examples", "/webview-dist", "/webview-src", "/node_modules"]
+rust-version = "1.65"
+exclude = ["/examples", "/node_modules", "/ui"]
 links = "tauri-plugin-holochain"
 
 [dependencies]
-tauri = { version = "2.0.0-beta.13" }
-serde = "1.0"
+tauri = { version = "2.0.0-beta", features = [
+  "devtools",
+  "native-tls-vendored",
+] }
+
+mr_bundle = "0.3.0-beta-dev"
+holochain = "0.3.0-beta-dev.42"
+holochain_types =  "0.3.0-beta-dev"
+holochain_client = "0.5.0-beta-dev.30"
+lair_keystore = "0.4.0"
+lair_keystore_api = "0.4.0"
+holochain_keystore = "0.3.0-beta-dev" 
+holochain_conductor_api = "0.3.0-beta-dev"
+hc_seed_bundle = "0.2"
+
+# hrl = { git = "https://github.com/holochain-open-dev/infrastructure", branch = "main" }
+
+log = "0.4"
+symlink = "0.1.0"
+nanoid = "0.4.0"
+sys-locale = "0.3"
+app_dirs2 = "2.5.5"
+async-std = "1.12"
+serde = "1.0.193"
 thiserror = "1.0"
+url = "2.4.0"
+url2 = "0.0.6"
+zip = { version = "0.6" }
+bzip2 = { version = "0.4", features = ["static"] }
+portpicker = "0.1"
+mime_guess = "2.0.4"
+hyper = { version = "1", features = ["full"] }
+hyper-util = { version = "0.1", features = ["full"] }
+http-body-util = "0.1"
+tls-listener = "0.8"
+futures = "0.3"
+either = "*"
+tokio = "1"
+one_err = "0"
 
 [build-dependencies]
-tauri-plugin = { version = "2.0.0-beta.10", features = ["build"] }
+tauri-plugin = { version = "2.0.0-beta", features = ["build"] }

@@ -1,15 +1,10 @@
 <script>
   import Greet from './lib/Greet.svelte'
-  import { execute } from 'tauri-plugin-holochain-api'
 
 	let response = ''
 
 	function updateResponse(returnValue) {
 		response += `[${new Date().toLocaleTimeString()}]` + (typeof returnValue === 'string' ? returnValue : JSON.stringify(returnValue)) + '<br>'
-	}
-
-	function _execute() {
-		execute().then(updateResponse).catch(updateResponse)
 	}
 </script>
 

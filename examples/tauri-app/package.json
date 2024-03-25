@@ -3,7 +3,11 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": ["ui", "src"],
   "scripts": {
+    "package": "npm run build:happ && npm run package -w ui && hc web-app pack workdir --recursive",
+    "build:happ": "npm run build:zomes && hc app pack workdir --recursive",
+    "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude tauri-app",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
@@ -11,7 +15,7 @@
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0-alpha.11",
-    "tauri-plugin-holochain-api": "link:../../"
+    "tauri-plugin-holochain-api": "file:../../"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.1",

@@ -9,6 +9,12 @@ package-lock.json
 yarn.lock
 
 /.tauri
-/target
+target
 Cargo.lock
 node_modules/
+.cargo
+.direnv
+*.webhapp
+*.happ
+*.dna
+dist/

@@ -1,0 +1,24 @@
+{
+  "name": "tauri-plugin-holochain-signer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c rollup.config.js",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@holochain/client": "^0.17.0-dev.7",
+    "@msgpack/msgpack": "^3.0.0-beta2",
+    "@tauri-apps/api": "^2.0.0-beta.6"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@tauri-apps/cli": "^2.0.0-beta.11",
+    "rollup": "^4.13.0",
+    "typescript": "^5.0.2"
+  }
+}
