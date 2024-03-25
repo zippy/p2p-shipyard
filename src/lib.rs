@@ -48,27 +48,56 @@ pub struct HolochainPlugin<R: Runtime> {
     pub lair_client: LairClient,
 }
 
-impl<R: Runtime> HolochainPlugin<R> {
-    pub fn open_app(
-        &self,
-        app_id: String,
-        label: String,
-        title: String,
-        url_path: Option<String>,
-    ) -> crate::Result<()> {
-        log::info!("Opening app {}", app_id);
+pub struct WebHappWindowBuilder<R: Runtime> {
+    app_handle: AppHandle<R>,
+    runtime_info: HolochainRuntimeInfo,
 
-        let path = url_path.unwrap_or_default();
+    app_id: String,
+    label: Option<String>,
+    title: Option<String>,
+    url_path: Option<String>,
+}
+
+impl<R: Runtime> WebHappWindowBuilder<R> {
+    fn new(app_handle: AppHandle<R>, runtime_info: HolochainRuntimeInfo, app_id: String) -> Self {
+        WebHappWindowBuilder {
+            app_handle,
+            runtime_info,
+            app_id,
+            label: None,
+            title: None,
+            url_path: None,
+        }
+    }
+
+    pub fn label(mut self, label: String) -> Self {
+        self.label = Some(label);
+        self
+    }
+
+    pub fn title(mut self, title: String) -> Self {
+        self.title = Some(title);
+        self
+    }
+
+    pub fn url_path(mut self, url_path: String) -> Self {
+        self.url_path = Some(url_path);
+        self
+    }
+
+    pub fn build(self) -> crate::Result<()> {
+        let label = self.label.unwrap_or(self.app_id.clone());
+        let title = self.title.unwrap_or(label.clone());
+
+        let url_path = self.url_path.unwrap_or_default();
+
+        log::info!("Opening app {}", self.app_id);
 
         let mut window_builder = WebviewWindowBuilder::new(
             &self.app_handle,
             label.clone(),
             tauri::WebviewUrl::External(url::Url::parse(
-                format!(
-                    "happ://{app_id}/{path}",
-                    // self.runtime_info.http_server_port
-                )
-                .as_str(),
+                format!("happ://{}/{}", self.app_id, url_path).as_str(),
             )?),
         )
         .initialization_script(
@@ -79,7 +108,7 @@ impl<R: Runtime> HolochainPlugin<R> {
                 INSTALLED_APP_ID: "{}",
             }};
         "#,
-                self.runtime_info.app_port, app_id
+                self.runtime_info.app_port, self.app_id
             )
             .as_str(),
         )
@@ -99,8 +128,15 @@ impl<R: Runtime> HolochainPlugin<R> {
         }
         let _window = window_builder.build()?;
 
-        log::info!("Opened app {}", app_id);
+        log::info!("Opened app {}", self.app_id);
+
         Ok(())
+    }
+}
+
+impl<R: Runtime> HolochainPlugin<R> {
+    pub fn web_happ_window_builder(&self, app_id: String) -> WebHappWindowBuilder<R> {
+        WebHappWindowBuilder::new(self.app_handle.clone(), self.runtime_info.clone(), app_id)
     }
 
     pub async fn admin_websocket(&self) -> crate::Result<AdminWebsocket> {

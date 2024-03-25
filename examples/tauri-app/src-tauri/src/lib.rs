@@ -21,8 +21,6 @@ pub fn run() {
         .plugin(
             tauri_plugin_log::Builder::default()
                 .level(log::LevelFilter::Error)
-                // .clear_targets()
-                // .target(Target::new(TargetKind::LogDir { file_name: None }))
                 .build(),
         )
         .plugin(tauri_plugin_holochain::init(PathBuf::from("holochain")))
@@ -52,12 +50,9 @@ pub fn run() {
                 }
             })?;
 
-            app.holochain()?.open_app(
-                String::from("example"),
-                String::from("example"),
-                String::from("Example"),
-                None,
-            )?;
+            app.holochain()?
+                .web_happ_window_builder(String::from("example"))
+                .build()?;
 
             Ok(())
         })
