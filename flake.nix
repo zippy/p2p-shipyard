@@ -163,8 +163,8 @@
             
             devShells.holochainTauriAndroidDev = pkgs.mkShell {
               inputsFrom = [
-                inputs'.holochain.devShells.holonix
                 devShells.tauriAndroidDev
+                inputs'.holochain.devShells.holonix
               ];
             };
             

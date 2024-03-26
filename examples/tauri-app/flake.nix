@@ -9,6 +9,8 @@
 
     nixpkgs.follows = "holochain-flake/nixpkgs";
     flake-parts.follows = "holochain-flake/flake-parts";
+
+    tauriHolochain.url = "path:../..";
   };
 
   outputs = inputs:
@@ -25,13 +27,7 @@
           , system
           , ...
           }: {
-            devShells.default = pkgs.mkShell {
-              inputsFrom = [ inputs'.holochain-flake.devShells.holonix ];
-              packages = [
-                pkgs.nodejs_20
-                # more packages go here
-              ];
-            };
+            devShells.default = inputs'.tauriHolochain.devShells.default;
           };
       };
 }
