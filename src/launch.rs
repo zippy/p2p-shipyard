@@ -1,6 +1,7 @@
-use std::{path::PathBuf, sync::Arc, time::Duration};
+use std::{sync::Arc, time::Duration};
 
-use lair_keystore_api::{in_proc_keystore::InProcKeystore, LairClient};
+// use holochain_types::websocket::AllowedOrigins;
+use lair_keystore_api::LairClient;
 use tokio::sync::RwLock;
 
 use app_dirs2::AppDataType;
@@ -8,9 +9,7 @@ use tokio::io::AsyncWriteExt;
 
 use holochain::conductor::{state::AppInterfaceId, Conductor};
 use holochain_client::{AdminWebsocket, AppWebsocket};
-use holochain_keystore::{
-    lair_keystore::spawn_lair_keystore, spawn_test_keystore, LairResult, MetaLairClient,
-};
+use holochain_keystore::{lair_keystore::spawn_lair_keystore, LairResult, MetaLairClient};
 use lair_keystore::{
     dependencies::{
         lair_keystore_api::prelude::{LairServerConfig, LairServerConfigInner},
@@ -109,31 +108,15 @@ pub async fn launch() -> crate::Result<RunningHolochainInfo> {
     //     .await
     //     .map_err(|err| crate::Error::LairError(err))?;
 
-    let lair_client = spawn_lair_keystore_in_proc(fs.keystore_config_path(), passphrase.clone())
-        .await
-        .map_err(|err| crate::Error::LairError(err))?;
+    // let lair_client = spawn_lair_keystore_in_proc(fs.keystore_config_path(), passphrase.clone())
+    //     .await
+    //     .map_err(|err| crate::Error::LairError(err))?;
 
-    let connection_url = config.connection_url.clone();
+    // let connection_url = config.connection_url.clone();
     // let connection_url = url2::Url2::parse("http://localhost:8990");
 
-    let lc = lair_client.clone();
-
-    log::info!("Lair keystore spawned");
-
-    tauri::async_runtime::spawn(async move {
-        if let Err(err) = build_conductor(
-            &fs,
-            admin_port,
-            app_port,
-            connection_url.into(),
-            passphrase,
-            lc,
-        )
-        .await
-        {
-            log::error!("Can't build conductor: {err:?}");
-        }
-    });
+    // tauri::async_runtime::spawn(async move {
+    let lair_client = build_conductor(&fs, admin_port, app_port, passphrase).await?;
 
     wait_until_admin_ws_is_available(admin_port).await?;
 
@@ -142,8 +125,8 @@ pub async fn launch() -> crate::Result<RunningHolochainInfo> {
     let info = RunningHolochainInfo {
         admin_port,
         app_port,
-        filesystem,
-        lair_client: lair_client.lair_client(),
+        filesystem: fs,
+        lair_client,
     };
 
     *lock = Some(info.clone());
@@ -155,28 +138,32 @@ async fn build_conductor(
     fs: &FileSystem,
     admin_port: u16,
     app_port: u16,
-    connection_url: Url2,
     passphrase: BufRead,
-    keystore: MetaLairClient,
-) -> crate::Result<()> {
+) -> crate::Result<LairClient> {
     let config = crate::config::conductor_config(
         &fs,
         admin_port,
-        connection_url.into(),
+        fs.keystore_dir().into(),
         override_gossip_arc_clamping(),
     );
 
     let conductor = Conductor::builder()
         .config(config)
         .passphrase(Some(passphrase))
-        .with_keystore(keystore)
+        // .with_keystore(keystore)
         .build()
         .await?;
 
     let p: either::Either<u16, AppInterfaceId> = either::Either::Left(app_port);
-    conductor.clone().add_app_interface(p).await?;
+    conductor
+        .clone()
+        .add_app_interface(
+            p,
+            // AllowedOrigins::Any
+        )
+        .await?;
 
-    Ok(())
+    Ok(conductor.keystore().lair_client())
 }
 
 pub async fn wait_until_admin_ws_is_available(admin_port: u16) -> crate::Result<()> {
