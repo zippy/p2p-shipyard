@@ -14,15 +14,20 @@ tauri = { version = "2.0.0-beta", features = [
   "native-tls-vendored",
 ] }
 
+# Holochain dependencies
 mr_bundle = "0.3.0-beta-dev"
-holochain = "0.3.0-beta-dev.42"
+holochain = "=0.3.0-beta-dev.42"
 holochain_types =  "0.3.0-beta-dev"
-holochain_client = "0.5.0-beta-dev.30"
-lair_keystore = "0.4.0"
-lair_keystore_api = "0.4.0"
 holochain_keystore = "0.3.0-beta-dev" 
 holochain_conductor_api = "0.3.0-beta-dev"
+
+# Lair dependencies
 hc_seed_bundle = "0.2"
+lair_keystore = "0.4.0"
+lair_keystore_api = "0.4.0"
+
+# Holochain client
+holochain_client = "=0.5.0-dev.30"
 
 # hrl = { git = "https://github.com/holochain-open-dev/infrastructure", branch = "main" }
 
@@ -51,3 +56,17 @@ one_err = "0"
 
 [build-dependencies]
 tauri-plugin = { version = "2.0.0-beta", features = ["build"] }
+
+# [patch.crates-io]
+# mr_bundle = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+# holochain = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+# holochain_types = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+# holochain_keystore = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+# holochain_conductor_api = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+# holochain_nonce = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+# kitsune_p2p_timestamp = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+# holochain_integrity_types = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+# holochain_zome_types = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+# holo_hash= {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
+
+# holochain_client = {git ="https://github.com/guillemcordoba/holochain-client-rust", branch ="develop"}
