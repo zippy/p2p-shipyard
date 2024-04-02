@@ -3,7 +3,6 @@ const COMMANDS: &[&str] = &[
     "get_locales",
     "open_app",
     "list_apps",
-    "get_runtime_info",
     "is_holochain_ready",
 ];
 

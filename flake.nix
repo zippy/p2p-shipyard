@@ -111,8 +111,8 @@
                   platform-tools
                   ndk-bundle
                   platforms-android-33
-                  # emulator
-                  # system-images-android-33-google-apis-playstore-x86-64
+                  emulator
+                  system-images-android-33-google-apis-playstore-x86-64
                 ]);
               in
                 pkgs.mkShell {
@@ -128,6 +128,7 @@
                     export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${pkgs.aapt}/bin/aapt2";
 
                     export NDK_HOME=$ANDROID_SDK_ROOT/ndk-bundle
+                    echo "no" | avdmanager -s create avd -n Pixel -k "system-images;android-33;google_apis_playstore;x86_64" --force
                   '';
                 };
 
@@ -183,6 +184,15 @@
                 devShells.holochainTauriAndroidDev
               ];
               packages = [
+                 (pkgs.writeShellScriptBin "npm" ''
+                  echo "
+                  ERROR: this repository is not managed with npm, but pnpm.
+                  
+                  If you are trying to run \`npm install\`, you can run \`pnpm install\`
+                  If you are trying to run \`npm install some_dependency\`, you can run \`pnpm add some_dependency\`
+                  If you are trying to run a script like \`npm run build\`, you can run \`pnpm build\`
+                  If you are trying to run a script for a certain workspace like \`npm run build -w ui\`, you can run \`pnpm -F ui build\`"
+                '')
                 pkgs.nodejs_20
                 inputs'.hcInfra.packages.pnpm
               ];

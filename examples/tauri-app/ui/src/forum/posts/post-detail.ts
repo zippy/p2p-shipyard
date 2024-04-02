@@ -16,7 +16,7 @@ import { Post } from './types';
 
 @customElement('post-detail')
 export class PostDetail extends LitElement {
-  @consume({ context: clientContext })
+  @consume({ context: clientContext, subscribe: true })
   client!: AppAgentClient;
 
   @property({

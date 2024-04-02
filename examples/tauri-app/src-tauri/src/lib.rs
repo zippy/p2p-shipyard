@@ -1,29 +1,42 @@
 use holochain_types::web_app::WebAppBundle;
+use lair_keystore::dependencies::sodoken::{BufRead, BufWrite};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use tauri_plugin_holochain::HolochainExt;
-
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
 
 pub fn example_happ() -> WebAppBundle {
     let bytes = include_bytes!("../../workdir/forum.webhapp");
     WebAppBundle::decode(bytes).expect("Failed to decode example webhapp")
 }
 
+pub fn vec_to_locked(mut pass_tmp: Vec<u8>) -> std::io::Result<BufRead> {
+    match BufWrite::new_mem_locked(pass_tmp.len()) {
+        Err(e) => {
+            pass_tmp.fill(0);
+            Err(e.into())
+        }
+        Ok(p) => {
+            {
+                let mut lock = p.write_lock();
+                lock.copy_from_slice(&pass_tmp);
+                pass_tmp.fill(0);
+            }
+            Ok(p.to_read())
+        }
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
         .plugin(
             tauri_plugin_log::Builder::default()
-                .level(log::LevelFilter::Error)
+                .level(log::LevelFilter::Info)
                 .build(),
         )
-        .plugin(tauri_plugin_holochain::init(PathBuf::from("holochain")))
+        .plugin(tauri_plugin_holochain::init(
+            vec_to_locked(vec![]).expect("Can't build passphrase"),
+        ))
         .setup(|app| {
             let handle = app.handle().clone();
             tauri::async_runtime::block_on(async move {

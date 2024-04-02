@@ -27,7 +27,7 @@
           , system
           , ...
           }: {
-            devShells.default = inputs'.tauriHolochain.devShells.default;
+            devShells.default = inputs'.tauriHolochain.devShells.holochainTauriAndroidDev;
           };
       };
 }

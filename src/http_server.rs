@@ -101,7 +101,7 @@ pub async fn start_http_server<R: Runtime>(
                         };
 
                         let r: hyper::http::Result<Response<Full<Bytes>>> = match read_asset(
-                            &holochain.filesystem,
+                            &holochain.holochain_runtime.filesystem,
                             &lowercase_app_id,
                             file_name.to_string(),
                         )

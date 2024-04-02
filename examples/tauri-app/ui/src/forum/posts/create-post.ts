@@ -13,7 +13,7 @@ import { Post } from './types';
 
 @customElement('create-post')
 export class CreatePost extends LitElement {
-  @consume({ context: clientContext })
+  @consume({ context: clientContext, subscribe: true })
   client!: AppAgentClient;
 
 
@@ -23,7 +23,7 @@ export class CreatePost extends LitElement {
   @state()
   _content: string = '';
 
-  
+
   firstUpdated() {
   }
 
@@ -32,9 +32,9 @@ export class CreatePost extends LitElement {
   }
 
   async createPost() {
-    const post: Post = { 
-        title: this._title,
-        content: this._content,
+    const post: Post = {
+      title: this._title,
+      content: this._content,
     };
 
     try {
@@ -69,11 +69,11 @@ export class CreatePost extends LitElement {
         <span style="font-size: 18px">Create Post</span>
 
           <div style="margin-bottom: 16px">
-            <mwc-textfield outlined label="Title" .value=${ this._title } @input=${(e: CustomEvent) => { this._title = (e.target as any).value; } } required></mwc-textfield>          
+            <mwc-textfield outlined label="Title" .value=${this._title} @input=${(e: CustomEvent) => { this._title = (e.target as any).value; }} required></mwc-textfield>          
           </div>
             
           <div style="margin-bottom: 16px">
-            <mwc-textarea outlined label="Content" .value=${ this._content } @input=${(e: CustomEvent) => { this._content = (e.target as any).value;} } required></mwc-textarea>          
+            <mwc-textarea outlined label="Content" .value=${this._content} @input=${(e: CustomEvent) => { this._content = (e.target as any).value; }} required></mwc-textarea>          
           </div>
             
 

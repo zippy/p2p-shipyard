@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc && vite build",
-    "prepare": "npm run build"
+    "prepare": "pnpm build"
   },
   "dependencies": {
     "@holochain/client": "^0.17.0-dev.7",

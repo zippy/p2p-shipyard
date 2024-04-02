@@ -19,7 +19,13 @@ pub(crate) async fn sign_zome_call<R: Runtime>(
 
     let signed_zome_call = sign_zome_call_with_client(
         zome_call_unsigned_converted,
-        &app_handle.holochain()?.lair_client.clone(),
+        &app_handle
+            .holochain()?
+            .holochain_runtime
+            .conductor_handle
+            .keystore()
+            .lair_client()
+            .clone(),
     )
     .await?;
 

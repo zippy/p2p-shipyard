@@ -10,18 +10,25 @@ use holochain::{
         TransportConfig,
     },
 };
+use holochain_keystore::paths::KeystorePath;
+use holochain_types::websocket::AllowedOrigins;
+// use holochain_types::websocket::AllowedOrigins;
 
 use crate::filesystem::FileSystem;
 
 pub fn conductor_config(
     fs: &FileSystem,
     admin_port: u16,
-    connection_url: url2::Url2,
+    lair_root: KeystorePath,
     override_gossip_arc_clamping: Option<String>,
 ) -> ConductorConfig {
     let mut config = ConductorConfig::default();
     config.data_root_path = Some(fs.conductor_dir().into());
-    config.keystore = KeystoreConfig::LairServer { connection_url };
+    config.keystore = KeystoreConfig::LairServerInProc {
+        lair_root: Some(lair_root),
+        // pw_hash_strength: Some(holochain_conductor_api::conductor::PwHashStrength::),
+        // pw_hash_strength: None,
+    };
 
     let mut network_config = KitsuneP2pConfig::default();
 
@@ -54,7 +61,10 @@ pub fn conductor_config(
     config.network = network_config;
 
     config.admin_interfaces = Some(vec![AdminInterfaceConfig {
-        driver: InterfaceDriver::Websocket { port: admin_port },
+        driver: InterfaceDriver::Websocket {
+            port: admin_port,
+            allowed_origins: AllowedOrigins::Any,
+        },
     }]);
 
     config

@@ -7,7 +7,6 @@ import '@material/mwc-circular-progress';
 import { clientContext } from './contexts';
 
 import './forum/posts/all-posts';
-import { AllPosts } from './forum/posts/all-posts';
 import './forum/posts/create-post';
 
 @customElement('holochain-app')
@@ -20,17 +19,29 @@ export class HolochainApp extends LitElement {
   @property({ type: Object })
   client!: AppAgentClient;
 
+  error: any = undefined;
+
   async firstUpdated() {
-    this.client = await AppAgentWebsocket.connect('forum');
-    
+    console.warn("HIII");
+    try {
+      this.client = await AppAgentWebsocket.connect('forum');
+      console.warn("HIII 2");
+
+    } catch (e) {
+      console.error("HI3", e);
+      this.error = e
+    }
+
     this.loading = false;
   }
-  
+
   render() {
     if (this.loading)
       return html`
         <mwc-circular-progress indeterminate></mwc-circular-progress>
       `;
+
+    if (this.error) return html`<span>ERROR: ${this.error}</span>`;
 
     return html`
       <main>
