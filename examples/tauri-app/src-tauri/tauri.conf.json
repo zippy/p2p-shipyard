@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "identifier": "com.tauri.dev",
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "npm run build:happ && cross-env BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) UI_PORT=1420 concurrently -k \"npm run local-services\" \"npm run dev\"",
     "beforeBuildCommand": "npm run build",
     "devUrl": "http://localhost:1420",
     "frontendDist": "../dist"

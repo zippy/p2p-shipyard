@@ -15,11 +15,11 @@ export default defineConfig({
   server: {
     host: mobile ? "0.0.0.0" : false,
     port: 1420,
-    strictPort: true,
+    // strictPort: true,
     hmr: mobile ? {
       protocol: 'ws',
       host: internalIpV4Sync(),
       port: 1421
     } : undefined,
   },
-})
+});

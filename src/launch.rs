@@ -1,5 +1,6 @@
 use std::{sync::Arc, time::Duration};
 
+use holochain_conductor_api::conductor::ConductorConfig;
 use holochain_types::websocket::AllowedOrigins;
 
 use app_dirs2::AppDataType;
@@ -16,7 +17,7 @@ use lair_keystore::{
     server::StandaloneServer,
 };
 
-use crate::{filesystem::FileSystem, HolochainRuntime};
+use crate::{filesystem::FileSystem, HolochainPluginConfig, HolochainRuntime};
 
 fn override_gossip_arc_clamping() -> Option<String> {
     if cfg!(mobile) {
@@ -28,7 +29,10 @@ fn override_gossip_arc_clamping() -> Option<String> {
 
 // pub static RUNNING_HOLOCHAIN: RwLock<Option<RunningHolochainInfo>> = RwLock::const_new(None);
 
-pub async fn launch(passphrase: BufRead) -> crate::Result<HolochainRuntime> {
+pub async fn launch(
+    passphrase: BufRead,
+    config: HolochainPluginConfig,
+) -> crate::Result<HolochainRuntime> {
     // let mut lock = RUNNING_HOLOCHAIN.write().await;
 
     // if let Some(info) = lock.to_owned() {
@@ -53,47 +57,34 @@ pub async fn launch(passphrase: BufRead) -> crate::Result<HolochainRuntime> {
     .join("holochain");
 
     let filesystem = FileSystem::new(app_data_dir, app_config_dir).await?;
-    let admin_port = portpicker::pick_unused_port().expect("No ports free");
     let app_port = portpicker::pick_unused_port().expect("No ports free");
+    let admin_port = portpicker::pick_unused_port().expect("No ports free");
 
     let fs = filesystem.clone();
 
-    // let config = get_config(&fs.keystore_config_path(), passphrase.clone())
-    // .await
-    // .map_err(|err| crate::Error::LairError(err))?;
+    let config = crate::config::conductor_config(
+        &fs,
+        admin_port,
+        fs.keystore_dir().into(),
+        config.bootstrap_url,
+        config.signal_url,
+        override_gossip_arc_clamping(),
+    );
 
-    // TODO: this fails with "query returned no rows" error, fix it
-    // let store_factory = lair_keystore::create_sql_pool_factory(&fs.keystore_store_path());
+    let conductor_handle = Conductor::builder()
+        .config(config)
+        .passphrase(Some(passphrase))
+        .build()
+        .await?;
 
-    // // create an in-process keystore with an in-memory store
-    // let keystore = InProcKeystore::new(config.clone(), store_factory, passphrase.clone())
-    //     .await
-    //     .map_err(|err| crate::Error::LairError(err))?;
-
-    // let client = keystore
-    //     .new_client()
-    //     .await
-    //     .map_err(|err| crate::Error::LairError(err))?;
-
-    // let lair_client = MetaLairClient::new_with_client(client.clone())
-    //     .await
-    //     .map_err(|err| crate::Error::LairError(err))?;
-
-    // let lair_client = spawn_lair_keystore_in_proc(fs.keystore_config_path(), passphrase.clone())
-    //     .await
-    //     .map_err(|err| crate::Error::LairError(err))?;
-
-    // let connection_url = config.connection_url.clone();
-    // let connection_url = url2::Url2::parse("http://localhost:8990");
-
-    // tauri::async_runtime::spawn(async move {
-    let conductor_handle = build_conductor(&fs, admin_port, app_port, passphrase).await?;
+    let p: either::Either<u16, AppInterfaceId> = either::Either::Left(app_port);
+    conductor_handle
+        .clone()
+        .add_app_interface(p, AllowedOrigins::Any)
+        .await?;
 
     wait_until_admin_ws_is_available(admin_port).await?;
     log::info!("Connected to the admin websocket");
-
-    wait_until_app_ws_is_available(app_port).await?;
-    log::info!("Connected to the app websocket at port {app_port}");
 
     // *lock = Some(info.clone());
 
@@ -103,34 +94,6 @@ pub async fn launch(passphrase: BufRead) -> crate::Result<HolochainRuntime> {
         admin_port,
         conductor_handle,
     })
-}
-
-async fn build_conductor(
-    fs: &FileSystem,
-    admin_port: u16,
-    app_port: u16,
-    passphrase: BufRead,
-) -> crate::Result<ConductorHandle> {
-    let config = crate::config::conductor_config(
-        &fs,
-        admin_port,
-        fs.keystore_dir().into(),
-        override_gossip_arc_clamping(),
-    );
-
-    let conductor = Conductor::builder()
-        .config(config)
-        .passphrase(Some(passphrase))
-        .build()
-        .await?;
-
-    let p: either::Either<u16, AppInterfaceId> = either::Either::Left(app_port);
-    conductor
-        .clone()
-        .add_app_interface(p, AllowedOrigins::Any)
-        .await?;
-
-    Ok(conductor)
 }
 
 pub async fn wait_until_admin_ws_is_available(admin_port: u16) -> crate::Result<()> {

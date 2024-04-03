@@ -12,7 +12,7 @@ use holochain::{
 };
 use holochain_keystore::paths::KeystorePath;
 use holochain_types::websocket::AllowedOrigins;
-// use holochain_types::websocket::AllowedOrigins;
+use url2::Url2;
 
 use crate::filesystem::FileSystem;
 
@@ -20,14 +20,14 @@ pub fn conductor_config(
     fs: &FileSystem,
     admin_port: u16,
     lair_root: KeystorePath,
+    bootstrap_url: Url2,
+    signal_url: Url2,
     override_gossip_arc_clamping: Option<String>,
 ) -> ConductorConfig {
     let mut config = ConductorConfig::default();
     config.data_root_path = Some(fs.conductor_dir().into());
     config.keystore = KeystoreConfig::LairServerInProc {
         lair_root: Some(lair_root),
-        // pw_hash_strength: Some(holochain_conductor_api::conductor::PwHashStrength::),
-        // pw_hash_strength: None,
     };
 
     let mut network_config = KitsuneP2pConfig::default();
@@ -40,22 +40,11 @@ pub fn conductor_config(
 
     network_config.tuning_params = Arc::new(tuning_params);
 
-    network_config.bootstrap_service = Some(url2::url2!("https://bootstrap.holo.host"));
+    network_config.bootstrap_service = Some(bootstrap_url);
 
-    //tx2
-    // network_config.transport_pool.push(TransportConfig::Proxy {
-    //     sub_transport: Box::new(TransportConfig::Quic {
-    //         bind_to: None,
-    //         override_host: None,
-    //         override_port: None,
-    //     }),
-    //     proxy_config: ProxyConfig::RemoteProxyClient {
-    //         proxy_url: url2::url2!("kitsune-proxy://f3gH2VMkJ4qvZJOXx0ccL_Zo5n-s_CnBjSzAsEHHDCA/kitsune-quic/h/137.184.142.208/p/5788/--")
-    //     },
-    // });
     // tx5
     network_config.transport_pool.push(TransportConfig::WebRTC {
-        signal_url: String::from("wss://signal.holo.host"),
+        signal_url: signal_url.to_string(),
     });
 
     config.network = network_config;

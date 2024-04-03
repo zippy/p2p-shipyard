@@ -16,7 +16,7 @@ use holochain::{
     prelude::{AppBundle, MembraneProof, NetworkSeed, RoleName},
 };
 use holochain_client::{AdminWebsocket, AppAgentWebsocket, AppInfo, AppWebsocket, LairAgentSigner};
-use holochain_types::web_app::WebAppBundle;
+use holochain_types::{web_app::WebAppBundle, websocket::AllowedOrigins};
 
 mod commands;
 mod config;
@@ -31,15 +31,7 @@ use commands::install_web_app::{
 pub use error::{Error, Result};
 use filesystem::FileSystem;
 pub use launch::launch;
-
-use crate::launch::wait_until_app_ws_is_available;
-
-// #[derive(Serialize, Deserialize, Debug, Clone)]
-// pub struct HolochainRuntimeInfo {
-//     http_server_port: u16,
-//     app_port: u16,
-//     admin_port: u16,
-// }
+use url2::Url2;
 
 /// Access to the push-notifications APIs.
 pub struct HolochainPlugin<R: Runtime> {
@@ -64,30 +56,34 @@ pub struct WebHappWindowBuilder<R: Runtime> {
     url_path: Option<String>,
 }
 
+fn happ_origin(app_id: &String) -> Url2 {
+    url2::url2!("happ://{app_id}")
+}
+
 impl<R: Runtime> WebHappWindowBuilder<R> {
-    fn new(app_handle: AppHandle<R>, app_port: u16, app_id: String) -> Self {
+    fn new(app_handle: AppHandle<R>, app_port: u16, app_id: impl Into<String>) -> Self {
         WebHappWindowBuilder {
             app_handle,
             app_port,
-            app_id,
+            app_id: app_id.into(),
             label: None,
             title: None,
             url_path: None,
         }
     }
 
-    pub fn label(mut self, label: String) -> Self {
-        self.label = Some(label);
+    pub fn label(mut self, label: impl Into<String>) -> Self {
+        self.label = Some(label.into());
         self
     }
 
-    pub fn title(mut self, title: String) -> Self {
-        self.title = Some(title);
+    pub fn title(mut self, title: impl Into<String>) -> Self {
+        self.title = Some(title.into());
         self
     }
 
-    pub fn url_path(mut self, url_path: String) -> Self {
-        self.url_path = Some(url_path);
+    pub fn url_path(mut self, url_path: impl Into<String>) -> Self {
+        self.url_path = Some(url_path.into());
         self
     }
 
@@ -99,12 +95,12 @@ impl<R: Runtime> WebHappWindowBuilder<R> {
 
         log::info!("Opening app {}", self.app_id);
 
-        let url_origin = format!("happ://{}", self.app_id);
+        let url_origin = happ_origin(&self.app_id);
 
         let mut window_builder = WebviewWindowBuilder::new(
             &self.app_handle,
             label.clone(),
-            tauri::WebviewUrl::External(url::Url::parse(
+            tauri::WebviewUrl::CustomProtocol(url::Url::parse(
                 format!("{url_origin}/{url_path}").as_str(),
             )?),
         )
@@ -122,14 +118,6 @@ impl<R: Runtime> WebHappWindowBuilder<R> {
         )
         .initialization_script(include_str!("../packages/signer/dist/index.js"));
 
-        #[cfg(desktop)]
-        {
-            window_builder = window_builder
-                .min_inner_size(1000.0, 800.0)
-                .title(title.clone());
-        }
-        let _window = window_builder.build()?;
-
         let mut capability_builder =
             CapabilityBuilder::new("sign-zome-call").permission("holochain:allow-sign-zome-call");
 
@@ -144,6 +132,13 @@ impl<R: Runtime> WebHappWindowBuilder<R> {
 
         self.app_handle.add_capability(capability_builder)?;
 
+        #[cfg(desktop)]
+        {
+            window_builder = window_builder
+                .min_inner_size(1000.0, 800.0)
+                .title(title.clone());
+        }
+        let _window = window_builder.build()?;
         log::info!("Opened app {}", self.app_id);
 
         Ok(())
@@ -151,7 +146,7 @@ impl<R: Runtime> WebHappWindowBuilder<R> {
 }
 
 impl<R: Runtime> HolochainPlugin<R> {
-    pub fn web_happ_window_builder(&self, app_id: String) -> WebHappWindowBuilder<R> {
+    pub fn web_happ_window_builder(&self, app_id: impl Into<String>) -> WebHappWindowBuilder<R> {
         WebHappWindowBuilder::new(
             self.app_handle.clone(),
             self.holochain_runtime.app_port.clone(),
@@ -167,13 +162,13 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(admin_ws)
     }
 
-    pub async fn app_websocket(&self) -> crate::Result<AppWebsocket> {
-        let app_ws =
-            AppWebsocket::connect(format!("127.0.0.1:{}", self.holochain_runtime.app_port))
-                .await
-                .map_err(|err| crate::Error::WebsocketConnectionError(format!("{err:?}")))?;
-        Ok(app_ws)
-    }
+    // pub async fn app_websocket(&self, app_po) -> crate::Result<AppWebsocket> {
+    //     let app_ws =
+    //         AppWebsocket::connect(format!("127.0.0.1:{}", self.holochain_runtime.app_port))
+    //             .await
+    //             .map_err(|err| crate::Error::WebsocketConnectionError(format!("{err:?}")))?;
+    //     Ok(app_ws)
+    // }
 
     pub async fn app_agent_websocket(&self, app_id: String) -> crate::Result<AppAgentWebsocket> {
         let app_ws = AppAgentWebsocket::connect(
@@ -290,8 +285,13 @@ impl<R: Runtime, T: Manager<R>> crate::HolochainExt<R> for T {
     }
 }
 
+pub struct HolochainPluginConfig {
+    pub bootstrap_url: Url2,
+    pub signal_url: Url2,
+}
+
 /// Initializes the plugin.
-pub fn init<R: Runtime>(passphrase: BufRead) -> TauriPlugin<R> {
+pub fn init<R: Runtime>(passphrase: BufRead, config: HolochainPluginConfig) -> TauriPlugin<R> {
     Builder::new("holochain")
         .invoke_handler(tauri::generate_handler![
             commands::sign_zome_call::sign_zome_call,
@@ -392,7 +392,7 @@ pub fn init<R: Runtime>(passphrase: BufRead) -> TauriPlugin<R> {
         .setup(|app, _api| {
             let handle = app.clone();
             let result = tauri::async_runtime::block_on(async move {
-                launch_and_setup_holochain(handle, passphrase).await
+                launch_and_setup_holochain(handle, passphrase, config).await
             });
 
             Ok(result?)
@@ -403,6 +403,7 @@ pub fn init<R: Runtime>(passphrase: BufRead) -> TauriPlugin<R> {
 async fn launch_and_setup_holochain<R: Runtime>(
     app_handle: AppHandle<R>,
     passphrase: BufRead,
+    config: HolochainPluginConfig,
 ) -> crate::Result<()> {
     // let app_data_dir = app.path().app_data_dir()?.join(&subfolder);
     // let app_config_dir = app.path().app_config_dir()?.join(&subfolder);
@@ -412,7 +413,7 @@ async fn launch_and_setup_holochain<R: Runtime>(
     // http_server::start_http_server(app_handle.clone(), http_server_port).await?;
     // log::info!("Starting http server at port {http_server_port:?}");
 
-    let holochain_runtime = launch(passphrase).await?;
+    let holochain_runtime = launch(passphrase, config).await?;
 
     let p = HolochainPlugin::<R> {
         app_handle: app_handle.clone(),

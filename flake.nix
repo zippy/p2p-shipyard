@@ -16,6 +16,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hcInfra.url = "github:holochain-open-dev/infrastructure";
+
+    scaffolding.url = "github:holochain/scaffolding";
   };
 
   outputs = inputs @ { ... }:
@@ -197,6 +199,12 @@
                 inputs'.hcInfra.packages.pnpm
               ];
             };
+
+            packages.hc-scaffold = inputs.scaffolding.lib.wrapCustomTemplate {
+              inherit pkgs system;
+              customTemplatePath = ./templates/happ-open-dev;
+            };
+
           };
       };
 }

@@ -3,14 +3,17 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "workspaces": ["ui", "src"],
+  "workspaces": [
+    "ui",
+    "src"
+  ],
   "scripts": {
-    "package": "npm run build:happ && npm run package -w ui && hc web-app pack workdir --recursive",
     "build:happ": "npm run build:zomes && hc app pack workdir --recursive",
     "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude tauri-app",
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "local-services": "hc run-local-services --bootstrap-port $BOOTSTRAP_PORT --signal-port $SIGNAL_PORT",
     "tauri": "tauri"
   },
   "dependencies": {
@@ -19,9 +22,12 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^1.0.1",
+    "@tauri-apps/cli": "^2.0.0-alpha.17",
+    "concurrently": "^8.2.2",
     "internal-ip": "^7.0.0",
+    "internal-ip-cli": "^2.0.0",
+    "new-port-cli": "^1.0.0",
     "svelte": "^3.49.0",
-    "vite": "^3.0.2",
-    "@tauri-apps/cli": "^2.0.0-alpha.17"
+    "vite": "^3.0.2"
   }
 }

@@ -2,7 +2,8 @@ use holochain_types::web_app::WebAppBundle;
 use lair_keystore::dependencies::sodoken::{BufRead, BufWrite};
 use std::collections::HashMap;
 use std::path::PathBuf;
-use tauri_plugin_holochain::HolochainExt;
+use tauri_plugin_holochain::{HolochainExt, HolochainPluginConfig};
+use url2::Url2;
 
 pub fn example_happ() -> WebAppBundle {
     let bytes = include_bytes!("../../workdir/forum.webhapp");
@@ -26,6 +27,28 @@ pub fn vec_to_locked(mut pass_tmp: Vec<u8>) -> std::io::Result<BufRead> {
     }
 }
 
+fn bootstrap_url() -> Url2 {
+    // Resolved at compile time to be able to point to local services
+    match (
+        std::option_env!("INTERNAL_IP"),
+        std::option_env!("BOOTSTRAP_PORT"),
+    ) {
+        (Some(internal_ip), Some(port)) => url2::url2!("http://{internal_ip}:{port}"),
+        _ => url2::url2!("https://bootstrap.holo.host"),
+    }
+}
+
+fn signal_url() -> Url2 {
+    // Resolved at compile time to be able to point to local services
+    match (
+        std::option_env!("INTERNAL_IP"),
+        std::option_env!("SIGNAL_PORT"),
+    ) {
+        (Some(internal_ip), Some(port)) => url2::url2!("http://{internal_ip}:{port}"),
+        _ => url2::url2!("wss://signal.holo.host"),
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -36,6 +59,10 @@ pub fn run() {
         )
         .plugin(tauri_plugin_holochain::init(
             vec_to_locked(vec![]).expect("Can't build passphrase"),
+            HolochainPluginConfig {
+                signal_url: signal_url(),
+                bootstrap_url: bootstrap_url(),
+            },
         ))
         .setup(|app| {
             let handle = app.handle().clone();
@@ -64,7 +91,7 @@ pub fn run() {
             })?;
 
             app.holochain()?
-                .web_happ_window_builder(String::from("example"))
+                .web_happ_window_builder("example")
                 .build()?;
 
             Ok(())
