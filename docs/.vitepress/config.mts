@@ -17,7 +17,8 @@ export default defineConfig({
         items: [
           { text: 'How to create an executable hApp ', link: '/how-to-create-an-executable-happ' },
           { text: 'How to create a holochain runtime', link: '/how-to-create-a-holochain-runtime' },
-          { text: 'Setting up the android platform', link: '/android-setup' },
+          { text: 'Getting to know Tauri', link: '/getting-to-know-tauri' },
+          { text: 'Setting up Android', link: '/android-setup' },
         ]
       },
       {

@@ -8,11 +8,11 @@ hero:
   tagline: Ship holochain to Android, Linux, MacOS and Windows
   actions:
     - theme: brand
-      text: Setting up a holochain runtime
-      link: /runtime-setup
+      text: Create an end-user executable hApp
+      link: /how-to-create-an-executable-happ
     - theme: brand
-      text: Setting up an end-user executable hApp
-      link: /happ-setup
+      text: Create a holochain runtime
+      link: /how-to-create-a-holochain-runtime
 
 features:
   - title: Mobile support
@@ -20,6 +20,6 @@ features:
   - title: Works on desktop as well
     details: Maintain one codebase, ship to all platforms 
   - title: Just another tauri plugin
-    details: Integrate with all the existing tauri plugins to create great applications
+    details: Integrate with all the existing tauri plugins (camera, notification, NFC...) to create great applications
 ---
 
