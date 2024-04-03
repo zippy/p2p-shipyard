@@ -10,8 +10,8 @@
     nixpkgs.follows = "holochain/nixpkgs";
     flake-parts.follows = "holochain/flake-parts";
 
-    scaffolding.url = "github:holochain-open-dev/templates";
-    hcInfra.url = "github:holochain-open-dev/infrastructure";
+    tauri-plugin-holochain.url = "github:darksoil-studio/tauri-plugin-holochain";
+    hc-infra.url = "github:holochain-open-dev/infrastructure";
 
     # Holochain dependencies (zomes, DNAs and hApps)
     profiles.url = "github:holochain-open-dev/profiles/nixify";
@@ -58,23 +58,19 @@
           , pkgs
           , system
           , ...
-          }: {
+          }: rec {
             devShells.default = pkgs.mkShell {
-              inputsFrom = [ inputs'.holochain.devShells.holonix ];
-
-              packages = with pkgs; [
-                nodejs_20
-                cargo-nextest
-              ] ++ [
-                inputs'.scaffolding.packages.hc-scaffold-app-template
-                inputs'.hcInfra.packages.pnpm
-                inputs'.hcInfra.packages.sync-npm-git-dependencies-with-nix
+              inputsFrom = [ 
+                inputs'.tauri-plugin-holochain.devShells.holochainTauriDev 
+                inputs'.hc-infra.devShells.synchronized-pnpm
               ];
-              
-              shellHook = ''
-                sync-npm-git-dependencies-with-nix
-              '';
+            };
 
+            devShells.androidDev = pkgs.mkShell {
+              inputsFrom = [ 
+                inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev 
+                inputs'.hc-infra.devShells.synchronized-pnpm
+              ];
             };
           };
       };

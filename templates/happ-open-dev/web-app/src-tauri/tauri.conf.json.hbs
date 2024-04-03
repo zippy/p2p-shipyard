@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "identifier": "{{app_name}}",
   "build": {
-    "beforeDevCommand": "pnpm build:happ && cross-env BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"pnpm -F ui start\"",
-    "beforeBuildCommand": "pnpm -F ui build && pnpm package:happ",
+    "beforeDevCommand": "pnpm happ:build-debug && cross-env BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"pnpm -F ui start\"",
+    "beforeBuildCommand": "pnpm -F ui build && pnpm happ:build",
     "devUrl": "http://localhost:1420",
     "frontendDist": "../ui/dist"
   },
