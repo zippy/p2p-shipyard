@@ -16,7 +16,7 @@
   	  packages.{{app_name}} = inputs.hcInfra.outputs.lib.happ {
         holochain = inputs'.holochain;
         happManifest = ./workdir/happ.yaml;
-        dnas = (allDnas { inherit self' inputs'; }) // {
+        dnas = {
           # Override specific dnas here, e.g.:
           # my_dna = inputs'.some_input.packages.my_dna;
         };

@@ -11,11 +11,11 @@
     flake-parts.follows = "holochain/flake-parts";
 
     tauri-plugin-holochain.url = "github:darksoil-studio/tauri-plugin-holochain";
-    hc-infra.url = "github:holochain-open-dev/infrastructure";
+    hc-infra.url = "github:holochain-open-dev/infrastructure/0.300.0-dev";
 
     # Holochain dependencies (zomes, DNAs and hApps)
     profiles.url = "github:holochain-open-dev/profiles/nixify";
-    file-storage.url = "github:holochain-open-dev/file-storage/for-hdk-0.3.0-beta-dev";
+    file-storage.url = "github:holochain-open-dev/file-storage/nixify";
     # Add more repositories here...
   };
 
@@ -23,27 +23,9 @@
     inputs.flake-parts.lib.mkFlake
       {
         inherit inputs;
-        specialArgs = rec {
-          # All the upstream repositories that output zomes, dnas or happs packages
-          holochainSources = inputs': with inputs'; [ 
-            profiles
-            file-storage
-            # ... and add the name of the repository here as well
-          ];
-
+        specialArgs = {
           ## Special arguments for the flake parts of this repository
-          
           rootPath = ./.;
-
-          # Aggregators: take all the packages from this repository and the upstream
-          # holochain sources and merge them
-          allHolochainPackages = { inputs', self' }: inputs.nixpkgs.lib.attrsets.mergeAttrsList (
-            [ self'.packages ] 
-            ++ builtins.map (s: s.packages) (holochainSources inputs')
-          );
-          allZomes = { inputs', self' }: inputs.hcInfra.outputs.lib.filterZomes (allHolochainPackages { inherit inputs' self'; });
-          allDnas = { inputs', self' }: inputs.hcInfra.outputs.lib.filterDnas (allHolochainPackages { inherit inputs' self'; });
-          allHapps = { inputs', self' }: inputs.hcInfra.outputs.lib.filterHapps (allHolochainPackages { inherit inputs' self'; });
         };
       }
       {
@@ -58,18 +40,26 @@
           , pkgs
           , system
           , ...
-          }: rec {
+          }: {
             devShells.default = pkgs.mkShell {
               inputsFrom = [ 
-                inputs'.tauri-plugin-holochain.devShells.holochainTauriDev 
                 inputs'.hc-infra.devShells.synchronized-pnpm
+                inputs'.tauri-plugin-holochain.devShells.holochainTauriDev 
+              ];
+
+              packages = [
+                inputs'.tauri-plugin-holochain.packages.hc-scaffold
               ];
             };
 
             devShells.androidDev = pkgs.mkShell {
               inputsFrom = [ 
-                inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev 
                 inputs'.hc-infra.devShells.synchronized-pnpm
+                inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev 
+              ];
+
+              packages = [
+                inputs'.tauri-plugin-holochain.packages.hc-scaffold
               ];
             };
           };
