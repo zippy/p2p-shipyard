@@ -15,7 +15,7 @@
       url = "github:tadfisher/android-nixpkgs/stable";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    hcInfra.url = "github:holochain-open-dev/infrastructure";
+    hc-infra.url = "github:holochain-open-dev/infrastructure/0.300.0-dev";
 
     scaffolding.url = "github:holochain/scaffolding";
   };
@@ -184,19 +184,7 @@
             devShells.default = pkgs.mkShell {
               inputsFrom = [
                 devShells.holochainTauriAndroidDev
-              ];
-              packages = [
-                 (pkgs.writeShellScriptBin "npm" ''
-                  echo "
-                  ERROR: this repository is not managed with npm, but pnpm.
-                  
-                  If you are trying to run \`npm install\`, you can run \`pnpm install\`
-                  If you are trying to run \`npm install some_dependency\`, you can run \`pnpm add some_dependency\`
-                  If you are trying to run a script like \`npm run build\`, you can run \`pnpm build\`
-                  If you are trying to run a script for a certain workspace like \`npm run build -w ui\`, you can run \`pnpm -F ui build\`"
-                '')
-                pkgs.nodejs_20
-                inputs'.hcInfra.packages.pnpm
+                inputs'.hc-infra.devShells.synchronized-pnpm
               ];
             };
 
@@ -204,7 +192,6 @@
               inherit pkgs system;
               customTemplatePath = ./templates/happ-open-dev;
             };
-
           };
       };
 }

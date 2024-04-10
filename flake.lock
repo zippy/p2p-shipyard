@@ -146,7 +146,7 @@
     "crane_2": {
       "inputs": {
         "nixpkgs": [
-          "hcInfra",
+          "hc-infra",
           "holochain",
           "nixpkgs"
         ]
@@ -551,12 +551,12 @@
         "type": "github"
       }
     },
-    "hcInfra": {
+    "hc-infra": {
       "inputs": {
         "crane": "crane",
         "holochain": "holochain",
         "nixpkgs": [
-          "hcInfra",
+          "hc-infra",
           "holochain",
           "nixpkgs"
         ],
@@ -564,15 +564,16 @@
         "versions": "versions"
       },
       "locked": {
-        "lastModified": 1710516248,
-        "narHash": "sha256-aPlNrB/i6LatG+nUD1uNL3k5sW6O499hYua1EuHwiCk=",
+        "lastModified": 1712229205,
+        "narHash": "sha256-FMRKM/H1a2ofBDkRJGJQ6cLgJuLYoQyMT2IbLgptjIQ=",
         "owner": "holochain-open-dev",
         "repo": "infrastructure",
-        "rev": "97a15932e38a3a0db5ce5b48b4989508bf91bb46",
+        "rev": "4d8f5816ef4b85ed6b3218d8f8e9c6de9193e5d9",
         "type": "github"
       },
       "original": {
         "owner": "holochain-open-dev",
+        "ref": "0.300.0-dev",
         "repo": "infrastructure",
         "type": "github"
       }
@@ -587,17 +588,17 @@
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "holochain": [
-          "hcInfra",
+          "hc-infra",
           "holochain",
           "empty"
         ],
         "lair": [
-          "hcInfra",
+          "hc-infra",
           "holochain",
           "empty"
         ],
         "launcher": [
-          "hcInfra",
+          "hc-infra",
           "holochain",
           "empty"
         ],
@@ -607,12 +608,12 @@
         "repo-git": "repo-git",
         "rust-overlay": "rust-overlay",
         "scaffolding": [
-          "hcInfra",
+          "hc-infra",
           "holochain",
           "empty"
         ],
         "versions": [
-          "hcInfra",
+          "hc-infra",
           "versions"
         ]
       },
@@ -1147,7 +1148,7 @@
     "root": {
       "inputs": {
         "android-nixpkgs": "android-nixpkgs",
-        "hcInfra": "hcInfra",
+        "hc-infra": "hc-infra",
         "holochain": "holochain_3",
         "nixpkgs": [
           "holochain",
@@ -1162,7 +1163,7 @@
       "inputs": {
         "flake-utils": "flake-utils_3",
         "nixpkgs": [
-          "hcInfra",
+          "hc-infra",
           "holochain",
           "nixpkgs"
         ]
@@ -1185,7 +1186,7 @@
       "inputs": {
         "flake-utils": "flake-utils_4",
         "nixpkgs": [
-          "hcInfra",
+          "hc-infra",
           "nixpkgs"
         ]
       },
