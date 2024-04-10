@@ -1,4 +1,4 @@
-{ inputs, allDnas, ... }:
+{ inputs, ... }:
 
 {
   # Import all `dnas/*/dna.nix` files
@@ -13,11 +13,11 @@
     , self'
     , ...
     }: {
-  	  packages.{{app_name}} = inputs.hcInfra.outputs.lib.happ {
+  	  packages.{{app_name}} = inputs.hc-infra.outputs.lib.happ {
         holochain = inputs'.holochain;
         happManifest = ./workdir/happ.yaml;
         dnas = {
-          # Override specific dnas here, e.g.:
+          # Set here the DNA packages for this hApp, e.g.:
           # my_dna = inputs'.some_input.packages.my_dna;
         };
       };
