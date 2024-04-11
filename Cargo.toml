@@ -16,7 +16,7 @@ tauri = { version = "2.0.0-beta", features = [
 
 # Holochain dependencies
 mr_bundle = "0.3.0-beta-dev"
-holochain = "=0.3.0-beta-dev.43"
+holochain = "=0.3.0-beta-dev.45"
 holochain_types =  "0.3.0-beta-dev"
 holochain_keystore = "0.3.0-beta-dev" 
 holochain_conductor_api = "0.3.0-beta-dev"
