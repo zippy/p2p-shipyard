@@ -6,7 +6,7 @@
     "test": "pnpm happ:build-debug && nix flake check -L && pnpm -F tests test",
     "happ:build-debug": "nix build -L .#{{app_name}}.meta.debug -o workdir/{{app_name}}debug.happ",
     "happ:build": "nix build -L .#{{app_name}} -o workdir/{{app_name}}.happ",
-    "tauri": "tauri"
+    "tauri": "BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) tauri"
   },
   "devDependencies": {
     "@holochain-playground/cli": "^0.1.0",

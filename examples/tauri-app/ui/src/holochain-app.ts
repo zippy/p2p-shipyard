@@ -1,15 +1,15 @@
-import { LitElement, css, html } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import { AppAgentClient, AppAgentWebsocket } from '@holochain/client';
-import { provide } from '@lit-labs/context';
-import '@material/mwc-circular-progress';
+import { LitElement, css, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { AdminWebsocket, AppClient, AppWebsocket } from "@holochain/client";
+import { provide } from "@lit-labs/context";
+import "@material/mwc-circular-progress";
 
-import { clientContext } from './contexts';
+import { clientContext } from "./contexts.js";
 
-import './forum/posts/all-posts';
-import './forum/posts/create-post';
+import "./forum/posts/all-posts.js";
+import "./forum/posts/create-post.js";
 
-@customElement('holochain-app')
+@customElement("holochain-app")
 export class HolochainApp extends LitElement {
   @state() loading = true;
 
@@ -17,19 +17,18 @@ export class HolochainApp extends LitElement {
 
   @provide({ context: clientContext })
   @property({ type: Object })
-  client!: AppAgentClient;
+  client!: AppClient;
 
   error: any = undefined;
 
   async firstUpdated() {
-    console.warn("HIII");
+    console.warn("HIII1");
     try {
-      this.client = await AppAgentWebsocket.connect('forum');
+      this.client = await AppWebsocket.connect();
       console.warn("HIII 2");
-
     } catch (e) {
       console.error("HI3", e);
-      this.error = e
+      this.error = e;
     }
 
     this.loading = false;

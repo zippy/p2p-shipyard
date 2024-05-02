@@ -55,8 +55,8 @@ importers:
   packages/signer:
     dependencies:
       '@holochain/client':
-        specifier: ^0.17.0-dev.7
-        version: 0.17.0-dev.7
+        specifier: ^0.17.0-dev.12
+        version: 0.17.0-dev.12
       '@msgpack/msgpack':
         specifier: ^3.0.0-beta2
         version: 3.0.0-beta2
@@ -475,6 +475,10 @@ packages:
     engines: {node: '>=12'}
     cpu: [x64]
     os: [win32]
+
+  /@holochain/client@0.17.0-dev.12:
+    resolution: {integrity: sha512-aEOkD4wtFeHAv5AiEkBfsiGeAujCyQf1yfvmtcdERnv73zgZhxCiZ0ZrEi46kdJhRHMXX/1Qkqo6VY8afrepfQ==}
+    engines: {node: '>=18.0.0 || >=20.0.0'}
 
   /@holochain/client@0.17.0-dev.7:
     resolution: {integrity: sha512-dr0S+4Au/sS/PXu0T7Lm1uqwkPVpcWvbMBL9xD7bRv4pfWMratGdP3OpeA356l4bkpSJxkOltz2o2kN3pW3tRQ==}
@@ -1667,6 +1671,22 @@ snapshots:
   /@esbuild/win32-x64@0.20.2:
     dev: true
     optional: true
+
+  /@holochain/client@0.17.0-dev.12:
+    dependencies:
+      '@bitgo/blake2b': 3.2.4
+      '@holochain/serialization': 0.1.0-beta-rc.3
+      '@msgpack/msgpack': 2.8.0
+      emittery: 1.0.3
+      isomorphic-ws: 5.0.0(ws@8.16.0)
+      js-base64: 3.7.7
+      libsodium-wrappers: 0.7.13
+      lodash-es: 4.17.21
+      ws: 8.16.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: false
 
   /@holochain/client@0.17.0-dev.7:
     dependencies:

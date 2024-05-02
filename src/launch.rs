@@ -1,9 +1,9 @@
-use std::{sync::Arc, time::Duration};
+use std::{collections::HashMap, sync::Arc, time::Duration};
 
+use async_std::sync::Mutex;
 use holochain_conductor_api::conductor::ConductorConfig;
 use holochain_types::websocket::AllowedOrigins;
 
-use app_dirs2::AppDataType;
 use tokio::io::AsyncWriteExt;
 
 use holochain::conductor::{state::AppInterfaceId, Conductor, ConductorHandle};
@@ -39,25 +39,7 @@ pub async fn launch(
     //     return Ok(info);
     // }
 
-    let app_data_dir = app_dirs2::app_root(
-        AppDataType::UserData,
-        &app_dirs2::AppInfo {
-            name: "tauri-plugin-holochain",
-            author: "darksoil.studio",
-        },
-    )?
-    .join("holochain");
-    let app_config_dir = app_dirs2::app_root(
-        AppDataType::UserConfig,
-        &app_dirs2::AppInfo {
-            name: "tauri-plugin-holochain",
-            author: "darksoil.studio",
-        },
-    )?
-    .join("holochain");
-
-    let filesystem = FileSystem::new(app_data_dir, app_config_dir).await?;
-    let app_port = portpicker::pick_unused_port().expect("No ports free");
+    let filesystem = FileSystem::new(config.holochain_dir).await?;
     let admin_port = portpicker::pick_unused_port().expect("No ports free");
 
     let fs = filesystem.clone();
@@ -77,12 +59,6 @@ pub async fn launch(
         .build()
         .await?;
 
-    let p: either::Either<u16, AppInterfaceId> = either::Either::Left(app_port);
-    conductor_handle
-        .clone()
-        .add_app_interface(p, AllowedOrigins::Any)
-        .await?;
-
     wait_until_admin_ws_is_available(admin_port).await?;
     log::info!("Connected to the admin websocket");
 
@@ -90,7 +66,7 @@ pub async fn launch(
 
     Ok(HolochainRuntime {
         filesystem: fs,
-        app_port,
+        apps_websockets_auths: Arc::new(Mutex::new(HashMap::new())),
         admin_port,
         conductor_handle,
     })
@@ -99,7 +75,7 @@ pub async fn launch(
 pub async fn wait_until_admin_ws_is_available(admin_port: u16) -> crate::Result<()> {
     let mut retry_count = 0;
     loop {
-        if let Err(err) = AdminWebsocket::connect(format!("127.0.0.1:{}", admin_port)).await {
+        if let Err(err) = AdminWebsocket::connect(format!("localhost:{}", admin_port)).await {
             log::error!("Could not connect to the admin interface: {}", err);
         } else {
             break;
@@ -116,31 +92,31 @@ pub async fn wait_until_admin_ws_is_available(admin_port: u16) -> crate::Result<
     Ok(())
 }
 
-pub async fn wait_until_app_ws_is_available(app_port: u16) -> crate::Result<()> {
-    let mut retry_count = 0;
-    let _admin_ws = loop {
-        if let Ok(ws) = AppWebsocket::connect(format!("127.0.0.1:{}", app_port))
-            .await
-            .map_err(|err| {
-                crate::Error::AdminWebsocketError(format!(
-                    "Could not connect to the app interface: {}",
-                    err
-                ))
-            })
-        {
-            break ws;
-        }
-        async_std::task::sleep(Duration::from_millis(200)).await;
+// pub async fn wait_until_app_ws_is_available(app_port: u16) -> crate::Result<()> {
+//     let mut retry_count = 0;
+//     let _admin_ws = loop {
+//         if let Ok(ws) = AppWebsocket::connect(format!("localhost:{}", app_port))
+//             .await
+//             .map_err(|err| {
+//                 crate::Error::AdminWebsocketError(format!(
+//                     "Could not connect to the app interface: {}",
+//                     err
+//                 ))
+//             })
+//         {
+//             break ws;
+//         }
+//         async_std::task::sleep(Duration::from_millis(200)).await;
 
-        retry_count += 1;
-        if retry_count == 200 {
-            return Err(crate::Error::AdminWebsocketError(
-                "Can't connect to holochain".to_string(),
-            ));
-        }
-    };
-    Ok(())
-}
+//         retry_count += 1;
+//         if retry_count == 200 {
+//             return Err(crate::Error::AdminWebsocketError(
+//                 "Can't connect to holochain".to_string(),
+//             ));
+//         }
+//     };
+//     Ok(())
+// }
 
 // fn read_config(config_path: &std::path::Path) -> crate::Result<LairServerConfig> {
 //     let bytes = std::fs::read(config_path)?;

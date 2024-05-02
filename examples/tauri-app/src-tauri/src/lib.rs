@@ -1,3 +1,4 @@
+use app_dirs2::AppDataType;
 use holochain_types::web_app::WebAppBundle;
 use lair_keystore::dependencies::sodoken::{BufRead, BufWrite};
 use std::collections::HashMap;
@@ -27,25 +28,59 @@ pub fn vec_to_locked(mut pass_tmp: Vec<u8>) -> std::io::Result<BufRead> {
     }
 }
 
+fn internal_ip() -> String {
+    if cfg!(mobile) {
+        std::option_env!("INTERNAL_IP")
+            .expect("Environment variable INTERNAL_IP was not set")
+            .to_string()
+    } else {
+        String::from("localhost")
+    }
+}
+
 fn bootstrap_url() -> Url2 {
     // Resolved at compile time to be able to point to local services
-    match (
-        std::option_env!("INTERNAL_IP"),
-        std::option_env!("BOOTSTRAP_PORT"),
-    ) {
-        (Some(internal_ip), Some(port)) => url2::url2!("http://{internal_ip}:{port}"),
-        _ => url2::url2!("https://bootstrap.holo.host"),
+    if cfg!(debug_assertions) {
+        let internal_ip = internal_ip();
+        let port = std::option_env!("BOOTSTRAP_PORT")
+            .expect("Environment variable BOOTSTRAP_PORT was not set");
+        url2::url2!("http://{internal_ip}:{port}")
+    } else {
+        url2::url2!("https://bootstrap.holo.host")
     }
 }
 
 fn signal_url() -> Url2 {
     // Resolved at compile time to be able to point to local services
-    match (
-        std::option_env!("INTERNAL_IP"),
-        std::option_env!("SIGNAL_PORT"),
-    ) {
-        (Some(internal_ip), Some(port)) => url2::url2!("http://{internal_ip}:{port}"),
-        _ => url2::url2!("wss://signal.holo.host"),
+    if cfg!(debug_assertions) {
+        let internal_ip = internal_ip();
+        let signal_port =
+            std::option_env!("SIGNAL_PORT").expect("Environment variable INTERNAL_IP was not set");
+        url2::url2!("ws://{internal_ip}:{signal_port}")
+    } else {
+        url2::url2!("wss://signal.holo.host")
+    }
+}
+
+fn holochain_dir() -> PathBuf {
+    if cfg!(debug_assertions) {
+        let tmp_dir =
+            tempdir::TempDir::new("example-forum").expect("Could not create temporary directory");
+
+        // Convert `tmp_dir` into a `Path`, destroying the `TempDir`
+        // without deleting the directory.
+        let tmp_path = tmp_dir.into_path();
+        tmp_path
+    } else {
+        app_dirs2::app_root(
+            app_dirs2::AppDataType::UserData,
+            &app_dirs2::AppInfo {
+                name: "example-forum",
+                author: std::env!("CARGO_PKG_AUTHORS"),
+            },
+        )
+        .expect("Could not get app root")
+        .join("holochain")
     }
 }
 
@@ -54,7 +89,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(
             tauri_plugin_log::Builder::default()
-                .level(log::LevelFilter::Info)
+                .level(log::LevelFilter::Warn)
                 .build(),
         )
         .plugin(tauri_plugin_holochain::init(
@@ -62,6 +97,7 @@ pub fn run() {
             HolochainPluginConfig {
                 signal_url: signal_url(),
                 bootstrap_url: bootstrap_url(),
+                holochain_dir: holochain_dir(),
             },
         ))
         .setup(|app| {

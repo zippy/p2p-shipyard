@@ -4,11 +4,11 @@
   inputs = {
     versions.url  = "github:holochain/holochain?dir=versions/weekly";
 
-    holochain-flake.url = "github:holochain/holochain";
-    holochain-flake.inputs.versions.follows = "versions";
+    holochain.url = "github:holochain/holochain";
+    holochain.inputs.versions.follows = "versions";
 
-    nixpkgs.follows = "holochain-flake/nixpkgs";
-    flake-parts.follows = "holochain-flake/flake-parts";
+    nixpkgs.follows = "holochain/nixpkgs";
+    flake-parts.follows = "holochain/flake-parts";
 
     tauriHolochain.url = "path:../..";
   };
@@ -19,7 +19,7 @@
         inherit inputs;
       }
       {
-        systems = builtins.attrNames inputs.holochain-flake.devShells;
+        systems = builtins.attrNames inputs.holochain.devShells;
         perSystem =
           { inputs'
           , config
@@ -27,7 +27,8 @@
           , system
           , ...
           }: {
-            devShells.default = inputs'.tauriHolochain.devShells.holochainTauriAndroidDev;
+            devShells.default = inputs'.tauriHolochain.devShells.holochainTauriDev;
+            devShells.androidDev = inputs'.tauriHolochain.devShells.holochainTauriAndroidDev;
           };
       };
 }

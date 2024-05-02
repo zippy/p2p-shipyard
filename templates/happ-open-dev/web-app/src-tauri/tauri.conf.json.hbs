@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "identifier": "{{app_name}}",
   "build": {
-    "beforeDevCommand": "pnpm happ:build-debug && cross-env BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"pnpm local-services\" \"pnpm -F ui start\"",
+    "beforeDevCommand": "pnpm happ:build-debug && concurrently -k \"pnpm local-services\" \"pnpm -F ui start\"",
     "beforeBuildCommand": "pnpm -F ui build && pnpm happ:build",
     "devUrl": "http://localhost:1420",
     "frontendDist": "../ui/dist"
@@ -27,6 +27,11 @@
     "active": true,
     "targets": "all",
     "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
     ]
   }
 }

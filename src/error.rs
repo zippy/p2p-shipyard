@@ -1,4 +1,3 @@
-use app_dirs2::AppDirsError;
 use holochain::{
     conductor::error::ConductorError,
     prelude::{AppBundleError, DnaError, RoleName, SerializedBytesError, ZomeError},
@@ -33,9 +32,6 @@ pub enum Error {
 
     #[error(transparent)]
     MrBundleError(#[from] MrBundleError),
-
-    #[error(transparent)]
-    AppDirsError(#[from] AppDirsError),
 
     #[error(transparent)]
     TauriError(#[from] tauri::Error),

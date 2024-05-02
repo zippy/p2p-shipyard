@@ -9,14 +9,14 @@ use zip::result::ZipError;
 #[derive(Clone)]
 pub struct FileSystem {
     pub app_data_dir: PathBuf,
-    pub app_config_dir: PathBuf,
+    // pub app_config_dir: PathBuf,
 }
 
 impl FileSystem {
-    pub async fn new(app_data_dir: PathBuf, app_config_dir: PathBuf) -> crate::Result<FileSystem> {
+    pub async fn new(app_data_dir: PathBuf) -> crate::Result<FileSystem> {
         let fs = FileSystem {
             app_data_dir,
-            app_config_dir,
+            // app_config_dir,
         };
 
         fs::create_dir_all(fs.webapp_store().path)?;
