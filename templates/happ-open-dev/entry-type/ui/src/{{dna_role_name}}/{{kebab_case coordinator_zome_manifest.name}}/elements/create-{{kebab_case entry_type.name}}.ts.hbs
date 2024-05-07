@@ -3,6 +3,7 @@ import { repeat } from "lit/directives/repeat.js";
 import { state, property, query, customElement } from 'lit/decorators.js';
 import { ActionHash, Record, DnaHash, AgentPubKey, EntryHash } from '@holochain/client';
 import { EntryRecord } from '@holochain-open-dev/utils';
+import { SignalWatcher } from '@holochain-open-dev/signals';
 import { hashProperty, notifyError, hashState, sharedStyles, onSubmit, wrapPathInSvg } from '@holochain-open-dev/elements';
 import { consume } from '@lit/context';
 import { localized, msg } from '@lit/localize';
@@ -34,19 +35,32 @@ import { {{pascal_case entry_type.name}}{{#each entry_type.fields}}{{#if (eq fie
  */
 @localized()
 @customElement('create-{{kebab_case entry_type.name}}')
-export class Create{{pascal_case entry_type.name}} extends LitElement {
+export class Create{{pascal_case entry_type.name}} extends SignalWatcher(LitElement) {
   {{#each entry_type.fields}}
     {{#if (not widget) }}
-      {{#if (not (eq cardinality "vector" ) )}}
-  // REQUIRED. The {{lower_case field_name}} for this {{pascal_case ../entry_type.name}}
+      {{#if (eq cardinality "single" )}}
+  /**
+   * REQUIRED. The {{lower_case field_name}} for this {{pascal_case ../entry_type.name}}
+   */
   @property({{#if (or (eq field_type.type "AgentPubKey") (or (eq field_type.type "ActionHash") (eq field_type.type "EntryHash" ) ) ) }}hashProperty('{{kebab_case field_name}}'){{/if}})
   {{camel_case field_name}}!: {{> (concat field_type.type "/type") }};
 
       {{else}}
-  // REQUIRED. The {{plural (lower_case field_name)}} for this {{pascal_case ../entry_type.name}}
+        {{#if (eq cardinality "vector" )}}
+  /**
+   * REQUIRED. The {{plural (lower_case field_name)}} for this {{pascal_case ../entry_type.name}}
+   */
   @property()
   {{camel_case field_name}}!: Array<{{> (concat field_type.type "/type") }}>;
 
+        {{else}}
+  /**
+   * OPTIONAl. The {{lower_case field_name}} for this {{pascal_case ../entry_type.name}}
+   */
+  @property({{#if (or (eq field_type.type "AgentPubKey") (or (eq field_type.type "ActionHash") (eq field_type.type "EntryHash" ) ) ) }}hashProperty('{{kebab_case field_name}}'){{/if}})
+  {{camel_case field_name}}: {{> (concat field_type.type "/type") }} | undefined;
+
+        {{/if}}
       {{/if}}
     {{/if}}
   {{/each}}
@@ -81,7 +95,7 @@ export class Create{{pascal_case entry_type.name}} extends LitElement {
   {{/if}}
 {{/each}}
 
-  async create{{pascal_case entry_type.name}}(fields: any) {
+  async create{{pascal_case entry_type.name}}(fields: Partial<{{pascal_case entry_type.name}}>) {
     {{#each entry_type.fields}}
       {{#if (not widget)}}
         {{#if (ne cardinality "option")}}
@@ -94,12 +108,12 @@ export class Create{{pascal_case entry_type.name}} extends LitElement {
     {{#each entry_type.fields}}
       {{#if widget}}
         {{#if (eq cardinality "vector")}}
-      {{snake_case field_name}}: (Array.isArray(fields.{{snake_case field_name}}) ? fields.{{snake_case field_name}} : [fields.{{snake_case field_name}}]).map((el: any) => {{> (concat field_type.type "/" widget "/edit/to-value") field_name=field_name variable_to_read="el" }}),
+      {{snake_case field_name}}: (Array.isArray(fields.{{snake_case field_name}}!) ? fields.{{snake_case field_name}}! : [fields.{{snake_case field_name}}!] as unknown as Array<{{> (concat field_type.type "/type") }}>).map((el) => {{> (concat field_type.type "/" widget "/edit/to-value") field_name=field_name variable_to_read="el" }}),
         {{else}}
-      {{snake_case field_name}}: {{> (concat field_type.type "/" widget "/edit/to-value") field_name=field_name variable_to_read=(concat "fields." (snake_case field_name)) }},
+      {{snake_case field_name}}: {{> (concat field_type.type "/" widget "/edit/to-value") field_name=field_name variable_to_read=(concat "fields." (snake_case field_name) "!" ) }},
         {{/if}}
       {{else}}
-      {{snake_case field_name}}: this.{{camel_case field_name}},
+      {{snake_case field_name}}: this.{{camel_case field_name}}!,
       {{/if}}
     {{/each}}
     };
@@ -117,7 +131,7 @@ export class Create{{pascal_case entry_type.name}} extends LitElement {
       }));
       
       this.form.reset();
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
       notifyError(msg("Error creating the {{lower_case entry_type.name}}"));
     }

@@ -1,4 +1,4 @@
-{ inputs, rootPath, excludedCrates, ... }:
+{ inputs, rootPath, ... }:
 
 {
   perSystem =
@@ -6,7 +6,6 @@
     , ...
     }: {
       packages.{{zome_manifest.name}} = inputs.hc-infra.outputs.lib.rustZome {
-        inherit excludedCrates;
         workspacePath = rootPath;
         holochain = inputs'.holochain;
         crateCargoToml = ./Cargo.toml;

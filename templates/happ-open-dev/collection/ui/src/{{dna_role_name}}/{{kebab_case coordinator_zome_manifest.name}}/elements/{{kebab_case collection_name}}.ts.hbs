@@ -1,10 +1,10 @@
 import { LitElement, html } from 'lit';
 import { state, customElement, property } from 'lit/decorators.js';
 import { AgentPubKey, EntryHash, ActionHash, Record } from '@holochain/client';
-import { subscribe } from '@holochain-open-dev/stores';
+import { SignalWatcher } from '@holochain-open-dev/signals';
 import { consume } from '@lit/context';
 import { localized, msg } from '@lit/localize';
-import { hashProperty, sharedStyles, wrapPathInSvg, renderAsyncStatus } from '@holochain-open-dev/elements';
+import { hashProperty, sharedStyles, wrapPathInSvg } from '@holochain-open-dev/elements';
 import { mdiInformationOutline } from '@mdi/js';
 
 import '@holochain-open-dev/elements/dist/elements/display-error.js';
@@ -20,10 +20,12 @@ import { {{camel_case coordinator_zome_manifest.name}}StoreContext } from '../co
  */
 @localized()
 @customElement('{{kebab_case collection_name}}')
-export class {{pascal_case collection_name}} extends LitElement {
+export class {{pascal_case collection_name}} extends SignalWatcher(LitElement) {
   {{#if (eq collection_type.type "ByAuthor")}}
 
-  // REQUIRED. The author for which the {{plural (pascal_case referenceable.name)}} should be fetched
+  /**
+   * REQUIRED. The author for which the {{plural (pascal_case referenceable.name)}} should be fetched
+   */
   @property(hashProperty('author'))
   author!: AgentPubKey;
   {{/if}}
@@ -63,20 +65,21 @@ export class {{pascal_case collection_name}} extends LitElement {
   }
 
   render() {
-    return html`${subscribe(this.{{camel_case coordinator_zome_manifest.name}}Store.{{camel_case collection_name}}{{#if (eq collection_type.type "ByAuthor")}}.get(this.author){{/if}},
-      renderAsyncStatus({
-        complete: map => this.renderList(Array.from(map.keys())),
-        pending: () => html`<div
-          style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1;"
-        >
+    const map = this.{{camel_case coordinator_zome_manifest.name}}Store.{{camel_case collection_name}}{{#if (eq collection_type.type "ByAuthor")}}.get(this.author){{else}}${{/if}}.get();
+
+    switch (map.status) {
+      case 'pending':
+        return html`<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1;">
           <sl-spinner style="font-size: 2rem;"></sl-spinner>
-        </div>`,
-        error: e => html`<display-error
+        </div>`;
+      case 'error':
+        return html`<display-error
           .headline=${msg("Error fetching the {{lower_case (plural referenceable.name)}}")}
-          .error=${e}
-        ></display-error>`
-      })
-    )}`;
+          .error=${map.error}
+        ></display-error>`;
+      case 'completed':
+        return this.renderList(Array.from(map.value.keys()));
+    }
   }
   
   static styles = [sharedStyles];

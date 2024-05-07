@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "identifier": "{{app_name}}",
   "build": {
-    "beforeDevCommand": "pnpm happ:build-debug && concurrently -k \"pnpm local-services\" \"pnpm -F ui start\"",
     "beforeBuildCommand": "pnpm -F ui build && pnpm happ:build",
     "devUrl": "http://localhost:1420",
     "frontendDist": "../ui/dist"
