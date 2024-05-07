@@ -147,47 +147,12 @@ pub async fn start_http_server<R: Runtime>(
     Ok(())
 }
 
-pub fn app_id_from_applet_id(applet_id: &String) -> String {
-    format!("applet#{}", applet_id)
-}
-
-// pub fn applet_id_from_app_id(installed_app_id: &String) -> WeResult<String> {
-//     match installed_app_id.strip_prefix("applet#") {
-//         Some(id) => Ok(id.to_string()),
-//         None => Err(Error::CustomError(String::from(
-//             "Failed to convert installed_app_id to applet id.",
-//         ))),
-//     }
-// }
-
-// async fn get_applet_id_from_lowercase(
-//     lowercase_applet_id: &String,
-//     admin_ws: &mut AdminWebsocket,
-// ) -> WeResult<String> {
-//     let apps = admin_ws.list_apps(None).await?;
-
-//     let app = apps
-//         .into_iter()
-//         .find(|app| {
-//             app.installed_app_id
-//                 .eq(&app_id_from_applet_id(lowercase_applet_id))
-//                 || app
-//                     .installed_app_id
-//                     .to_lowercase()
-//                     .eq(&app_id_from_applet_id(lowercase_applet_id))
-//         })
-//         .ok_or(Error::AdminWebsocketError(String::from(
-//             "Applet is not installed",
-//         )))?;
-//     applet_id_from_app_id(&app.installed_app_id)
-// }
-
 pub async fn read_asset(
     fs: &FileSystem,
     app_id: &String,
     mut asset_name: String,
 ) -> Option<(Vec<u8>, Option<String>)> {
-    // println!("Reading asset from filesystem. Asset name: {}", asset_name);
+    log::debug!("Reading asset from filesystem. Asset name: {}", asset_name);
     if asset_name.starts_with("/") {
         asset_name = asset_name
             .strip_prefix("/")
@@ -206,8 +171,7 @@ pub async fn read_asset(
     let mime_type = match mime_guess.first() {
         Some(mime) => Some(mime.essence_str().to_string()),
         None => {
-            // log::info!("Could not determine MIME Type of file '{:?}'", asset_file);
-            // println!("\n### ERROR ### Could not determine MIME Type of file '{:?}'\n", asset_file);
+            log::warn!("Could not determine MIME Type of file '{:?}'", asset_file);
             None
         }
     };
