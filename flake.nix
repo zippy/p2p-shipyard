@@ -18,7 +18,7 @@
     hc-infra.url = "github:holochain-open-dev/infrastructure";
     scaffolding = {
       url = "github:holochain/scaffolding";
-      inputs.holochain.follows = "holochain";
+      # inputs.holochain.follows = "holochain";
     };
   };
 
@@ -32,7 +32,7 @@
             (let
               overlays = [ (import inputs.rust-overlay) ];
               rustPkgs = import pkgs.path { inherit system overlays; };
-              rust = rustPkgs.rust-bin.stable.latest.default.override {
+              rust = rustPkgs.rust-bin.stable."1.75.0".default.override {
                 extensions = [ "rust-src" ];
               };
             in rust)
@@ -127,7 +127,7 @@
         devShells.tauriAndroidDev = let
           overlays = [ (import inputs.rust-overlay) ];
           rustPkgs = import pkgs.path { inherit system overlays; };
-          rust = rustPkgs.rust-bin.stable.latest.default.override {
+          rust = rustPkgs.rust-bin.stable."1.75.0".default.override {
             extensions = [ "rust-src" ];
             targets = [
               "armv7-linux-androideabi"
@@ -153,7 +153,7 @@
         devShells.holochainTauriAndroidDev = let
           overlays = [ (import inputs.rust-overlay) ];
           rustPkgs = import pkgs.path { inherit system overlays; };
-          rust = rustPkgs.rust-bin.stable.latest.default.override {
+          rust = rustPkgs.rust-bin.stable."1.75.0".default.override {
             extensions = [ "rust-src" ];
             targets = [
               "armv7-linux-androideabi"
@@ -183,7 +183,7 @@
         devShells.holochainTauriDev = let
           overlays = [ (import inputs.rust-overlay) ];
           rustPkgs = import pkgs.path { inherit system overlays; };
-          rust = rustPkgs.rust-bin.stable.latest.default.override {
+          rust = rustPkgs.rust-bin.stable."1.75.0".default.override {
             extensions = [ "rust-src" ];
             targets = [ "wasm32-unknown-unknown" ];
           };

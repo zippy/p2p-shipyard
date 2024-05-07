@@ -7,8 +7,6 @@ use std::{
 use async_std::sync::Mutex;
 use hc_seed_bundle::dependencies::sodoken::BufRead;
 use http_server::{pong_iframe, read_asset};
-use lair_keystore_api::LairClient;
-use serde::{Deserialize, Serialize};
 use tauri::{
     http::response,
     ipc::CapabilityBuilder,
@@ -45,7 +43,7 @@ pub struct HolochainPlugin<R: Runtime> {
 }
 
 #[derive(Clone)]
-struct AppWebsocketAuth {
+pub struct AppWebsocketAuth {
     pub app_websocket_port: u16,
     pub token: Vec<u8>,
 }
@@ -200,11 +198,18 @@ impl<R: Runtime> HolochainPlugin<R> {
         }
 
         let mut admin_ws = self.admin_websocket().await?;
-        let mut origins: HashSet<String> = HashSet::new();
-        origins.insert(happ_origin(app_id).to_string());
+
+        // Allow any when the app is build in debug mode to allow normal tauri development pointing to http://localhost:1420
+        let allowed_origins = if cfg!(debug_assertions) {
+            AllowedOrigins::Any
+        } else {
+            let mut origins: HashSet<String> = HashSet::new();
+            origins.insert(happ_origin(app_id).to_string());
+            AllowedOrigins::Origins(origins)
+        };
 
         let app_port = admin_ws
-            .attach_app_interface(0, AllowedOrigins::Origins(origins), Some(app_id.clone()))
+            .attach_app_interface(0, allowed_origins, Some(app_id.clone()))
             .await
             .map_err(|err| crate::Error::ConductorApiError(err))?;
 
