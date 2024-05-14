@@ -1,10 +1,12 @@
 # Getting to know Tauri
 
-## What is Tauri
+## What is Tauri?
 
-Tauri is a rust-based engine that allows the creation of cross-platform apps that have a web frontend and a rust-based backend. As such, it is an alternative to electron, or flutter.
+Tauri is a rust-based engine that allows the creation of cross-platform apps that have a web frontend and a rust-based backend. As such, it is an alternative to electron, or flutter, that can target both mobile and desktop platforms.
 
-You can learn more about it [here](https://beta.tauri.app/concepts/).
+Although it's still young, tauri already has a [wide ecosystem of plugins that enable common desktop and mobile use cases](https://github.com/tauri-apps/plugins-workspace).
+
+You can learn more about it [in the official Tauri documentation](https://beta.tauri.app/concepts/).
 
 ## CLI
 
@@ -32,7 +34,7 @@ And learn more about the CLI in the [official Tauri guide](https://beta.tauri.ap
 
 ## Mobile
 
-The default tauri app can be built only for desktop apps. To enable mobile support, there is a bit more work that needs to be done.
+After the initial set up and scaffolding, the initial tauri app can only be built for desktop apps. To enable mobile support, there is a bit more work that needs to be done.
 
 ### Android
 

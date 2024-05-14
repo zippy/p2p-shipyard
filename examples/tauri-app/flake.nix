@@ -2,7 +2,7 @@
   description = "Template for Holochain app development";
 
   inputs = {
-    versions.url  = "github:holochain/holochain?dir=versions/weekly";
+    versions.url = "github:holochain/holochain?dir=versions/0_3_rc";
 
     holochain.url = "github:holochain/holochain";
     holochain.inputs.versions.follows = "versions";
@@ -14,21 +14,20 @@
   };
 
   outputs = inputs:
-    inputs.flake-parts.lib.mkFlake
-      {
-        inherit inputs;
-      }
-      {
-        systems = builtins.attrNames inputs.holochain.devShells;
-        perSystem =
-          { inputs'
-          , config
-          , pkgs
-          , system
-          , ...
-          }: {
-            devShells.default = inputs'.tauriHolochain.devShells.holochainTauriDev;
-            devShells.androidDev = inputs'.tauriHolochain.devShells.holochainTauriAndroidDev;
-          };
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = builtins.attrNames inputs.holochain.devShells;
+      perSystem = { inputs', config, pkgs, system, ... }: {
+        # devShells.default = inputs'.tauriHolochain.devShells.holochainTauriDev;
+        devShells.default = pkgs.mkShell {
+          inputsFrom = [ inputs'.tauriHolochain.devShells.holochainTauriDev ];
+          packages = [
+            (pkgs.writeShellScriptBin "run-local-services" ''
+              ${pkgs.unixtools.netstat}/bin/netstat
+            '')
+          ];
+        };
+        devShells.androidDev =
+          inputs'.tauriHolochain.devShells.holochainTauriAndroidDev;
       };
+    };
 }

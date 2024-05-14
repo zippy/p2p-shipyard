@@ -85,7 +85,6 @@
             export WEBKIT_DISABLE_COMPOSITING_MODE=1
             export RUSTFLAGS+=" -C link-arg=$(gcc -print-libgcc-file-name)"
             export XDG_DATA_DIRS=${pkgs.shared-mime-info}/share:${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}:${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}:$XDG_DATA_DIRS
-
           '';
         };
 

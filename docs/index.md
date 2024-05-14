@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "tauri-plugin-holochain"
-  text: "Cross-platform holochain runtimes and apps"
+  text: "Create coss-platform holochain apps and runtimes"
   tagline: Ship holochain to Android, Linux, MacOS and Windows
   actions:
     - theme: brand
@@ -15,8 +15,9 @@ hero:
       link: /how-to-create-a-holochain-runtime
 
 features:
-  - title: Mobile support
-    details: Android is already supported, iOS support coming soon
+  - title: Experimental mobile support
+    details: Android has experimental support (see FAQs for more details), iOS support coming soon
+    link: /faqs
   - title: Works on desktop as well
     details: Maintain one codebase, ship to all platforms 
   - title: Just another tauri plugin

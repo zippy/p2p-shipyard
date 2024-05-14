@@ -11,7 +11,7 @@ use tauri::{
     http::response,
     ipc::CapabilityBuilder,
     plugin::{Builder, TauriPlugin},
-    AppHandle, Manager, Runtime, WebviewUrl, WebviewWindow, WebviewWindowBuilder,
+    AppHandle, Manager, Runtime, WebviewUrl, WebviewWindowBuilder,
 };
 
 use holochain::{
@@ -306,7 +306,7 @@ impl<R: Runtime> HolochainPlugin<R> {
         let mut admin_ws = self
             .admin_websocket()
             .await
-            .map_err(|err| UpdateAppError::WebsocketError)?;
+            .map_err(|_err| UpdateAppError::WebsocketError)?;
         let _app_info = update_web_app(
             &mut admin_ws,
             &self.holochain_runtime.filesystem,
@@ -328,7 +328,7 @@ impl<R: Runtime> HolochainPlugin<R> {
         let mut admin_ws = self
             .admin_websocket()
             .await
-            .map_err(|err| UpdateAppError::WebsocketError)?;
+            .map_err(|_err| UpdateAppError::WebsocketError)?;
         let app_info = update_app(&mut admin_ws, app_id.clone(), app_bundle).await?;
 
         self.app_handle.emit("app-updated", app_id)?;

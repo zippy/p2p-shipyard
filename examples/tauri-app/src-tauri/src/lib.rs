@@ -86,6 +86,37 @@ fn holochain_dir() -> PathBuf {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    //     if cfg!(debug_assertions) {
+    //         /* If running `tauri dev`, spawn multiple agents */
+    //         let num_agents = std::option_env!("AGENTS")
+    //             .map(|agents_str| {
+    //                 agents_str
+    //                     .parse::<u32>()
+    //                     .expect("AGENTS env var should be an integer")
+    //             })
+    //             .unwrap_or(2);
+    //         let mut handles: Vec<tauri::async_runtime::JoinHandle<()>> = vec![];
+    //         for _i in 0..num_agents {
+    //             println!("RUNNINGAGETNLL");
+    //             let handle = tauri::async_runtime::spawn(async {
+    //                 run_agent();
+    //             });
+    //             handles.push(handle);
+    //         }
+    //         println!("RUNNINGAGETNLL2");
+    //         // tokio::join!(handles.into_iter().map(|h| h.inner()).collect());
+    //         tauri::async_runtime::block_on(async {
+    //             for handle in handles {
+    //                 handle.await.expect("Could not finish running agent task");
+    //             }
+    //         });
+    //     } else {
+    //         /* If running in production, spawn only one agent */
+    //         run_agent()
+    //     }
+    // }
+
+    // fn run_agent() {
     tauri::Builder::default()
         .plugin(
             tauri_plugin_log::Builder::default()

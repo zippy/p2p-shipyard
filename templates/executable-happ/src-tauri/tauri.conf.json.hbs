@@ -1,18 +1,26 @@
 {
-  "productName": "tauri-app",
+  "productName": "{{app_name}}",
   "version": "0.0.0",
-  "identifier": "example",
+  "identifier": "{{app_name}}",
   "build": {
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "pnpm -F ui build && pnpm happ:build",
     "devUrl": "http://localhost:1420",
-    "frontendDist": "../dist"
+    "frontendDist": "../ui/dist"
   },
   "app": {
     "withGlobalTauri": false,
     "security": {
       "csp": null
     },
-    "windows": []
+    "windows": [
+      {
+        "fullscreen": false,
+        "height": 600,
+        "resizable": true,
+        "title": "{{title_case app_name}}",
+        "width": 800
+      }
+    ]
   },
   "bundle": {
     "active": true,

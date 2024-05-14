@@ -8,10 +8,12 @@
     "local-services": "hc run-local-services --bootstrap-port $BOOTSTRAP_PORT --signal-port $SIGNAL_PORT",
     "test": "pnpm run happ:build-debug && nix flake check -L && pnpm -F tests test",
     "happ:build-debug": "nix build -L .#{{app_name}}.meta.debug -o workdir/{{app_name}}-debug.happ",
-    "happ:build": "nix build -L .#{{app_name}} -o workdir/{{app_name}}.happ"
+    "happ:build": "nix build -L .#{{app_name}} -o workdir/{{app_name}}.happ",
+    "tauri": "tauri"
   },
   "devDependencies": {
     "@holochain-playground/cli": "^0.1.1",
+    "@tauri-apps/cli": "^2.0.0-alpha.17",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@eslint/js": "^8.0.0",
     "concurrently": "^6.2.1",
