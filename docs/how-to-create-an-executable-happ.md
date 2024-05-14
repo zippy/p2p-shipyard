@@ -18,7 +18,7 @@ We need a way to create end-users applications for mobile platforms to create si
 > [!NOTE]
 > If you already have a hApp that you want to convert to a tauri executable app, you can skip this step.
 
-1. Run this command inside the repository of your web-app:
+1. Run this command inside the repository of your web-hApp:
 
 ```bash
 nix run github:darksoil-studio/tauri-plugin-holochain#scaffold-tauri-app
@@ -26,30 +26,58 @@ nix run github:darksoil-studio/tauri-plugin-holochain#scaffold-tauri-app
 
 And follow along to answer all the necessary prompts.
 
-This will execute all the required steps to convert your previously scaffolded hApp to an end-user executable tauri app. The command tries to guess as best as possible what's in your project.
-
-> [!WARNING]
-> The `scaffold-tauri-app` command assumes that you have scaffolded your app using the scaffolding tool.
-
-> [!WARNING]
-> The `scaffold-tauri-app` command tries to make smart guesses about the structure of your project, but it can be tricky to support every repository structure. Please open an issue in the github repository if you find any bugs in it!
+This will execute all the required steps to convert your previously scaffolded hApp to an end-user executable tauri app.
 
 2. Take a look into the files that the scaffold command edited, and adapt them if necessary:
 
-- `flake.nix`
-- `package.json`
-
---- 
-
-That's it! We have created a fully functional executable hApp. 
-
-It is in fact just a Tauri app that depends on `tauri-plugin-holochain`. As such, we should get to know Tauri a bit better to be comfortable while developing the app. Go to [Getting to know Tauri](./getting-to-know-tauri.md) to familiarize yourself with it.
-
-### Android
-
-Continue to the [Android setup](./android-setup.md);
-
-### iOS 
+- `flake.nix`: added the `tauri-plugin-holochain` input and its `devShells`.
+- `package.json`: added set up scripts and some `devDependencies`.
+- `src-tauri`: here is where the code for the backend of the tauri app lives.
+  - The tauri app will just use the UI that the scaffolding tool produced as its own UI.
 
 > [!WARNING]
-> Coming soon! Holochain working on iOS is blocked by wasmer having an interpreter wasm engine. Work is already in progress, so stay tuned! You can learn more by reading the [FAQs](/faqs).
+> The `scaffold-tauri-app` command assumes that you have scaffolded your app using the scaffolding tool.
+>
+> It also tries to make smart guesses about the structure of your project, but it can be tricky to support every repository structure. Please open an issue in the github repository if you find any bugs in it!
+
+
+That's it! We now have a fully functional end-user executable hApp. 
+
+## Development Environment
+
+The `scaffold-tauri-app` has added the necessary nix `devShells` to your `flake.nix` file so that you don't need to follow install anything to get the tauri or Android development environment.
+
+> [!NOTE]
+> Nix `devShells` are packages that describe development environments, with all their dependencies and environment variables, so that the developer does not need to configure manually their setup.
+
+As usual, run this command to enter the development environment:
+
+```bash
+nix develop
+```
+
+This can take a while while it builds all the required dependencies.
+
+Next, run these commands:
+
+::: code-group
+```bash [npm]
+npm install
+npm start
+```
+
+```bash [yarn]
+yarn install
+yarn start
+```
+
+```bash [pnpm]
+pnpm install
+pnpm start
+```
+:::
+
+This will start two agents connected to each other.
+
+Under the hood, these commands are running tauri CLI commands. As such, we should get to know Tauri a bit better to be comfortable while developing the app. Go to [Getting to know Tauri](./getting-to-know-tauri.md) to familiarize yourself with it.
+

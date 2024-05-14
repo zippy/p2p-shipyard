@@ -5,9 +5,19 @@
 
 1. In the root folder of your repository, run:
 
-```bash
+::: code-group
+```bash [npm]
+npm run tauri android init
+```
+
+```bash [yarn]
+yarn tauri android init
+```
+
+```bash [pnpm]
 pnpm tauri android init
 ```
+:::
 
 This should initialize all the necessary android files for your app.
 
@@ -94,7 +104,7 @@ This is a replacement command for the usual `nix develop`, which includes `Andro
 > [!WARNING]
 > The first time this is run, it will take some time. This is because nix has to download and build all the necessary Android tooling. After the first time, it will be almost instant.
 
-7. Inside your `androidDev` nix shell, run:
+7. Inside your `androidDev` devShell, run:
 
 ```bash
 adb devices
@@ -104,9 +114,19 @@ If all the previous steps were successful, you should see your device in the lis
 
 8. Verify that everything is working by running the app for android with:
 
-```bash
+::: code-group
+```bash [npm]
+npm run tauri android dev
+```
+
+```bash [yarn]
+yarn tauri android dev
+```
+
+```bash [pnpm]
 pnpm tauri android dev
 ```
+:::
 
 --- 
 

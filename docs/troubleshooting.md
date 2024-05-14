@@ -1,7 +1,3 @@
-
-
-- Uses clearTraffic = true in build.gradle.kts
-
 ### NixOS
 
 #### Connect to devices

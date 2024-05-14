@@ -234,8 +234,6 @@ pub fn scaffold_tauri_app(
             }
             close += 2;
 
-            println!("{}", &flake_nix_content[open..close]);
-
             // - Add an androidDev devshell by copying the default devShell, and adding the holochainTauriAndroidDev
             let android_dev_shell = flake_nix_content[open..close]
                 .to_string()

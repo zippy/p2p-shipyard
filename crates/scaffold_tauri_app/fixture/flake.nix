@@ -10,19 +10,15 @@
     nixpkgs.follows = "holochain/nixpkgs";
     flake-parts.follows = "holochain/flake-parts";
 
-    tauriHolochain.url = "path:../..";
   };
 
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       systems = builtins.attrNames inputs.holochain.devShells;
       perSystem = { inputs', config, pkgs, system, ... }: {
-        # devShells.default = inputs'.tauriHolochain.devShells.holochainTauriDev;
         devShells.default = pkgs.mkShell {
-          inputsFrom = [ inputs'.tauriHolochain.devShells.holochainTauriDev ];
+          inputsFrom = [ inputs'.holochain.devShells.holonix ];
         };
-        devShells.androidDev =
-          inputs'.tauriHolochain.devShells.holochainTauriAndroidDev;
       };
     };
 }
