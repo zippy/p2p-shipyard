@@ -11,25 +11,33 @@ We need a way to create end-users applications for mobile platforms to create si
 > [!NOTE]
 > This is also what [kangaroo](https://github.com/holochain-apps/holochain-kangaroo) accomplishes. However, the approach that kangaroo takes is to serve as a template for you to clone it. The approach for tauri-plugin-holochain is just to be another tauri plugin, which means that apps will get bug fixes and new features automatically when upgrading to a new version of the plugin.
 
-## Creating an executable hApp
+## Scaffolding the tauri app
 
-### Scaffolding the hApp 
-
-**If you are starting from scratch**, the best way to begin is by scaffolding the app using the scaffolding tool, by running: 
-
-```bash
-nix run github:darksoil-studio/tauri-plugin-holochain#hc-scaffold -- web-app
-```
+0. [Scaffold your hApp using the scaffolding tool](https://developer.holochain.org/get-started/3-forum-app-tutorial/).
 
 > [!NOTE]
-> This command uses the holochain scaffolding tool with a custom template, that scaffolds everything that we need to get started.
-> It is using a custom template based on the [holochain-open-dev custom template](https://github.com/holochain-open-dev/templates), which uses [Lit](https://lit.dev) as its frontend framework. Please get in touch with us if you would like to have it based on another framework.
+> If you already have a hApp that you want to convert to a tauri executable app, you can skip this step.
 
-### Converting an existing hApp into an executable hApp
+1. Run this command inside the repository of your web-app:
 
-**If you already have an existing hApp**, you can run these commands:
+```bash
+nix run github:darksoil-studio/tauri-plugin-holochain#scaffold-tauri-app
+```
 
+And follow along to answer all the necessary prompts.
 
+This will execute all the required steps to convert your previously scaffolded hApp to an end-user executable tauri app. The command tries to guess as best as possible what's in your project.
+
+> [!WARNING]
+> The `scaffold-tauri-app` command assumes that you have scaffolded your app using the scaffolding tool.
+
+> [!WARNING]
+> The `scaffold-tauri-app` command tries to make smart guesses about the structure of your project, but it can be tricky to support every repository structure. Please open an issue in the github repository if you find any bugs in it!
+
+2. Take a look into the files that the scaffold command edited, and adapt them if necessary:
+
+- `flake.nix`
+- `package.json`
 
 --- 
 

@@ -2,7 +2,7 @@ use anyhow::Result;
 use build_fs_tree::{Build, MergeableFileSystemTree};
 use clap::Parser;
 use colored::Colorize;
-use scaffold_executable_happ::scaffold_executable_happ;
+use scaffold_tauri_app::scaffold_tauri_app;
 use std::{
     ffi::OsString,
     path::PathBuf,
@@ -34,7 +34,7 @@ fn internal_main() -> Result<()> {
 
     let file_tree = file_tree_utils::load_directory_into_memory(&args.path)?;
 
-    let file_tree = scaffold_executable_happ(file_tree, args.ui_package)?;
+    let file_tree = scaffold_tauri_app(file_tree, args.ui_package)?;
 
     let file_tree = MergeableFileSystemTree::<OsString, String>::from(file_tree);
 

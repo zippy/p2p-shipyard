@@ -66,8 +66,8 @@ struct ScaffoldExecutableHappData {
     app_name: String,
 }
 
-pub fn scaffold_executable_happ(
-    mut file_tree: FileTree,
+pub fn scaffold_tauri_app(
+    file_tree: FileTree,
     ui_package: Option<String>,
 ) -> Result<FileTree, ScaffoldExecutableHappError> {
     // - Detect npm package manager
@@ -102,7 +102,7 @@ pub fn scaffold_executable_happ(
 
     let ui_package = match ui_package {
         Some(ui_package) => ui_package,
-        None => choose_npm_package(&file_tree, &String::from("Which NPM package is your UI?"))?,
+        None => choose_npm_package(&file_tree, &String::from("Which NPM package contains your UI?\n\nThis is needed so that the NPM scripts can start the UI and tauri can connect to it."))?,
     };
 
     // - In package.json
@@ -115,7 +115,7 @@ pub fn scaffold_executable_happ(
             let package_json_content = add_npm_dev_dependency_to_package(
                 &(root_package_json_path.clone(), package_json_content),
                 &String::from("@tauri-apps/cli"),
-                &String::from("^2.0.0-alpha.17"),
+                &String::from("^2.0.0-beta.17"),
             )?;
             let package_json_content = add_npm_dev_dependency_to_package(
                 &(root_package_json_path.clone(), package_json_content),
@@ -163,13 +163,18 @@ pub fn scaffold_executable_happ(
                 &String::from("build:zomes"),
                 &format!("CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude {app_name}"),
             )?;
-            add_npm_script_to_package(
+            let package_json_content = add_npm_script_to_package(
                 &(root_package_json_path.clone(), package_json_content),
                 &String::from("launch"),
                 &format!(
                     "concurrently-repeat \"{}\" $AGENTS",
                     package_manager.run_script_command("tauri dev".into(), None)
                 ),
+            )?;
+            add_npm_script_to_package(
+                &(root_package_json_path.clone(), package_json_content),
+                &String::from("tauri"),
+                &String::from("tauri"),
             )
         },
     )?;
@@ -188,14 +193,15 @@ pub fn scaffold_executable_happ(
 
             let flake_nix_content = match captures_iter.len() {
                 0 => {
-                    let mk_flake_re = Regex::new(r#"mkFlake =\w*\{"#)?;
+                    let mk_flake_re = Regex::new(r#"mkFlake(\\n)*\s*\{"#)?;
 
                     mk_flake_re
                         .replace(
                             &flake_nix_content,
                             format!(
-                                r#"mkFlake {{
-      nonWasmCrates = [ "{app_name}" ];"#
+                                r#"mkFlake
+    {{
+      specialArgs.nonWasmCrates = [ "{app_name}" ];"#
                             ),
                         )
                         .to_string()
@@ -215,33 +221,44 @@ pub fn scaffold_executable_happ(
                 String::from("github:darksoil-studio/tauri-plugin-holochain"),
             )?;
 
-            let (open, close) = get_scope_open_and_close_char_indexes(
-                &flake_nix_content,
-                &String::from("devShells.default = pkgs.mkShell {"),
-            )?;
+            let scope_opener = String::from("devShells.default = pkgs.mkShell {");
+
+            let (mut open, mut close) =
+                get_scope_open_and_close_char_indexes(&flake_nix_content, &scope_opener)?;
+            // Move the open character to the beginning of the line for the scope opener
+            open -= scope_opener.len();
+            while flake_nix_content.chars().nth(open).unwrap() == ' '
+                || flake_nix_content.chars().nth(open).unwrap() == '\t'
+            {
+                open -= 1;
+            }
+            close += 2;
+
+            println!("{}", &flake_nix_content[open..close]);
 
             // - Add an androidDev devshell by copying the default devShell, and adding the holochainTauriAndroidDev
             let android_dev_shell = flake_nix_content[open..close]
                 .to_string()
+                .clone()
                 .replace("default", "androidDev")
                 .replace(
                     "inputsFrom = [",
-                    r#"inputsFrom = [ 
-                inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev'"#,
+                    r#"inputsFrom = [
+              inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev"#,
                 );
 
             // - Add the holochainTauriDev to the default devShell
             let default_dev_shell = flake_nix_content[open..close].to_string().replace(
                 "inputsFrom = [",
-                r#"inputsFrom = [ 
-                inputs'.tauri-plugin-holochain.devShells.holochainTauriDev'"#,
+                r#"inputsFrom = [
+              inputs'.tauri-plugin-holochain.devShells.holochainTauriDev"#,
             );
 
             let flake_nix_content = format!(
                 "{}{}{}{}",
                 &flake_nix_content[..open],
-                android_dev_shell,
                 default_dev_shell,
+                android_dev_shell,
                 &flake_nix_content[close..]
             );
 
@@ -281,18 +298,18 @@ pub fn get_scope_open_and_close_char_indexes(
         }
     }
 
-    let mut whitespace = true;
+    // let mut whitespace = true;
 
-    while whitespace {
-        match text.chars().nth(index - 1) {
-            Some(' ') => {
-                index -= 1;
-            }
-            _ => {
-                whitespace = false;
-            }
-        }
-    }
+    // while whitespace {
+    //     match text.chars().nth(index - 1) {
+    //         Some(' ') => {
+    //             index -= 1;
+    //         }
+    //         _ => {
+    //             whitespace = false;
+    //         }
+    //     }
+    // }
 
     Ok((scope_opener_index, index))
 }
@@ -322,26 +339,27 @@ mod tests {
             }
         };
 
-        let repo = scaffold_executable_happ(repo, Some(String::from("package1"))).unwrap();
+        let repo = scaffold_tauri_app(repo, Some(String::from("package1"))).unwrap();
 
         assert_eq!(
             file_content(&repo, PathBuf::from("package.json").as_path()).unwrap(),
             r#"{
   "name": "root",
-  "scripts": {
-    "start": "AGENTS=2 npm run network",
-    "network": "BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"npm run local-services\" \"npm run -w ui start\" \"npm run launch\"",
-    "local-services": "hc run-local-services --bootstrap-port $BOOTSTRAP_PORT --signal-port $SIGNAL_PORT",
-    "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude mywebhapp",
-    "launch": "concurrently-repeat \"npm run tauri dev\" $AGENTS",
-    "tauri": "tauri"
-  },
-  "dependencies": {
-    "@tauri-apps/cli": "^2.0.0-beta.17"
+  "dependencies": {},
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0-beta.17",
     "concurrently": "^8.2.2",
     "concurrently-repeat": "^0.0.1",
     "internal-ip-cli": "^2.0.0",
     "new-port-cli": "^1.0.0"
+  },
+  "scripts": {
+    "start": "AGENTS=2 npm run network",
+    "network": "BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"npm run local-services\" \"npm run -w package1 start\" \"npm run launch\"",
+    "local-services": "hc run-local-services --bootstrap-port $BOOTSTRAP_PORT --signal-port $SIGNAL_PORT",
+    "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude mywebhapp",
+    "launch": "concurrently-repeat \"npm run tauri dev\" $AGENTS",
+    "tauri": "tauri"
   }
 }"#
         );
@@ -393,7 +411,7 @@ mod tests {
             ];
           };
           devShells.androidDev = pkgs.mkShell {
-            inputsFrom = [ 
+            inputsFrom = [
               inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev 
               inputs'.hc-infra.devShells.synchronized-pnpm
               inputs'.holochain.devShells.holonix 

@@ -207,6 +207,44 @@
           inherit pkgs system;
           customTemplatePath = ./templates/happ-open-dev;
         };
+
+        packages.scaffold-tauri-app = let
+          craneLib = inputs.crane.lib.${system};
+
+          cratePath = ./crates/scaffold_tauri_app;
+
+          cargoToml =
+            builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
+          crate = cargoToml.package.name;
+
+          buildInputs = (with pkgs; [
+            openssl
+            inputs'.holochain.packages.opensslStatic
+            sqlcipher
+          ]) ++ (lib.optionals pkgs.stdenv.isDarwin
+            (with pkgs.darwin.apple_sdk_11_0.frameworks; [
+              AppKit
+              CoreFoundation
+              CoreServices
+              Security
+              IOKit
+            ]));
+          commonArgs = {
+            inherit buildInputs;
+            doCheck = false;
+            src = craneLib.cleanCargoSource (craneLib.path ./.);
+            nativeBuildInputs = (with pkgs; [
+              makeWrapper
+              perl
+              pkg-config
+              inputs'.holochain.packages.goWrapper
+            ]) ++ lib.optionals pkgs.stdenv.isDarwin
+              (with pkgs; [ xcbuild libiconv ]);
+          };
+        in craneLib.buildPackage (commonArgs // {
+          pname = crate;
+          version = cargoToml.package.version;
+        });
       };
     };
 }
