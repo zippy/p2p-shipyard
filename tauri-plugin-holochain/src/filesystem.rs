@@ -84,7 +84,7 @@ impl BundleStore {
         let Some(installed_app_info) = installed_apps.get(app_id) else {
             return Err(crate::Error::AppDoesNotExist(app_id.clone()));
         };
-        let Some(installed_web_app_info) = installed_app_info.web_app_info else {
+        let Some(installed_web_app_info) = &installed_app_info.web_app_info else {
             return Err(crate::Error::AppDoesNotHaveUIError(app_id.clone()));
         };
 
@@ -103,9 +103,9 @@ impl BundleStore {
         let happ_bundle_hash = self.happ_bundle_store().store_app_bundle(&app_bundle)?;
         self.installed_apps_store.update(|installed_apps| {
             installed_apps.insert(
-                app_id,
+                app_id.clone(),
                 InstalledAppInfo {
-                    happ_bundle_hash,
+                    happ_bundle_hash: happ_bundle_hash.clone(),
                     web_app_info: None,
                 },
             );
@@ -170,12 +170,12 @@ pub struct InstalledAppsStore {
 impl InstalledAppsStore {
     fn new(json_config_path: PathBuf) -> crate::Result<Self> {
         let apps = if json_config_path.exists() {
-            let s = std::fs::read_to_string(json_config_path)?;
+            let s = std::fs::read_to_string(json_config_path.clone())?;
 
             let apps: HashMap<String, InstalledAppInfo> = serde_json::from_str(s.as_str())?;
             apps
         } else {
-            let mut file = std::fs::File::create(json_config_path)?;
+            let mut file = std::fs::File::create(json_config_path.clone())?;
 
             let apps: HashMap<String, InstalledAppInfo> = HashMap::new();
 
@@ -208,13 +208,9 @@ impl InstalledAppsStore {
 
         update_fn(&mut write_lock);
 
-        let mut file = std::fs::File::open(self.json_config_path)?;
+        let data = serde_json::to_string(&write_lock.clone())?;
 
-        let installed_apps = self.get()?.clone();
-
-        let data = serde_json::to_string(&installed_apps)?;
-
-        file.write(&data.as_bytes())?;
+        std::fs::write(self.json_config_path.clone(), data)?;
 
         Ok(())
     }
@@ -276,7 +272,7 @@ pub struct AppBundleStore {
 
 impl AppBundleStore {
     pub fn app_bundle_hash(app_bundle: &AppBundle) -> crate::Result<String> {
-        let bytes = app_bundle.into_inner().encode()?;
+        let bytes = app_bundle.encode()?;
         let hash = sha256::digest(bytes);
         Ok(hash)
     }

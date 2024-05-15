@@ -1,14 +1,16 @@
 use app_dirs2::AppDataType;
-use holochain_types::web_app::WebAppBundle;
+use holochain_types::prelude::AppBundle;
 use lair_keystore::dependencies::sodoken::{BufRead, BufWrite};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use tauri_plugin_holochain::{HolochainExt, HolochainPluginConfig};
 use url2::Url2;
 
-pub fn example_happ() -> WebAppBundle {
-    let bytes = include_bytes!("../../workdir/forum.webhapp");
-    WebAppBundle::decode(bytes).expect("Failed to decode example webhapp")
+const APP_ID: &'static str = "example";
+
+pub fn example_happ() -> AppBundle {
+    let bytes = include_bytes!("../../workdir/forum.happ");
+    AppBundle::decode(bytes).expect("Failed to decode example happ")
 }
 
 pub fn vec_to_locked(mut pass_tmp: Vec<u8>) -> std::io::Result<BufRead> {
@@ -86,41 +88,10 @@ fn holochain_dir() -> PathBuf {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    //     if cfg!(debug_assertions) {
-    //         /* If running `tauri dev`, spawn multiple agents */
-    //         let num_agents = std::option_env!("AGENTS")
-    //             .map(|agents_str| {
-    //                 agents_str
-    //                     .parse::<u32>()
-    //                     .expect("AGENTS env var should be an integer")
-    //             })
-    //             .unwrap_or(2);
-    //         let mut handles: Vec<tauri::async_runtime::JoinHandle<()>> = vec![];
-    //         for _i in 0..num_agents {
-    //             println!("RUNNINGAGETNLL");
-    //             let handle = tauri::async_runtime::spawn(async {
-    //                 run_agent();
-    //             });
-    //             handles.push(handle);
-    //         }
-    //         println!("RUNNINGAGETNLL2");
-    //         // tokio::join!(handles.into_iter().map(|h| h.inner()).collect());
-    //         tauri::async_runtime::block_on(async {
-    //             for handle in handles {
-    //                 handle.await.expect("Could not finish running agent task");
-    //             }
-    //         });
-    //     } else {
-    //         /* If running in production, spawn only one agent */
-    //         run_agent()
-    //     }
-    // }
-
-    // fn run_agent() {
     tauri::Builder::default()
         .plugin(
             tauri_plugin_log::Builder::default()
-                .level(log::LevelFilter::Warn)
+                .level(log::LevelFilter::Info)
                 .build(),
         )
         .plugin(tauri_plugin_holochain::init(
@@ -144,8 +115,8 @@ pub fn run() {
                 if installed_apps.len() == 0 {
                     handle
                         .holochain()?
-                        .install_web_app(
-                            String::from("example"),
+                        .install_app(
+                            String::from(APP_ID),
                             example_happ(),
                             HashMap::new(),
                             None,
@@ -153,12 +124,17 @@ pub fn run() {
                         .await
                         .map(|_| ())
                 } else {
+                    handle.holochain()?.update_app_if_necessary(
+                        String::from(APP_ID),
+                        example_happ()
+                    ).await.map(|_| ())?;
+
                     Ok(())
                 }
             })?;
 
             app.holochain()?
-                .web_happ_window_builder("example")
+                .main_window_builder(APP_ID)
                 .build()?;
 
             Ok(())

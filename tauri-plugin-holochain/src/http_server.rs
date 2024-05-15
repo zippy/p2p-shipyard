@@ -16,7 +16,7 @@ pub fn pong_iframe() -> String {
 }
 
 pub fn window_html() -> String {
-    include_str!("../packages/frame/dist/index.html").into()
+    include_str!("../../packages/frame/dist/index.html").into()
 }
 
 pub async fn start_http_server<R: Runtime>(

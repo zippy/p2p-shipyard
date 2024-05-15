@@ -5,6 +5,8 @@ use std::path::PathBuf;
 use tauri_plugin_holochain::{HolochainPluginConfig, HolochainExt};
 use url2::Url2;
 
+const APP_ID: &'static str = "{{app_name}}";
+
 pub fn happ_bundle() -> AppBundle {
     let bytes = include_bytes!("../../workdir/{{app_name}}.happ");
     AppBundle::decode(bytes).expect("Failed to decode {{app_name}} happ")
@@ -40,7 +42,7 @@ pub fn run() {
                     handle
                         .holochain()?
                         .install_app(
-                            String::from("{{app_name}}"),
+                            String::from(APP_ID),
                             happ_bundle(),
                             HashMap::new(),
                             None,
@@ -48,13 +50,17 @@ pub fn run() {
                         .await
                         .map(|_| ())
                 } else {
+                    // If the app bundle has changed, updated it              
+                    handle.holochain()?.update_app_if_necessary(
+                        String::from(APP_ID),
+                        happ_bundle()
+                    ).await?;
                     Ok(())
                 }
             })?;
 
             app.holochain()?
-                .web_happ_window_builder("plenty")
-                .webview_url(WebviewUrl::App("index.html".into()))
+                .main_window_builder("plenty")
                 .build()?;
 
             Ok(())

@@ -4,8 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "workspaces": [
-    "ui",
-    "src"
+    "ui"
   ],
   "scripts": {
     "start": "AGENTS=2 npm run network",

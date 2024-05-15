@@ -94,12 +94,13 @@ impl<'a, R: Runtime> WebHappWindowBuilder<'a, R> {
         self
     }
 
-    pub fn webview_url(mut self, webview_url: WebviewUrl) -> Self {
+    fn webview_url(mut self, webview_url: WebviewUrl) -> Self {
         self.webview_url = Some(webview_url);
         self
     }
 
     pub fn build(self) -> crate::Result<()> {
+        println!("buiii");
         let label = self.label.unwrap_or(self.app_id.clone());
         let title = self.title.unwrap_or(label.clone());
 
@@ -145,7 +146,7 @@ impl<'a, R: Runtime> WebHappWindowBuilder<'a, R> {
             )
             .as_str(),
         )
-        .initialization_script(include_str!("../packages/signer/dist/index.js"));
+        .initialization_script(include_str!("../../packages/signer/dist/index.js"));
 
         let mut capability_builder =
             CapabilityBuilder::new("sign-zome-call").permission("holochain:allow-sign-zome-call");
@@ -179,6 +180,11 @@ impl<'a, R: Runtime> WebHappWindowBuilder<'a, R> {
 impl<R: Runtime> HolochainPlugin<R> {
     pub fn web_happ_window_builder(&self, app_id: impl Into<String>) -> WebHappWindowBuilder<R> {
         WebHappWindowBuilder::new(self, app_id.into())
+    }
+
+    pub fn main_window_builder(&self, app_id: impl Into<String>) -> WebHappWindowBuilder<R> {
+        WebHappWindowBuilder::new(self, app_id.into())
+            .webview_url(WebviewUrl::App("index.html".into()))
     }
 
     pub async fn admin_websocket(&self) -> crate::Result<AdminWebsocket> {
@@ -516,8 +522,6 @@ pub fn init<R: Runtime>(passphrase: BufRead, config: HolochainPluginConfig) -> T
                         .body(format!("{:?}", e).into())
                         .expect("Failed to build body of error response"),
                 };
-
-                // admin_ws.close();
                 r
             })
         })
@@ -537,11 +541,7 @@ async fn launch_and_setup_holochain<R: Runtime>(
     passphrase: BufRead,
     config: HolochainPluginConfig,
 ) -> crate::Result<()> {
-    // let app_data_dir = app.path().app_data_dir()?.join(&subfolder);
-    // let app_config_dir = app.path().app_config_dir()?.join(&subfolder);
-
     // let http_server_port = portpicker::pick_unused_port().expect("No ports free");
-
     // http_server::start_http_server(app_handle.clone(), http_server_port).await?;
     // log::info!("Starting http server at port {http_server_port:?}");
 
