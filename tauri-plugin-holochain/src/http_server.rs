@@ -107,7 +107,7 @@ pub async fn start_http_server<R: Runtime>(
                         )
                         .await
                         {
-                            Some((asset, mime_type)) => {
+                            Ok(Some((asset, mime_type))) => {
                                 let mut response_builder = Response::builder().status(202);
                                 if let Some(mime_type) = mime_type {
                                     response_builder =
@@ -116,10 +116,11 @@ pub async fn start_http_server<R: Runtime>(
 
                                 response_builder.body(asset.into())
                             }
-                            None => Response::builder().status(404).body(vec![].into()), // Err(e) => Ok(Response::builder()
-                                                                                         //     .status(500)
-                                                                                         //     .body(format!("{:?}", e).into())
-                                                                                         //     .expect("Failed to build body of error response")),
+                            Ok(None) => Response::builder().status(404).body(vec![].into()),
+                            Err(e) => Ok(Response::builder()
+                                .status(500)
+                                .body(format!("{:?}", e).into())
+                                .expect("Failed to build body of error response")),
                         };
                         // admin_ws.close();
                         r
@@ -151,7 +152,7 @@ pub async fn read_asset(
     fs: &FileSystem,
     app_id: &String,
     mut asset_name: String,
-) -> Option<(Vec<u8>, Option<String>)> {
+) -> crate::Result<Option<(Vec<u8>, Option<String>)>> {
     log::debug!("Reading asset from filesystem. Asset name: {}", asset_name);
     if asset_name.starts_with("/") {
         asset_name = asset_name
@@ -163,7 +164,7 @@ pub async fn read_asset(
         asset_name = String::from("index.html");
     }
 
-    let assets_path = fs.ui_store().ui_path(&app_id);
+    let assets_path = fs.bundle_store.get_ui_path(&app_id)?;
     let asset_file = assets_path.join(asset_name);
 
     let mime_guess = mime_guess::from_path(asset_file.clone());
@@ -177,7 +178,7 @@ pub async fn read_asset(
     };
 
     match std::fs::read(asset_file.clone()) {
-        Ok(asset) => Some((asset, mime_type)),
-        Err(_e) => None,
+        Ok(asset) => Ok(Some((asset, mime_type))),
+        Err(_e) => Ok(None),
     }
 }

@@ -42,12 +42,10 @@ pub async fn launch(
     let filesystem = FileSystem::new(config.holochain_dir).await?;
     let admin_port = portpicker::pick_unused_port().expect("No ports free");
 
-    let fs = filesystem.clone();
-
     let config = crate::config::conductor_config(
-        &fs,
+        &filesystem,
         admin_port,
-        fs.keystore_dir().into(),
+        filesystem.keystore_dir().into(),
         config.bootstrap_url,
         config.signal_url,
         override_gossip_arc_clamping(),
@@ -65,7 +63,7 @@ pub async fn launch(
     // *lock = Some(info.clone());
 
     Ok(HolochainRuntime {
-        filesystem: fs,
+        filesystem,
         apps_websockets_auths: Arc::new(Mutex::new(HashMap::new())),
         admin_port,
         conductor_handle,

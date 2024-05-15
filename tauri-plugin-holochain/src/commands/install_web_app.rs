@@ -20,7 +20,6 @@ use crate::filesystem::{FileSystem, FileSystemError};
 
 pub async fn install_web_app(
     admin_ws: &mut AdminWebsocket,
-    fs: &FileSystem,
     app_id: String,
     bundle: WebAppBundle,
     membrane_proofs: HashMap<RoleName, MembraneProof>,
@@ -35,7 +34,6 @@ pub async fn install_web_app(
     )
     .await?;
 
-    fs.ui_store().extract_and_store_ui(&app_id, &bundle).await?;
     log::info!("Installed web-app's ui {app_id:?}");
 
     Ok(app_info)
@@ -75,21 +73,6 @@ pub async fn install_app(
     log::info!("Enabled app {app_id:?}");
 
     Ok(response.app)
-}
-
-pub async fn update_web_app(
-    admin_ws: &mut AdminWebsocket,
-    fs: &FileSystem,
-    app_id: String,
-    bundle: WebAppBundle,
-) -> Result<(), UpdateAppError> {
-    update_app(admin_ws, app_id.clone(), bundle.happ_bundle().await?).await?;
-
-    fs.ui_store().extract_and_store_ui(&app_id, &bundle).await?;
-    log::info!("Updated web-app's ui {app_id:?}");
-
-    // Ok(app_info)
-    Ok(())
 }
 
 #[derive(Debug, thiserror::Error)]

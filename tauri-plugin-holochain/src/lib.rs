@@ -28,11 +28,9 @@ mod filesystem;
 mod http_server;
 mod launch;
 
-use commands::install_web_app::{
-    install_app, install_web_app, update_app, update_web_app, UpdateAppError,
-};
+use commands::install_web_app::{install_app, install_web_app, update_app, UpdateAppError};
 pub use error::{Error, Result};
-use filesystem::FileSystem;
+use filesystem::{AppBundleStore, BundleStore, FileSystem};
 pub use launch::launch;
 use url2::Url2;
 
@@ -261,10 +259,15 @@ impl<R: Runtime> HolochainPlugin<R> {
         membrane_proofs: HashMap<RoleName, MembraneProof>,
         network_seed: Option<NetworkSeed>,
     ) -> crate::Result<AppInfo> {
+        self.holochain_runtime
+            .filesystem
+            .bundle_store
+            .store_web_happ_bundle(app_id.clone(), &web_app_bundle)
+            .await?;
+
         let mut admin_ws = self.admin_websocket().await?;
         let app_info = install_web_app(
             &mut admin_ws,
-            &self.holochain_runtime.filesystem,
             app_id.clone(),
             web_app_bundle,
             membrane_proofs,
@@ -285,6 +288,12 @@ impl<R: Runtime> HolochainPlugin<R> {
         network_seed: Option<NetworkSeed>,
     ) -> crate::Result<AppInfo> {
         let mut admin_ws = self.admin_websocket().await?;
+
+        self.holochain_runtime
+            .filesystem
+            .bundle_store
+            .store_happ_bundle(app_id.clone(), &app_bundle)?;
+
         let app_info = install_app(
             &mut admin_ws,
             app_id.clone(),
@@ -302,16 +311,21 @@ impl<R: Runtime> HolochainPlugin<R> {
         &self,
         app_id: String,
         web_app_bundle: WebAppBundle,
-    ) -> std::result::Result<(), UpdateAppError> {
+    ) -> crate::Result<()> {
+        self.holochain_runtime
+            .filesystem
+            .bundle_store
+            .store_web_happ_bundle(app_id.clone(), &web_app_bundle)
+            .await?;
+
         let mut admin_ws = self
             .admin_websocket()
             .await
             .map_err(|_err| UpdateAppError::WebsocketError)?;
-        let _app_info = update_web_app(
+        update_app(
             &mut admin_ws,
-            &self.holochain_runtime.filesystem,
             app_id.clone(),
-            web_app_bundle,
+            web_app_bundle.happ_bundle().await?,
         )
         .await?;
 
@@ -334,6 +348,54 @@ impl<R: Runtime> HolochainPlugin<R> {
         self.app_handle.emit("app-updated", app_id)?;
         Ok(app_info)
     }
+
+    pub async fn update_app_if_necessary(
+        &self,
+        app_id: String,
+        current_app_bundle: AppBundle,
+    ) -> crate::Result<()> {
+        let hash = AppBundleStore::app_bundle_hash(&current_app_bundle)?;
+
+        let installed_apps = self
+            .holochain_runtime
+            .filesystem
+            .bundle_store
+            .installed_apps_store
+            .get()?;
+        let Some(installed_app_info) = installed_apps.get(&app_id) else {
+            return Err(crate::UpdateAppError::AppNotFound(app_id))?;
+        };
+
+        if !installed_app_info.happ_bundle_hash.eq(&hash) {
+            self.update_app(app_id, current_app_bundle).await?;
+        }
+
+        Ok(())
+    }
+
+    pub async fn update_web_app_if_necessary(
+        &self,
+        app_id: String,
+        current_web_app_bundle: WebAppBundle,
+    ) -> crate::Result<()> {
+        let hash = BundleStore::web_app_bundle_hash(&current_web_app_bundle)?;
+
+        let installed_apps = self
+            .holochain_runtime
+            .filesystem
+            .bundle_store
+            .installed_apps_store
+            .get()?;
+        let Some(installed_app_info) = installed_apps.get(&app_id) else {
+            return Err(crate::UpdateAppError::AppNotFound(app_id))?;
+        };
+
+        if !installed_app_info.happ_bundle_hash.eq(&hash) {
+            self.update_web_app(app_id, current_web_app_bundle).await?;
+        }
+
+        Ok(())
+    }
 }
 
 // Extensions to [`tauri::App`], [`tauri::AppHandle`] and [`tauri::Window`] to access the holochain APIs.
@@ -345,7 +407,7 @@ impl<R: Runtime, T: Manager<R>> crate::HolochainExt<R> for T {
     fn holochain(&self) -> crate::Result<&HolochainPlugin<R>> {
         let s = self
             .try_state::<HolochainPlugin<R>>()
-            .ok_or(crate::Error::HolochainNotInitialized)?;
+            .ok_or(crate::Error::HolochainNotInitializedError)?;
 
         Ok(s.inner())
     }
@@ -430,7 +492,7 @@ pub fn init<R: Runtime>(passphrase: BufRead, config: HolochainPluginConfig) -> T
                 )
                 .await
                 {
-                    Some((asset, mime_type)) => {
+                    Ok(Some((asset, mime_type))) => {
                         log::info!("Got asset for app with id: {}", lowercase_app_id);
                         let mut response =
                             response::Builder::new().status(tauri::http::StatusCode::ACCEPTED);
@@ -445,10 +507,14 @@ pub fn init<R: Runtime>(passphrase: BufRead, config: HolochainPluginConfig) -> T
                             .body(asset)
                             .expect("Failed to build response with asset");
                     }
-                    None => response::Builder::new()
+                    Ok(None) => response::Builder::new()
                         .status(tauri::http::StatusCode::NOT_FOUND)
                         .body(vec![])
                         .expect("Failed to build asset with not found"),
+                    Err(e) => response::Builder::new()
+                        .status(500)
+                        .body(format!("{:?}", e).into())
+                        .expect("Failed to build body of error response"),
                 };
 
                 // admin_ws.close();

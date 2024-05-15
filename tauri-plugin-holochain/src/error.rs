@@ -1,3 +1,5 @@
+use std::sync::PoisonError;
+
 use holochain::{
     conductor::error::ConductorError,
     prelude::{AppBundleError, DnaError, RoleName, SerializedBytesError, ZomeError},
@@ -8,7 +10,7 @@ use one_err::OneErr;
 use serde::{ser::Serializer, Serialize};
 use zip::result::ZipError;
 
-use crate::filesystem::FileSystemError;
+use crate::{commands::install_web_app::UpdateAppError, filesystem::FileSystemError};
 
 pub type Result<T> = std::result::Result<T, Error>;
 
@@ -39,6 +41,12 @@ pub enum Error {
     #[error(transparent)]
     FileSystemError(#[from] FileSystemError),
 
+    #[error("JSON serialization error: {0}")]
+    SerdeJsonError(#[from] serde_json::Error),
+
+    #[error("Lock error: {0}")]
+    LockError(String),
+
     #[error(transparent)]
     UrlParseError(#[from] url::ParseError),
 
@@ -67,7 +75,13 @@ pub enum Error {
     AppDoesNotExist(String),
 
     #[error("Holochain has not been initialized yet")]
-    HolochainNotInitialized,
+    HolochainNotInitializedError,
+
+    #[error("App \"{0}\" does not have any UI")]
+    AppDoesNotHaveUIError(String),
+
+    #[error(transparent)]
+    UpdateAppError(#[from] UpdateAppError),
 }
 
 impl Serialize for Error {

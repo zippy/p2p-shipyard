@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "tauri-plugin-holochain"
-  text: "Create coss-platform holochain apps and runtimes"
+  text: "Create cross-platform holochain apps and runtimes"
   tagline: Ship holochain to Android, Linux, MacOS and Windows
   actions:
     - theme: brand
