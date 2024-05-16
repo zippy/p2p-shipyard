@@ -18,10 +18,10 @@
       systems = builtins.attrNames inputs.holochain.devShells;
       perSystem = { inputs', config, pkgs, system, ... }: {
         devShells.default = pkgs.mkShell {
-          inputsFrom = [ inputs'.tauriHolochain.devShells.holochainTauriDev ];
+          inputsFrom = [ inputs'.tauri-plugin-holochain.devShells.holochainTauriDev ];
         };
         devShells.androidDev = pkgs.mkShell {
-          inputsFrom = [ inputs'.tauriHolochain.devShells.holochainTauriAndroidDev];
+          inputsFrom = [ inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev];
         };
       };
     };
