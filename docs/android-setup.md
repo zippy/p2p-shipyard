@@ -99,7 +99,7 @@ apply(from = "tauri.build.gradle.kts")
 nix develop .#androidDev
 ```
 
-This is a replacement command for the usual `nix develop`, which includes `Android Studio`, and all the necessary tooling that you need for Android development. Every time you want to test or build for the Android platform, you will need to run this command.
+This is a replacement command for the usual `nix develop`, which includes `Android Studio`, and all the necessary tooling that you need for Android development. Every time you want to test or build for the Android platform, you will need to enter the nix devShell this way and then your command from inside of it.
 
 > [!WARNING]
 > The first time this is run, it will take some time. This is because nix has to download and build all the necessary Android tooling. After the first time, it will be almost instant.

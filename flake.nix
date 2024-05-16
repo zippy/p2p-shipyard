@@ -2,6 +2,8 @@
   description = "Holochain";
 
   inputs = {
+    crane.url = "github:ipetkov/crane";
+
     nixpkgs.follows = "holochain/nixpkgs";
 
     versions.url = "github:holochain/holochain?dir=versions/0_3_rc";
@@ -23,7 +25,53 @@
   };
 
   outputs = inputs@{ ... }:
-    inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+    inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } rec {
+      flake = {
+        lib = {
+          tauriAppDeps = {
+            buildInputs = { pkgs, lib }:
+              (with pkgs; [
+                openssl
+                # this is required for glib-networking
+                glib
+              ]) ++ (lib.optionals pkgs.stdenv.isLinux (with pkgs; [
+                webkitgtk_4_1.dev
+                gdk-pixbuf
+                gtk3
+                # Video/Audio data composition framework tools like "gst-inspect", "gst-launch" ...
+                gst_all_1.gstreamer
+                # Common plugins like "filesrc" to combine within e.g. gst-launch
+                gst_all_1.gst-plugins-base
+                # Specialized plugins separated by quality
+                gst_all_1.gst-plugins-good
+                gst_all_1.gst-plugins-bad
+                gst_all_1.gst-plugins-ugly
+                # Plugins to reuse ffmpeg to play almost every video format
+                gst_all_1.gst-libav
+                # Support the Video Audio (Hardware) Acceleration API
+                gst_all_1.gst-vaapi
+                libsoup_3
+              ])) ++ lib.optionals pkgs.stdenv.isDarwin (with pkgs; [
+                darwin.apple_sdk.frameworks.Security
+                darwin.apple_sdk.frameworks.CoreServices
+                darwin.apple_sdk.frameworks.CoreFoundation
+                darwin.apple_sdk.frameworks.Foundation
+                darwin.apple_sdk.frameworks.AppKit
+                darwin.apple_sdk.frameworks.WebKit
+                darwin.apple_sdk.frameworks.Cocoa
+              ]);
+          };
+          nativeBuildInputs = { pkgs, lib }:
+            (with pkgs; [ perl pkg-config makeWrapper ])
+            ++ (lib.optionals pkgs.stdenv.isLinux
+              (with pkgs; [ wrapGAppsHook ]))
+            ++ (lib.optionals pkgs.stdenv.isDarwin [
+              pkgs.xcbuild
+              pkgs.libiconv
+            ]);
+        };
+      };
+
       systems = builtins.attrNames inputs.holochain.devShells;
       perSystem = { inputs', config, pkgs, system, lib, ... }: rec {
         devShells.tauriDev = pkgs.mkShell {
@@ -40,44 +88,48 @@
             gsettings-desktop-schemas
           ];
 
-          buildInputs = (with pkgs; [
-            openssl
-            # this is required for glib-networking
-            glib
-          ]) ++ (lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-            webkitgtk_4_1.dev
-            gdk-pixbuf
-            gtk3
-            # Video/Audio data composition framework tools like "gst-inspect", "gst-launch" ...
-            gst_all_1.gstreamer
-            # Common plugins like "filesrc" to combine within e.g. gst-launch
-            gst_all_1.gst-plugins-base
-            # Specialized plugins separated by quality
-            gst_all_1.gst-plugins-good
-            gst_all_1.gst-plugins-bad
-            gst_all_1.gst-plugins-ugly
-            # Plugins to reuse ffmpeg to play almost every video format
-            gst_all_1.gst-libav
-            # Support the Video Audio (Hardware) Acceleration API
-            gst_all_1.gst-vaapi
-            libsoup_3
-          ])) ++ lib.optionals pkgs.stdenv.isDarwin (with pkgs; [
-            darwin.apple_sdk.frameworks.Security
-            darwin.apple_sdk.frameworks.CoreServices
-            darwin.apple_sdk.frameworks.CoreFoundation
-            darwin.apple_sdk.frameworks.Foundation
-            darwin.apple_sdk.frameworks.AppKit
-            darwin.apple_sdk.frameworks.WebKit
-            darwin.apple_sdk.frameworks.Cocoa
-          ]);
+          buildInputs =
+            flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; };
+          #  (with pkgs; [
+          #   openssl
+          #   # this is required for glib-networking
+          #   glib
+          # ]) ++ (lib.optionals pkgs.stdenv.isLinux (with pkgs; [
+          #   webkitgtk_4_1.dev
+          #   gdk-pixbuf
+          #   gtk3
+          #   # Video/Audio data composition framework tools like "gst-inspect", "gst-launch" ...
+          #   gst_all_1.gstreamer
+          #   # Common plugins like "filesrc" to combine within e.g. gst-launch
+          #   gst_all_1.gst-plugins-base
+          #   # Specialized plugins separated by quality
+          #   gst_all_1.gst-plugins-good
+          #   gst_all_1.gst-plugins-bad
+          #   gst_all_1.gst-plugins-ugly
+          #   # Plugins to reuse ffmpeg to play almost every video format
+          #   gst_all_1.gst-libav
+          #   # Support the Video Audio (Hardware) Acceleration API
+          #   gst_all_1.gst-vaapi
+          #   libsoup_3
+          # ])) ++ lib.optionals pkgs.stdenv.isDarwin (with pkgs; [
+          #   darwin.apple_sdk.frameworks.Security
+          #   darwin.apple_sdk.frameworks.CoreServices
+          #   darwin.apple_sdk.frameworks.CoreFoundation
+          #   darwin.apple_sdk.frameworks.Foundation
+          #   darwin.apple_sdk.frameworks.AppKit
+          #   darwin.apple_sdk.frameworks.WebKit
+          #   darwin.apple_sdk.frameworks.Cocoa
+          # ]);
 
-          nativeBuildInputs = (with pkgs; [ perl pkg-config makeWrapper ])
-            ++ (lib.optionals pkgs.stdenv.isLinux
-              (with pkgs; [ wrapGAppsHook ]))
-            ++ (lib.optionals pkgs.stdenv.isDarwin [
-              pkgs.xcbuild
-              pkgs.libiconv
-            ]);
+          nativeBuildInputs =
+            flake.lib.tauriAppDeps.nativeBuildInputs { inherit pkgs lib; };
+          # nativeBuildInputs = (with pkgs; [ perl pkg-config makeWrapper ])
+          #   ++ (lib.optionals pkgs.stdenv.isLinux
+          #     (with pkgs; [ wrapGAppsHook ]))
+          #   ++ (lib.optionals pkgs.stdenv.isDarwin [
+          #     pkgs.xcbuild
+          #     pkgs.libiconv
+          #   ]);
 
           shellHook = ''
             export GIO_MODULE_DIR=${pkgs.glib-networking}/lib/gio/modules/
@@ -217,33 +269,27 @@
             builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
           crate = cargoToml.package.name;
 
-          buildInputs = (with pkgs; [
-            openssl
-            inputs'.holochain.packages.opensslStatic
-            sqlcipher
-          ]) ++ (lib.optionals pkgs.stdenv.isDarwin
-            (with pkgs.darwin.apple_sdk_11_0.frameworks; [
-              AppKit
-              CoreFoundation
-              CoreServices
-              Security
-              IOKit
-            ]));
           commonArgs = {
-            inherit buildInputs;
+            buildInputs =
+              inputs.hc-infra.outputs.lib.holochainAppDeps.buildInputs {
+                inherit pkgs lib;
+              } ++ flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; };
             doCheck = false;
             src = craneLib.cleanCargoSource (craneLib.path ./.);
-            nativeBuildInputs = (with pkgs; [
-              makeWrapper
-              perl
-              pkg-config
-              inputs'.holochain.packages.goWrapper
-            ]) ++ lib.optionals pkgs.stdenv.isDarwin
-              (with pkgs; [ xcbuild libiconv ]);
+            nativeBuildInputs =
+              (flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; })
+              ++ (inputs.hc-infra.outputs.lib.holochainAppDeps.nativeBuildInputs {
+                inherit pkgs lib;
+              });
           };
+          cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
+            version = "workspace";
+            pname = "workspace";
+          });
         in craneLib.buildPackage (commonArgs // {
           pname = crate;
           version = cargoToml.package.version;
+          inherit cargoArtifacts;
         });
       };
     };

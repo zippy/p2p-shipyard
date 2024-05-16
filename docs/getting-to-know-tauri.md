@@ -10,7 +10,7 @@ You can learn more about it [in the official Tauri documentation](https://beta.t
 
 ## Backend
 
-As we just learned, the backend for Tauri is written in rust. Let's understand how that backend works, so that you can edit its behavior to suit your needs, if necessary.
+As we just learned, the backend for a Tauri app is written in rust. Let's understand how that backend works, so that you can edit its behavior to suit your needs, if necessary.
 
 It's important that you take a look at the file `src-tauri/src/lib.rs`. This is now the main starting point for your hApp, which includes the `tauri-plugin-holochain` plugin. This plugin will run holochain under the hood, and converts the Tauri app in to a full holochain runtime.
 
@@ -54,6 +54,9 @@ pnpm tauri build
 ```
 :::
 
+> [!NOTE]
+> This is the command you need to run in order to create a release build for your app.
+
 - See all the available CLI commands with:
 
 ::: code-group
@@ -76,11 +79,11 @@ And learn more about the CLI in the [official Tauri guide](https://beta.tauri.ap
 
 After the initial set up and scaffolding, our tauri app can only be built for desktop apps. To enable mobile support, there is a bit more work that needs to be done.
 
-### Android
+### Android Setup
 
-Continue to the [Android setup](./android-setup.md);
+Continue to the [Android setup](./android-setup.md).
 
-### iOS 
+### iOS Setup
 
 > [!WARNING]
 > Coming soon! Holochain working on iOS is blocked by wasmer having an interpreter wasm engine...
