@@ -1,10 +1,11 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use build_fs_tree::{Build, MergeableFileSystemTree};
 use clap::Parser;
 use colored::Colorize;
 use scaffold_holochain_runtime::scaffold_holochain_runtime;
 use std::{
     ffi::OsString,
+    fs,
     path::PathBuf,
     process::{Command, ExitCode},
 };
@@ -32,21 +33,32 @@ fn main() -> ExitCode {
 fn internal_main() -> Result<()> {
     let args = Args::parse();
 
-    let file_tree = scaffold_holochain_runtime(args.name)?;
+    let (name, file_tree) = scaffold_holochain_runtime(args.name)?;
+
+    let runtime_path = args.path.join(&name);
+
+    if std::fs::canonicalize(&runtime_path)?.exists() {
+        return Err(anyhow!(
+            "The directory {runtime_path:?} already exists: choose another name"
+        ));
+    }
+
+    fs::create_dir_all(&runtime_path)?;
 
     let file_tree = MergeableFileSystemTree::<OsString, String>::from(file_tree);
 
-    file_tree.build(&args.path)?;
+    file_tree.build(&runtime_path)?;
 
     println!(
         "{}",
-        format!("Successfully scaffolded executable happ").green()
+        format!("Successfully scaffolded holochain runtime").green()
     );
 
     println!("Running nix flake update...");
-    Command::new("nix").args(["flake", "update"]).output()?;
-
-    // TODO: run {package_manager} install?
+    Command::new("nix")
+        .args(["flake", "update"])
+        .current_dir(runtime_path)
+        .output()?;
 
     Ok(())
 }

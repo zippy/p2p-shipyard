@@ -10,7 +10,7 @@
     nixpkgs.follows = "holochain/nixpkgs";
     flake-parts.follows = "holochain/flake-parts";
 
-    tauriHolochain.url = "path:../..";
+    tauri-plugin-holochain.url = "github:darksoil-studio/tauri-plugin-holochain";
   };
 
   outputs = inputs:
@@ -20,8 +20,9 @@
         devShells.default = pkgs.mkShell {
           inputsFrom = [ inputs'.tauriHolochain.devShells.holochainTauriDev ];
         };
-        devShells.androidDev =
-          inputs'.tauriHolochain.devShells.holochainTauriAndroidDev;
+        devShells.androidDev = pkgs.mkShell {
+          inputsFrom = [ inputs'.tauriHolochain.devShells.holochainTauriAndroidDev];
+        };
       };
     };
 }

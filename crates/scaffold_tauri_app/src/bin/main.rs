@@ -40,10 +40,7 @@ fn internal_main() -> Result<()> {
 
     file_tree.build(&args.path)?;
 
-    println!(
-        "{}",
-        format!("Successfully scaffolded executable happ").green()
-    );
+    println!("{}", format!("Successfully scaffolded tauri app").green());
 
     println!("Running nix flake update...");
     Command::new("nix").args(["flake", "update"]).output()?;
