@@ -72,7 +72,10 @@
         };
       };
 
-      imports = [ ./crates/scaffold_tauri_app/default.nix ];
+      imports = [
+        ./crates/scaffold-tauri-app/default.nix
+        ./crates/scaffold-holochain-runtime/default.nix
+      ];
 
       systems = builtins.attrNames inputs.holochain.devShells;
       perSystem = { inputs', config, pkgs, system, lib, ... }: rec {

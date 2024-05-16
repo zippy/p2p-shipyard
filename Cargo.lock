@@ -7322,7 +7322,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "scaffold_holochain_runtime"
+name = "scaffold-holochain-runtime"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -7341,7 +7341,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "scaffold_tauri_app"
+name = "scaffold-tauri-app"
 version = "0.1.0"
 dependencies = [
  "anyhow",

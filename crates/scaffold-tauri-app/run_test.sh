@@ -11,7 +11,7 @@ nix flake update
 nix develop --command bash -c \"npm i\"
 "
 
-nix run .#scaffold-tauri-app  -- forum-scaffold-tauri-app --path /tmp/forum/scaffold-tauri-app
+nix run .#scaffold-tauri-app -- forum-scaffold-tauri-app --path /tmp/forum-scaffold-tauri-app
 
 cd /tmp/forum-scaffold-tauri-app
 
