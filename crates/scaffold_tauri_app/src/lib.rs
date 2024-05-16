@@ -1,18 +1,12 @@
 use anyhow::Result;
-use dialoguer::{theme::ColorfulTheme, Select};
-use file_tree_utils::{
-    dir_to_file_tree, file_content, file_exists, find_files_by_extension, find_files_by_name,
-    insert_file, map_file, FileTree, FileTreeError,
-};
+use file_tree_utils::{dir_to_file_tree, map_file, FileTree, FileTreeError};
 use handlebars::RenderError;
 use holochain_scaffolding_utils::GetOrChooseWebAppManifestError;
 use include_dir::{include_dir, Dir};
-use nix_scaffolding_utils::{
-    add_flake_input, add_flake_input_to_flake_file, NixScaffoldingUtilsError,
-};
+use nix_scaffolding_utils::{add_flake_input_to_flake_file, NixScaffoldingUtilsError};
 use npm_scaffolding_utils::{
-    add_npm_dependency, add_npm_dev_dependency_to_package, add_npm_script_to_package,
-    choose_npm_package, guess_or_choose_package_manager, NpmScaffoldingUtilsError,
+    add_npm_dev_dependency_to_package, add_npm_script_to_package, choose_npm_package,
+    guess_or_choose_package_manager, NpmScaffoldingUtilsError,
 };
 use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
@@ -74,7 +68,7 @@ pub fn scaffold_tauri_app(
     let package_manager = guess_or_choose_package_manager(&file_tree)?;
 
     // - Guess the name of the app -> from the web-happ.yaml file
-    let (web_happ_manifest_path, web_happ_manifest) =
+    let (_web_happ_manifest_path, web_happ_manifest) =
         holochain_scaffolding_utils::get_or_choose_web_app_manifest(&file_tree)?;
     let app_name = web_happ_manifest.app_name().to_string();
 

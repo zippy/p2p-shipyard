@@ -277,11 +277,11 @@ impl AppBundleStore {
         Ok(hash)
     }
 
-    fn app_bundle_path(&self, app_bundle: &AppBundle) -> crate::Result<PathBuf> {
-        Ok(self
-            .path
-            .join(format!("{}.happ", Self::app_bundle_hash(app_bundle)?)))
-    }
+    // fn app_bundle_path(&self, app_bundle: &AppBundle) -> crate::Result<PathBuf> {
+    //     Ok(self
+    //         .path
+    //         .join(format!("{}.happ", Self::app_bundle_hash(app_bundle)?)))
+    // }
 
     // pub fn get_webapp(
     //     &self,

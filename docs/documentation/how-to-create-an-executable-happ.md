@@ -40,7 +40,6 @@ This will execute all the required steps to convert your previously scaffolded h
 >
 > It also tries to make smart guesses about the structure of your project, but it can be tricky to support every repository structure. Please open an issue in the github repository if you find any bugs in it!
 
-
 That's it! We now have a fully functional end-user executable hApp. 
 
 ## Development Environment

@@ -99,7 +99,7 @@ export class EditPost extends LitElement {
       const errorSnackbar = this.shadowRoot?.getElementById(
         "update-error",
       ) as Snackbar;
-      errorSnackbar.labelText = `Error updating the post: ${e.data.data}`;
+      errorSnackbar.labelText = `Error updating the post: ${e}`;
       errorSnackbar.show();
     }
   }

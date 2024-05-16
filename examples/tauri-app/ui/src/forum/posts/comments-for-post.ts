@@ -96,8 +96,7 @@ export class CommentsForPost extends LitElement {
       `,
       complete: (links) =>
         this.renderList([...this.hashes, ...links.map((l) => l.target)]),
-      error: (e: any) =>
-        html`<span>Error fetching comments: ${e.data.data}.</span>`,
+      error: (e: any) => html`<span>Error fetching comments: ${e}.</span>`,
     });
   }
 }

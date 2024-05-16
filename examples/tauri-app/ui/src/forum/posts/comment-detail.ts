@@ -73,7 +73,7 @@ export class CommentDetail extends LitElement {
       const errorSnackbar = this.shadowRoot?.getElementById(
         "delete-error",
       ) as Snackbar;
-      errorSnackbar.labelText = `Error deleting the comment: ${e.data.data}`;
+      errorSnackbar.labelText = `Error deleting the comment: ${e}`;
       errorSnackbar.show();
     }
   }
@@ -119,8 +119,7 @@ export class CommentDetail extends LitElement {
           <mwc-circular-progress indeterminate></mwc-circular-progress>
         </div>`,
       complete: (maybeRecord) => this.renderComment(maybeRecord),
-      error: (e: any) =>
-        html`<span>Error fetching the comment: ${e.data.data}</span>`,
+      error: (e: any) => html`<span>Error fetching the comment: ${e}</span>`,
     });
   }
 }

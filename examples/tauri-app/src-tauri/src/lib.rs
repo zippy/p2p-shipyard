@@ -91,7 +91,7 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(
             tauri_plugin_log::Builder::default()
-                .level(log::LevelFilter::Info)
+                .level(log::LevelFilter::Warn)
                 .build(),
         )
         .plugin(tauri_plugin_holochain::init(
@@ -134,7 +134,7 @@ pub fn run() {
             })?;
 
             app.holochain()?
-                .main_window_builder(APP_ID)
+                .main_window_builder(String::from("main"), false, Some(APP_ID.into()), None)?
                 .build()?;
 
             Ok(())

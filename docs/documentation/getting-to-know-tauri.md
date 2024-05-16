@@ -57,6 +57,22 @@ pnpm tauri build
 > [!NOTE]
 > This is the command you need to run in order to create a release build for your app.
 
+- Generate the necessary icons for your app with:
+
+::: code-group
+```bash [npm]
+npm run tauri icon <PATH_TO_YOUR_ICON_IN_PNG_FORMAT>
+```
+
+```bash [yarn]
+yarn tauri icon <PATH_TO_YOUR_ICON_IN_PNG_FORMAT>
+```
+
+```bash [pnpm]
+pnpm tauri icon <PATH_TO_YOUR_ICON_IN_PNG_FORMAT>
+```
+:::
+
 - See all the available CLI commands with:
 
 ::: code-group

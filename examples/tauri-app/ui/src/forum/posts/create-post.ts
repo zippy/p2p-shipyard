@@ -64,7 +64,7 @@ export class CreatePost extends LitElement {
       const errorSnackbar = this.shadowRoot?.getElementById(
         "create-error",
       ) as Snackbar;
-      errorSnackbar.labelText = `Error creating the post: ${e.data.data}`;
+      errorSnackbar.labelText = `Error creating the post: ${e}`;
       errorSnackbar.show();
     }
   }

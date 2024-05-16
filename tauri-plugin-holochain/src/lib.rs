@@ -18,7 +18,7 @@ use holochain::{
     conductor::ConductorHandle,
     prelude::{AppBundle, MembraneProof, NetworkSeed, RoleName},
 };
-use holochain_client::{AdminWebsocket, AppInfo, AppWebsocket, LairAgentSigner};
+use holochain_client::{AdminWebsocket, AppInfo, AppWebsocket, InstalledAppId, LairAgentSigner};
 use holochain_types::{web_app::WebAppBundle, websocket::AllowedOrigins};
 
 mod commands;
@@ -34,7 +34,7 @@ use filesystem::{AppBundleStore, BundleStore, FileSystem};
 pub use launch::launch;
 use url2::Url2;
 
-/// Access to the push-notifications APIs.
+/// Access to the holochain APIs.
 pub struct HolochainPlugin<R: Runtime> {
     pub app_handle: AppHandle<R>,
     pub holochain_runtime: HolochainRuntime,
@@ -53,74 +53,19 @@ pub struct HolochainRuntime {
     pub(crate) conductor_handle: ConductorHandle,
 }
 
-pub struct WebHappWindowBuilder<'a, R: Runtime> {
-    holochain_plugin: &'a HolochainPlugin<R>,
-
-    app_id: String,
-    label: Option<String>,
-    title: Option<String>,
-    url_path: Option<String>,
-    webview_url: Option<WebviewUrl>,
-}
-
 fn happ_origin(app_id: &String) -> Url2 {
     url2::url2!("happ://{app_id}")
 }
 
-impl<'a, R: Runtime> WebHappWindowBuilder<'a, R> {
-    fn new(holochain_plugin: &'a HolochainPlugin<R>, app_id: impl Into<String>) -> Self {
-        WebHappWindowBuilder {
-            holochain_plugin,
-            app_id: app_id.into(),
-            label: None,
-            title: None,
-            url_path: None,
-            webview_url: None,
-        }
-    }
-
-    pub fn label(mut self, label: impl Into<String>) -> Self {
-        self.label = Some(label.into());
-        self
-    }
-
-    pub fn title(mut self, title: impl Into<String>) -> Self {
-        self.title = Some(title.into());
-        self
-    }
-
-    pub fn url_path(mut self, url_path: impl Into<String>) -> Self {
-        self.url_path = Some(url_path.into());
-        self
-    }
-
-    fn webview_url(mut self, webview_url: WebviewUrl) -> Self {
-        self.webview_url = Some(webview_url);
-        self
-    }
-
-    pub fn build(self) -> crate::Result<()> {
-        println!("buiii");
-        let label = self.label.unwrap_or(self.app_id.clone());
-        let title = self.title.unwrap_or(label.clone());
-
-        let url_path = self.url_path.unwrap_or_default();
-
-        log::info!("Opening app {}", self.app_id);
-
-        let url_origin = happ_origin(&self.app_id);
-
-        let webview_url = self
-            .webview_url
-            .unwrap_or(tauri::WebviewUrl::CustomProtocol(url::Url::parse(
-                format!("{url_origin}/{url_path}").as_str(),
-            )?));
-
-        let app_websocket_auth = tauri::async_runtime::block_on(async {
-            self.holochain_plugin
-                .get_app_websocket_auth(&self.app_id)
-                .await
-        })?;
+impl<R: Runtime> HolochainPlugin<R> {
+    pub fn web_happ_window_builder(
+        &self,
+        app_id: InstalledAppId,
+        url_path: Option<String>,
+    ) -> crate::Result<WebviewWindowBuilder<R, AppHandle<R>>> {
+        let app_id: String = app_id.into();
+        let app_websocket_auth =
+            tauri::async_runtime::block_on(async { self.get_app_websocket_auth(&app_id).await })?;
 
         let token_vector: Vec<String> = app_websocket_auth
             .token
@@ -128,63 +73,117 @@ impl<'a, R: Runtime> WebHappWindowBuilder<'a, R> {
             .map(|n| n.to_string())
             .collect();
         let token = token_vector.join(",");
-        let mut window_builder = WebviewWindowBuilder::new(
-            &self.holochain_plugin.app_handle,
-            label.clone(),
-            webview_url,
-        )
-        .initialization_script(
-            format!(
-                r#"
-            window['__HC_LAUNCHER_ENV__'] = {{
-                APP_INTERFACE_PORT: {},
-                INSTALLED_APP_ID: "{}",
-                APP_INTERFACE_TOKEN: [{}]
-            }};
+        let url_origin = happ_origin(&app_id.clone().into());
+
+        let url_path = url_path.unwrap_or_default();
+
+        let webview_url = tauri::WebviewUrl::CustomProtocol(url::Url::parse(
+            format!("{url_origin}/{url_path}").as_str(),
+        )?);
+        let window_builder =
+            WebviewWindowBuilder::new(&self.app_handle, app_id.clone(), webview_url)
+                .initialization_script(
+                    format!(
+                        r#"
+            if (!window.__HC_LAUNCHER_ENV__) window.__HC_LAUNCHER_ENV__ = {{}};
+            window.__HC_LAUNCHER_ENV__.APP_INTERFACE_PORT = {};
+            window.__HC_LAUNCHER_ENV__.APP_INTERFACE_TOKEN = [{}];
+            window.__HC_LAUNCHER_ENV__.INSTALLED_APP_ID = "{}";
         "#,
-                app_websocket_auth.app_websocket_port, self.app_id, token
-            )
-            .as_str(),
-        )
-        .initialization_script(include_str!("../../packages/signer/dist/index.js"));
+                        app_websocket_auth.app_websocket_port, token, app_id
+                    )
+                    .as_str(),
+                )
+                .initialization_script(include_str!("../../packages/signer/dist/index.js"));
 
         let mut capability_builder =
             CapabilityBuilder::new("sign-zome-call").permission("holochain:allow-sign-zome-call");
 
         #[cfg(desktop)] // TODO: remove this check
         {
-            capability_builder = capability_builder.window(label);
+            capability_builder = capability_builder.window(app_id);
         }
         #[cfg(mobile)] // TODO: remove this check
         {
             capability_builder = capability_builder.windows(["*"]);
         }
 
-        self.holochain_plugin
-            .app_handle
-            .add_capability(capability_builder)?;
+        self.app_handle.add_capability(capability_builder)?;
 
-        #[cfg(desktop)]
-        {
-            window_builder = window_builder
-                .min_inner_size(1000.0, 800.0)
-                .title(title.clone());
+        Ok(window_builder)
+    }
+
+    pub fn main_window_builder(
+        &self,
+        label: String,
+        enable_admin_websocket: bool,
+        enabled_app: Option<InstalledAppId>,
+        url_path: Option<String>,
+    ) -> crate::Result<WebviewWindowBuilder<R, AppHandle<R>>> {
+        let url_path = url_path.unwrap_or_default();
+
+        let mut window_builder = WebviewWindowBuilder::new(
+            &self.app_handle,
+            label.clone(),
+            WebviewUrl::App(format!("index.html/{url_path}").into()),
+        );
+
+        if enable_admin_websocket {
+            window_builder = window_builder.initialization_script(
+                format!(
+                    r#"
+            if (!window.__HC_LAUNCHER_ENV__) window.__HC_LAUNCHER_ENV__ = {{}};
+            window.__HC_LAUNCHER_ENV__.ADMIN_INTERFACE_PORT = {};
+                        
+                    "#,
+                    self.holochain_runtime.admin_port
+                )
+                .as_str(),
+            )
         }
-        let _window = window_builder.build()?;
-        log::info!("Opened app {}", self.app_id);
 
-        Ok(())
-    }
-}
+        if let Some(enabled_app) = enabled_app {
+            let app_websocket_auth = tauri::async_runtime::block_on(async {
+                self.get_app_websocket_auth(&enabled_app).await
+            })?;
 
-impl<R: Runtime> HolochainPlugin<R> {
-    pub fn web_happ_window_builder(&self, app_id: impl Into<String>) -> WebHappWindowBuilder<R> {
-        WebHappWindowBuilder::new(self, app_id.into())
-    }
+            let token_vector: Vec<String> = app_websocket_auth
+                .token
+                .iter()
+                .map(|n| n.to_string())
+                .collect();
+            let token = token_vector.join(",");
+            window_builder = window_builder
+                .initialization_script(
+                    format!(
+                        r#"
+            if (!window.__HC_LAUNCHER_ENV__) window.__HC_LAUNCHER_ENV__ = {{}};
+            window.__HC_LAUNCHER_ENV__.APP_INTERFACE_PORT = {};
+            window.__HC_LAUNCHER_ENV__.APP_INTERFACE_TOKEN = [{}];
+            window.__HC_LAUNCHER_ENV__.INSTALLED_APP_ID = "{}";
+        "#,
+                        app_websocket_auth.app_websocket_port, token, enabled_app
+                    )
+                    .as_str(),
+                )
+                .initialization_script(include_str!("../../packages/signer/dist/index.js"));
 
-    pub fn main_window_builder(&self, app_id: impl Into<String>) -> WebHappWindowBuilder<R> {
-        WebHappWindowBuilder::new(self, app_id.into())
-            .webview_url(WebviewUrl::App("index.html".into()))
+            let mut capability_builder = CapabilityBuilder::new("sign-zome-call")
+                .permission("holochain:allow-sign-zome-call");
+
+            #[cfg(desktop)] // TODO: remove this check
+            {
+                capability_builder = capability_builder.window(label);
+            }
+            #[cfg(mobile)] // TODO: remove this check
+            {
+                capability_builder = capability_builder.windows(["*"]);
+            }
+
+            self.app_handle.add_capability(capability_builder)?;
+        }
+
+        Ok(window_builder)
     }
 
     pub async fn admin_websocket(&self) -> crate::Result<AdminWebsocket> {
@@ -195,7 +194,10 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(admin_ws)
     }
 
-    async fn get_app_websocket_auth(&self, app_id: &String) -> crate::Result<AppWebsocketAuth> {
+    async fn get_app_websocket_auth(
+        &self,
+        app_id: &InstalledAppId,
+    ) -> crate::Result<AppWebsocketAuth> {
         let mut apps_websockets_auths = self.holochain_runtime.apps_websockets_auths.lock().await;
         if let Some(app_websocket_auth) = apps_websockets_auths.get(app_id) {
             return Ok(app_websocket_auth.clone());
@@ -239,7 +241,7 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(app_websocket_auth)
     }
 
-    pub async fn app_websocket(&self, app_id: String) -> crate::Result<AppWebsocket> {
+    pub async fn app_websocket(&self, app_id: InstalledAppId) -> crate::Result<AppWebsocket> {
         let app_websocket_auth = self.get_app_websocket_auth(&app_id).await?;
         let app_ws = AppWebsocket::connect(
             format!("localhost:{}", app_websocket_auth.app_websocket_port),
@@ -260,7 +262,7 @@ impl<R: Runtime> HolochainPlugin<R> {
 
     pub async fn install_web_app(
         &self,
-        app_id: String,
+        app_id: InstalledAppId,
         web_app_bundle: WebAppBundle,
         membrane_proofs: HashMap<RoleName, MembraneProof>,
         network_seed: Option<NetworkSeed>,
@@ -288,7 +290,7 @@ impl<R: Runtime> HolochainPlugin<R> {
 
     pub async fn install_app(
         &self,
-        app_id: String,
+        app_id: InstalledAppId,
         app_bundle: AppBundle,
         membrane_proofs: HashMap<RoleName, MembraneProof>,
         network_seed: Option<NetworkSeed>,
@@ -315,7 +317,7 @@ impl<R: Runtime> HolochainPlugin<R> {
 
     pub async fn update_web_app(
         &self,
-        app_id: String,
+        app_id: InstalledAppId,
         web_app_bundle: WebAppBundle,
     ) -> crate::Result<()> {
         self.holochain_runtime
@@ -342,7 +344,7 @@ impl<R: Runtime> HolochainPlugin<R> {
 
     pub async fn update_app(
         &self,
-        app_id: String,
+        app_id: InstalledAppId,
         app_bundle: AppBundle,
     ) -> std::result::Result<(), UpdateAppError> {
         let mut admin_ws = self
@@ -357,7 +359,7 @@ impl<R: Runtime> HolochainPlugin<R> {
 
     pub async fn update_app_if_necessary(
         &self,
-        app_id: String,
+        app_id: InstalledAppId,
         current_app_bundle: AppBundle,
     ) -> crate::Result<()> {
         let hash = AppBundleStore::app_bundle_hash(&current_app_bundle)?;
@@ -381,7 +383,7 @@ impl<R: Runtime> HolochainPlugin<R> {
 
     pub async fn update_web_app_if_necessary(
         &self,
-        app_id: String,
+        app_id: InstalledAppId,
         current_web_app_bundle: WebAppBundle,
     ) -> crate::Result<()> {
         let hash = BundleStore::web_app_bundle_hash(&current_web_app_bundle)?;

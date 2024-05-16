@@ -6,8 +6,7 @@ use holochain::{
         interface::InterfaceDriver,
     },
     prelude::dependencies::kitsune_p2p_types::config::{
-        tuning_params_struct::KitsuneP2pTuningParams, KitsuneP2pConfig, ProxyConfig,
-        TransportConfig,
+        tuning_params_struct::KitsuneP2pTuningParams, KitsuneP2pConfig, TransportConfig,
     },
 };
 use holochain_keystore::paths::KeystorePath;
@@ -49,10 +48,17 @@ pub fn conductor_config(
 
     config.network = network_config;
 
+    // TODO: uncomment when we can set a custom origin for holochain-client-rust
+    // let mut origins: HashSet<String> = HashSet::new();
+    // origins.insert(String::from("localhost")); // Compatible with the url of the main window: tauri://localhost
+    // let allowed_origins = AllowedOrigins::Origins(origins);
+
+    let allowed_origins = AllowedOrigins::Any;
+
     config.admin_interfaces = Some(vec![AdminInterfaceConfig {
         driver: InterfaceDriver::Websocket {
             port: admin_port,
-            allowed_origins: AllowedOrigins::Any,
+            allowed_origins,
         },
     }]);
 

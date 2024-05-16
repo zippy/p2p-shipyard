@@ -1,14 +1,8 @@
-use std::sync::PoisonError;
-
-use holochain::{
-    conductor::error::ConductorError,
-    prelude::{AppBundleError, DnaError, RoleName, SerializedBytesError, ZomeError},
-};
-use holochain_client::{ConductorApiError, InstalledAppId};
+use holochain::{conductor::error::ConductorError, prelude::SerializedBytesError};
+use holochain_client::ConductorApiError;
 use mr_bundle::error::MrBundleError;
 use one_err::OneErr;
 use serde::{ser::Serializer, Serialize};
-use zip::result::ZipError;
 
 use crate::{commands::install_web_app::UpdateAppError, filesystem::FileSystemError};
 

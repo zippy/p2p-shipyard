@@ -7,7 +7,6 @@ use holochain::prelude::{
     AppBundle, AppBundleError, AppBundleSource, AppManifest, CoordinatorBundle,
     CoordinatorManifest, DnaBundle, DnaError, DnaFile, DnaHash, MembraneProof, NetworkSeed,
     RoleName, UpdateCoordinatorsPayload, ZomeDependency, ZomeError, ZomeLocation, ZomeManifest,
-    ZomeName,
 };
 use holochain_client::{
     AdminWebsocket, AppInfo, ConductorApiError, InstallAppPayload, InstalledAppId,
@@ -16,7 +15,7 @@ use holochain_conductor_api::{AppInfoStatus, CellInfo};
 use holochain_types::web_app::WebAppBundle;
 use mr_bundle::{error::MrBundleError, Bundle, ResourceBytes};
 
-use crate::filesystem::{FileSystem, FileSystemError};
+use crate::filesystem::FileSystemError;
 
 pub async fn install_web_app(
     admin_ws: &mut AdminWebsocket,

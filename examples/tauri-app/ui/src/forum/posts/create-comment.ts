@@ -69,7 +69,7 @@ export class CreateComment extends LitElement {
       const errorSnackbar = this.shadowRoot?.getElementById(
         "create-error",
       ) as Snackbar;
-      errorSnackbar.labelText = `Error creating the comment: ${e.data.data}`;
+      errorSnackbar.labelText = `Error creating the comment: ${e}`;
       errorSnackbar.show();
     }
   }
