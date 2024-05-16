@@ -37,10 +37,12 @@ fn internal_main() -> Result<()> {
 
     let runtime_path = args.path.join(&name);
 
-    if std::fs::canonicalize(&runtime_path)?.exists() {
-        return Err(anyhow!(
-            "The directory {runtime_path:?} already exists: choose another name"
-        ));
+    if let Ok(path) = std::fs::canonicalize(&runtime_path) {
+        if path.exists() {
+            return Err(anyhow!(
+                "The directory {name} already exists: choose another name"
+            ));
+        }
     }
 
     fs::create_dir_all(&runtime_path)?;
