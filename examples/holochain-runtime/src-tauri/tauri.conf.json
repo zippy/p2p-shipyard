@@ -1,7 +1,7 @@
 {
-  "productName": "{{runtime_name}}",
+  "productName": "launcher",
   "version": "0.0.0",
-  "identifier": "{{runtime_name}}",
+  "identifier": "launcher",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -12,8 +12,7 @@
     "withGlobalTauri": false,
     "security": {
       "csp": null
-    },
-    "windows": []
+    }
   },
   "bundle": {
     "active": true,

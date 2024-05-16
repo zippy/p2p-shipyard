@@ -24,8 +24,6 @@ pub fn run() {
             },
         ))
         .setup(|app| {
-            let handle = app.handle().clone();
-
             app.holochain()?
                 .main_window_builder("main", true, None, None)?
                 .build()?;
