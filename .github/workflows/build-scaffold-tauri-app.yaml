@@ -8,7 +8,7 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build-and-cache:
+  build-scaffold-tauri-app:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -17,6 +17,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Extend space
+        uses: ./.github/actions/extend-space
 
       - name: Install nix
         uses: cachix/install-nix-action@v25

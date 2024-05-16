@@ -8,35 +8,47 @@ export default defineConfig({
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
-      { text: "Documentation", link: "/how-to-create-an-executable-happ" },
-      { text: "License", link: "/license" },
+      {
+        text: "Documentation",
+        link: "/documentation/how-to-create-an-executable-happ",
+      },
+      { text: "License", link: "/license/license" },
     ],
 
-    sidebar: [
-      {
-        text: "Guides",
-        items: [
-          {
-            text: "How to create an executable hApp ",
-            link: "/how-to-create-an-executable-happ",
-          },
-          {
-            text: "How to create a holochain runtime",
-            link: "/how-to-create-a-holochain-runtime",
-          },
-          { text: "Getting to know Tauri", link: "/getting-to-know-tauri" },
-          { text: "Setting up Android", link: "/android-setup" },
-        ],
-      },
-      {
-        text: "FAQs",
-        link: "/faqs",
-      },
-      {
-        text: "Troubleshooting",
-        link: "/troubleshooting",
-      },
-    ],
+    sidebar: {
+      "/documentation/": [
+        {
+          text: "Guides",
+          items: [
+            {
+              text: "How to create an executable hApp ",
+              link: "/documentation/how-to-create-an-executable-happ",
+            },
+            {
+              text: "How to create a holochain runtime",
+              link: "/documentation/how-to-create-a-holochain-runtime",
+            },
+            {
+              text: "Getting to know Tauri",
+              link: "/documentation/getting-to-know-tauri",
+            },
+            {
+              text: "Setting up Android",
+              link: "/documentation/android-setup",
+            },
+          ],
+        },
+        {
+          text: "FAQs",
+          link: "/documentation/faqs",
+        },
+        {
+          text: "Troubleshooting",
+          link: "/documentation/troubleshooting",
+        },
+      ],
+      "/license": [],
+    },
 
     socialLinks: [
       {
