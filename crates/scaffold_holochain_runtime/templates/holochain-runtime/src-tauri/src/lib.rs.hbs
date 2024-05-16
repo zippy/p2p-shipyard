@@ -5,11 +5,11 @@ use std::path::PathBuf;
 use tauri_plugin_holochain::{HolochainPluginConfig, HolochainExt};
 use url2::Url2;
 
-const APP_ID: &'static str = "{{app_name}}";
+const APP_ID: &'static str = "{{runtime_name}}";
 
 pub fn happ_bundle() -> AppBundle {
-    let bytes = include_bytes!("../../workdir/{{app_name}}.happ");
-    AppBundle::decode(bytes).expect("Failed to decode {{app_name}} happ")
+    let bytes = include_bytes!("../../workdir/{{runtime_name}}.happ");
+    AppBundle::decode(bytes).expect("Failed to decode {{runtime_name}} happ")
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -77,7 +77,7 @@ fn signal_url() -> Url2 {
 
 fn holochain_dir() -> PathBuf {
     if cfg!(debug_assertions) {
-        let tmp_dir = tempdir::TempDir::new("{{app_name}}").expect("Could not create temporary directory");
+        let tmp_dir = tempdir::TempDir::new("{{runtime_name}}").expect("Could not create temporary directory");
 
         // Convert `tmp_dir` into a `Path`, destroying the `TempDir`
         // without deleting the directory.
@@ -87,7 +87,7 @@ fn holochain_dir() -> PathBuf {
         app_dirs2::app_root(
             app_dirs2::AppDataType::UserData,
             &app_dirs2::AppInfo {
-                name: "{{app_name}}",
+                name: "{{runtime_name}}",
                 author: std::env!("CARGO_PKG_AUTHORS"),
             },
         )

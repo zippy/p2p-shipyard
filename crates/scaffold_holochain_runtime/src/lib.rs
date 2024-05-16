@@ -33,7 +33,7 @@ pub enum ScaffoldHolochainRuntimeError {
 
 #[derive(Serialize, Deserialize, Debug)]
 struct ScaffoldHolochainRuntimeData {
-    name: String,
+    runtime_name: String,
 }
 
 pub fn scaffold_holochain_runtime(
@@ -57,7 +57,9 @@ pub fn scaffold_holochain_runtime(
         existing_file_tree,
         &h,
         &template_file_tree,
-        &ScaffoldHolochainRuntimeData { name: name.clone() },
+        &ScaffoldHolochainRuntimeData {
+            runtime_name: name.clone(),
+        },
     )?;
 
     Ok((name, file_tree))

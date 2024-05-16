@@ -1,7 +1,7 @@
 {
-  "productName": "{{app_name}}",
+  "productName": "{{runtime_name}}",
   "version": "0.0.0",
-  "identifier": "{{app_name}}",
+  "identifier": "{{runtime_name}}",
   "build": {
     "beforeBuildCommand": "pnpm -F ui build && pnpm happ:build",
     "devUrl": "http://localhost:1420",
@@ -17,7 +17,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "{{title_case app_name}}",
+        "title": "{{title_case runtime_name}}",
         "width": 800
       }
     ]
