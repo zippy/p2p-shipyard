@@ -90,46 +90,9 @@
 
           buildInputs =
             flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; };
-          #  (with pkgs; [
-          #   openssl
-          #   # this is required for glib-networking
-          #   glib
-          # ]) ++ (lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-          #   webkitgtk_4_1.dev
-          #   gdk-pixbuf
-          #   gtk3
-          #   # Video/Audio data composition framework tools like "gst-inspect", "gst-launch" ...
-          #   gst_all_1.gstreamer
-          #   # Common plugins like "filesrc" to combine within e.g. gst-launch
-          #   gst_all_1.gst-plugins-base
-          #   # Specialized plugins separated by quality
-          #   gst_all_1.gst-plugins-good
-          #   gst_all_1.gst-plugins-bad
-          #   gst_all_1.gst-plugins-ugly
-          #   # Plugins to reuse ffmpeg to play almost every video format
-          #   gst_all_1.gst-libav
-          #   # Support the Video Audio (Hardware) Acceleration API
-          #   gst_all_1.gst-vaapi
-          #   libsoup_3
-          # ])) ++ lib.optionals pkgs.stdenv.isDarwin (with pkgs; [
-          #   darwin.apple_sdk.frameworks.Security
-          #   darwin.apple_sdk.frameworks.CoreServices
-          #   darwin.apple_sdk.frameworks.CoreFoundation
-          #   darwin.apple_sdk.frameworks.Foundation
-          #   darwin.apple_sdk.frameworks.AppKit
-          #   darwin.apple_sdk.frameworks.WebKit
-          #   darwin.apple_sdk.frameworks.Cocoa
-          # ]);
 
           nativeBuildInputs =
             flake.lib.tauriAppDeps.nativeBuildInputs { inherit pkgs lib; };
-          # nativeBuildInputs = (with pkgs; [ perl pkg-config makeWrapper ])
-          #   ++ (lib.optionals pkgs.stdenv.isLinux
-          #     (with pkgs; [ wrapGAppsHook ]))
-          #   ++ (lib.optionals pkgs.stdenv.isDarwin [
-          #     pkgs.xcbuild
-          #     pkgs.libiconv
-          #   ]);
 
           shellHook = ''
             export GIO_MODULE_DIR=${pkgs.glib-networking}/lib/gio/modules/
@@ -255,15 +218,42 @@
           ];
         };
 
-        packages.hc-scaffold = inputs.scaffolding.lib.wrapCustomTemplate {
-          inherit pkgs system;
-          customTemplatePath = ./templates/happ-open-dev;
-        };
-
         packages.scaffold-tauri-app = let
           craneLib = inputs.crane.lib.${system};
 
           cratePath = ./crates/scaffold_tauri_app;
+
+          cargoToml =
+            builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
+          crate = cargoToml.package.name;
+
+          commonArgs = {
+            src = craneLib.path ./.;
+            doCheck = false;
+            buildInputs =
+              inputs.hc-infra.outputs.lib.holochainAppDeps.buildInputs {
+                inherit pkgs lib;
+              } ++ flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; };
+            nativeBuildInputs =
+              (flake.lib.tauriAppDeps.nativeBuildInputs { inherit pkgs lib; })
+              ++ (inputs.hc-infra.outputs.lib.holochainAppDeps.nativeBuildInputs {
+                inherit pkgs lib;
+              });
+          };
+          cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
+            version = "workspace";
+            pname = "workspace";
+          });
+        in craneLib.buildPackage (commonArgs // {
+          pname = crate;
+          version = cargoToml.package.version;
+          inherit cargoArtifacts;
+        });
+
+        packages.scaffold-holochain-runtime = let
+          craneLib = inputs.crane.lib.${system};
+
+          cratePath = ./crates/scaffold_holochain_runtime;
 
           cargoToml =
             builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");

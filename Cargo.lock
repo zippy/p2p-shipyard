@@ -7322,6 +7322,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "scaffold_holochain_runtime"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "build-fs-tree",
+ "clap 4.5.4",
+ "colored",
+ "dialoguer",
+ "file_tree_utils",
+ "handlebars",
+ "ignore",
+ "include_dir",
+ "path-clean",
+ "serde",
+ "templates_scaffolding_utils",
+ "thiserror",
+]
+
+[[package]]
 name = "scaffold_tauri_app"
 version = "0.1.0"
 dependencies = [
