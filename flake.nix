@@ -72,6 +72,8 @@
         };
       };
 
+      imports = [ ./crates/scaffold_tauri_app/default.nix ];
+
       systems = builtins.attrNames inputs.holochain.devShells;
       perSystem = { inputs', config, pkgs, system, lib, ... }: rec {
         devShells.tauriDev = pkgs.mkShell {
@@ -217,70 +219,6 @@
             devShells.holochainTauriAndroidDev
           ];
         };
-
-        packages.scaffold-tauri-app = let
-          craneLib = inputs.crane.lib.${system};
-
-          cratePath = ./crates/scaffold_tauri_app;
-
-          cargoToml =
-            builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
-          crate = cargoToml.package.name;
-
-          commonArgs = {
-            src = craneLib.path ./.;
-            doCheck = false;
-            buildInputs =
-              inputs.hc-infra.outputs.lib.holochainAppDeps.buildInputs {
-                inherit pkgs lib;
-              } ++ flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; };
-            nativeBuildInputs =
-              (flake.lib.tauriAppDeps.nativeBuildInputs { inherit pkgs lib; })
-              ++ (inputs.hc-infra.outputs.lib.holochainAppDeps.nativeBuildInputs {
-                inherit pkgs lib;
-              });
-          };
-          cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-            version = "workspace";
-            pname = "workspace";
-          });
-        in craneLib.buildPackage (commonArgs // {
-          pname = crate;
-          version = cargoToml.package.version;
-          inherit cargoArtifacts;
-        });
-
-        packages.scaffold-holochain-runtime = let
-          craneLib = inputs.crane.lib.${system};
-
-          cratePath = ./crates/scaffold_holochain_runtime;
-
-          cargoToml =
-            builtins.fromTOML (builtins.readFile "${cratePath}/Cargo.toml");
-          crate = cargoToml.package.name;
-
-          commonArgs = {
-            src = craneLib.path ./.;
-            doCheck = false;
-            buildInputs =
-              inputs.hc-infra.outputs.lib.holochainAppDeps.buildInputs {
-                inherit pkgs lib;
-              } ++ flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; };
-            nativeBuildInputs =
-              (flake.lib.tauriAppDeps.nativeBuildInputs { inherit pkgs lib; })
-              ++ (inputs.hc-infra.outputs.lib.holochainAppDeps.nativeBuildInputs {
-                inherit pkgs lib;
-              });
-          };
-          cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-            version = "workspace";
-            pname = "workspace";
-          });
-        in craneLib.buildPackage (commonArgs // {
-          pname = crate;
-          version = cargoToml.package.version;
-          inherit cargoArtifacts;
-        });
       };
     };
 }
