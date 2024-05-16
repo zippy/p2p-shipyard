@@ -270,12 +270,12 @@
           crate = cargoToml.package.name;
 
           commonArgs = {
+            src = craneLib.path ./.;
+            doCheck = false;
             buildInputs =
               inputs.hc-infra.outputs.lib.holochainAppDeps.buildInputs {
                 inherit pkgs lib;
               } ++ flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; };
-            doCheck = false;
-            src = craneLib.cleanCargoSource (craneLib.path ./.);
             nativeBuildInputs =
               (flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; })
               ++ (inputs.hc-infra.outputs.lib.holochainAppDeps.nativeBuildInputs {
