@@ -1,7 +1,7 @@
 # Android Setup
 
 > [!NOTE]
-> This guide assumes that you have already gone through either [how to create an executable hApp](./happ-setup.md) or [how to create a holochain runtime](./runtime-setup.md).
+> This guide assumes that you have already gone through either [how to create an executable hApp](./how-to-create-an-executable-happ.md) or [how to create a holochain runtime](./how-to-create-a-holochain-runtime.md).
 
 1. In the root folder of your repository, run:
 

@@ -81,7 +81,7 @@ After the initial set up and scaffolding, our tauri app can only be built for de
 
 ### Android Setup
 
-Continue to the [Android setup](./android-setup.md).
+Continue to the [Android setup](./android-setup).
 
 ### iOS Setup
 

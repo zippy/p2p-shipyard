@@ -4,14 +4,11 @@ on:
   push:
     branches:
       - main
+      - develop
   pull_request:
     branches:
       - main
-      - dev
-    paths-ignore:
-      - 'webview-src/**'
-      - 'webview-dist/**'
-      - 'examples/**'
+      - develop
 
 jobs:
   build-and-test:
@@ -19,23 +16,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Install stable toolchain
-        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v25
         with:
-          components: clippy
+          nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Install Linux dependencies
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y webkit2gtk-4.1
+      - uses: cachix/cachix-action@v14
+        with:
+          name: holochain-ci
 
-      - uses: Swatinem/rust-cache@v2
+      - uses: cachix/cachix-action@v14
+        with:
+          name: holochain-open-dev
+
+      - uses: cachix/cachix-action@v14
+        with:
+          name: darksoil-studio
 
       - name: Run tests
-        run: cargo test --manifest-path=Cargo.toml --release
+        run: nix flake check -L
