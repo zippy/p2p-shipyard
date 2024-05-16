@@ -1,7 +1,7 @@
 { inputs, self, ... }:
 
 {
-  perSystem = { inputs', pkgs, system, lib, ... }: rec {
+  perSystem = { inputs', pkgs, system, lib, ... }: {
 
     packages.scaffold-holochain-runtime = let
       craneLib = inputs.crane.lib.${system};
@@ -33,5 +33,6 @@
       version = cargoToml.package.version;
       inherit cargoArtifacts;
     });
+
   };
 }

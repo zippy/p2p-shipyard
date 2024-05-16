@@ -1,6 +1,6 @@
 use anyhow::Result;
 use file_tree_utils::{dir_to_file_tree, map_file, FileTree, FileTreeError};
-use handlebars::RenderError;
+use handlebars::RenderErrorReason;
 use holochain_scaffolding_utils::GetOrChooseWebAppManifestError;
 use include_dir::{include_dir, Dir};
 use nix_scaffolding_utils::{add_flake_input_to_flake_file, NixScaffoldingUtilsError};
@@ -25,7 +25,7 @@ pub enum ScaffoldExecutableHappError {
     NpmScaffoldingUtilsError(#[from] NpmScaffoldingUtilsError),
 
     #[error(transparent)]
-    RenderError(#[from] RenderError),
+    RenderError(#[from] RenderErrorReason),
 
     #[error(transparent)]
     TemplatesScaffoldingUtilsError(#[from] TemplatesScaffoldingUtilsError),
@@ -265,10 +265,12 @@ pub fn scaffold_tauri_app(
 pub fn get_scope_open_and_close_char_indexes(
     text: &String,
     scope_opener: &String,
-) -> Result<(usize, usize), RenderError> {
-    let mut index = text.find(scope_opener.as_str()).ok_or(RenderError::new(
-        "Given scope opener not found in the given parameter",
-    ))?;
+) -> Result<(usize, usize), RenderErrorReason> {
+    let mut index = text
+        .find(scope_opener.as_str())
+        .ok_or(RenderErrorReason::Other(
+            "Given scope opener not found in the given parameter".into(),
+        ))?;
 
     index = index + scope_opener.len() - 1;
     let scope_opener_index = index.clone();
@@ -284,7 +286,7 @@ pub fn get_scope_open_and_close_char_indexes(
                 scope_count -= 1;
             }
             None => {
-                return Err(RenderError::new("Malformed scopes"));
+                return Err(RenderErrorReason::Other("Malformed scopes".into()));
             }
             _ => {}
         }
