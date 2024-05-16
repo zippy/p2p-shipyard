@@ -60,15 +60,15 @@
                 darwin.apple_sdk.frameworks.WebKit
                 darwin.apple_sdk.frameworks.Cocoa
               ]);
+            nativeBuildInputs = { pkgs, lib }:
+              (with pkgs; [ perl pkg-config makeWrapper ])
+              ++ (lib.optionals pkgs.stdenv.isLinux
+                (with pkgs; [ wrapGAppsHook ]))
+              ++ (lib.optionals pkgs.stdenv.isDarwin [
+                pkgs.xcbuild
+                pkgs.libiconv
+              ]);
           };
-          nativeBuildInputs = { pkgs, lib }:
-            (with pkgs; [ perl pkg-config makeWrapper ])
-            ++ (lib.optionals pkgs.stdenv.isLinux
-              (with pkgs; [ wrapGAppsHook ]))
-            ++ (lib.optionals pkgs.stdenv.isDarwin [
-              pkgs.xcbuild
-              pkgs.libiconv
-            ]);
         };
       };
 
@@ -277,7 +277,7 @@
                 inherit pkgs lib;
               } ++ flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; };
             nativeBuildInputs =
-              (flake.lib.tauriAppDeps.buildInputs { inherit pkgs lib; })
+              (flake.lib.tauriAppDeps.nativeBuildInputs { inherit pkgs lib; })
               ++ (inputs.hc-infra.outputs.lib.holochainAppDeps.nativeBuildInputs {
                 inherit pkgs lib;
               });
