@@ -12,8 +12,7 @@ use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use templates_scaffolding_utils::{
-    register_case_helpers, render_template_file_tree_and_merge_with_existing,
-    TemplatesScaffoldingUtilsError,
+    helpers::merge::register_merge, register_case_helpers, render_template_file_tree_and_merge_with_existing, TemplatesScaffoldingUtilsError
 };
 use thiserror::Error;
 
@@ -78,6 +77,7 @@ pub fn scaffold_tauri_app(
     let template_file_tree = dir_to_file_tree(&TEMPLATE)?;
     let h = handlebars::Handlebars::new();
     let h = register_case_helpers(h);
+    let h = register_merge(h);
 
     let mut file_tree = render_template_file_tree_and_merge_with_existing(
         file_tree,
@@ -188,6 +188,23 @@ pub fn scaffold_tauri_app(
             )
         },
     )?;
+
+    // - In ui/package.json
+    map_file(
+        &mut file_tree,
+        PathBuf::from("ui/package.json").as_path(),
+        |ui_package_json| {
+            let ui_package_json = add_npm_script_to_package(
+                &(root_package_json_path.clone(), ui_package_json),
+                &String::from("start"),
+                &String::from("vite --clearScreen false"),
+            )?;
+            add_npm_dev_dependency_to_package(
+                &(root_package_json_path.clone(), ui_package_json),
+                &String::from("internal-ip"),
+                &String::from("^7.0.0"),
+            )
+    })?;
 
     // - In flake.nix
     map_file(

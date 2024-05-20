@@ -103,4 +103,6 @@ Continue to the [Android setup](./android/setup).
 
 > [!WARNING]
 > Coming soon! Holochain working on iOS is blocked by wasmer having an interpreter wasm engine...
+> 
+> Learn more about current mobile support in the [FAQs](./faqs).
 

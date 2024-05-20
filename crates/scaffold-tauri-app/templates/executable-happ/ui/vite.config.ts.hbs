@@ -1,0 +1,18 @@
+import { internalIpV4Sync } from "internal-ip";
+{{#merge previous_file_content}}
+  {{#match_scope "export default defineConfig({"}}
+{{previous_scope_content}}
+  server: {
+    host: mobile ? "0.0.0.0" : false,
+    port: 1420,
+    strictPort: true,
+    hmr: mobile
+      ? {
+          protocol: "ws",
+          host: internalIpV4Sync(),
+          port: 1421,
+        }
+      : undefined,
+  },
+  {{/match_scope}}
+{{/merge}}
