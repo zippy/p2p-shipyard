@@ -15,11 +15,11 @@ tauri = { version = "2.0.0-beta", features = [
 ] }
 
 # Holochain dependencies
-mr_bundle = "0.3.0-beta-dev"
-holochain = "=0.3.0-beta-dev.48"
-holochain_types =  "0.3.0-beta-dev"
-holochain_keystore = "0.3.0-beta-dev" 
-holochain_conductor_api = "0.3.0-beta-dev"
+mr_bundle = "0.3.1-rc"
+holochain = "=0.3.1-rc.0"
+holochain_types =  "0.3.1-rc"
+holochain_keystore = "0.3.1-rc" 
+holochain_conductor_api = "0.3.1-rc"
 
 # Lair dependencies
 hc_seed_bundle = "0.2"
@@ -27,7 +27,8 @@ lair_keystore = "0.4.0"
 lair_keystore_api = "0.4.0"
 
 # Holochain client
-holochain_client = "=0.5.0-dev.32"
+# holochain_client = "=0.5.0-dev.32"
+holochain_client = { git="https://github.com/guillemcordoba/holochain-client-rust", branch = "main" }
 
 serde_json = "1"
 sha256 = "1"

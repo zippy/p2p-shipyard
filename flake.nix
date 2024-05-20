@@ -6,7 +6,8 @@
 
     nixpkgs.follows = "holochain/nixpkgs";
 
-    versions.url = "github:holochain/holochain?dir=versions/0_3_rc";
+    versions.url =
+      "github:holochain/holochain/holonix-update/0_3_rc?dir=versions/0_3_rc";
 
     holochain = {
       url = "github:holochain/holochain";
@@ -75,10 +76,11 @@
       imports = [
         ./crates/scaffold-tauri-app/default.nix
         ./crates/scaffold-holochain-runtime/default.nix
+        ./custom-go-compiler.nix
       ];
 
       systems = builtins.attrNames inputs.holochain.devShells;
-      perSystem = { inputs', config, pkgs, system, lib, ... }: rec {
+      perSystem = { inputs', config, self', pkgs, system, lib, ... }: rec {
         devShells.tauriDev = pkgs.mkShell {
           packages = with pkgs; [
             nodejs_20
@@ -133,6 +135,7 @@
             pkgs.gradle
             pkgs.jdk17
             pkgs.aapt
+            self'.packages.custom-go-wrapper
           ];
 
           shellHook = ''

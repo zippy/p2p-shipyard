@@ -2,7 +2,8 @@ import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { internalIpV4Sync } from "internal-ip";
 
-const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM);
+// const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM);
+const mobile = true;
 
 // https://vitejs.dev/config/
 export default defineConfig({

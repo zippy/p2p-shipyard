@@ -1,4 +1,3 @@
-use app_dirs2::AppDataType;
 use holochain_types::prelude::AppBundle;
 use lair_keystore::dependencies::sodoken::{BufRead, BufWrite};
 use std::collections::HashMap;

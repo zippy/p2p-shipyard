@@ -2,7 +2,9 @@
   description = "Template for Holochain app development";
 
   inputs = {
-    versions.url = "github:holochain/holochain?dir=versions/0_3_rc";
+    versions.url =
+      # "github:holochain/holochain?dir=versions/0_3_rc";
+      "github:holochain/holochain/holonix-update/0_3_rc?dir=versions/0_3_rc";
 
     holochain.url = "github:holochain/holochain";
     holochain.inputs.versions.follows = "versions";

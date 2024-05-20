@@ -8,10 +8,14 @@ pub(crate) fn open_app<R: Runtime>(
     title: String,
     url_path: Option<String>,
 ) -> crate::Result<()> {
-    app.holochain()?
-        .web_happ_window_builder(app_id, url_path)?
-        .title(title)
-        .build()?;
+    let mut builder = app.holochain()?.web_happ_window_builder(app_id, url_path)?;
+
+    #[cfg(desktop)]
+    {
+        builder = builder.title(title);
+    }
+
+    builder.build()?;
 
     Ok(())
 }

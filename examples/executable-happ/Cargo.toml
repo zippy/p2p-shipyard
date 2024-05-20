@@ -9,8 +9,8 @@ resolver = "2"
 members = ["dnas/*/zomes/coordinator/*", "dnas/*/zomes/integrity/*", "src-tauri"]
 
 [workspace.dependencies]
-hdi = "0.4.0-beta-dev"
-hdk = "0.3.0-beta-dev"
+hdi = "0.4.1-rc"
+hdk = "0.3.1-rc"
 serde = "1.0"
 
 [workspace.dependencies.posts]
@@ -19,7 +19,10 @@ path = "dnas/forum/zomes/coordinator/posts"
 [workspace.dependencies.posts_integrity]
 path = "dnas/forum/zomes/integrity/posts"
 
-# [patch.crates-io]
+[patch.crates-io]
+# tx5-go-pion-sys = {git ="https://github.com/guillemcordoba/tx5", branch ="main"}
+tx5-go-pion-sys = {path ="/home/guillem/projects/holochain/core/tx5/crates/tx5-go-pion-sys"}
+tx5-go-pion-turn = {path ="/home/guillem/projects/holochain/core/tx5/crates/tx5-go-pion-turn"}
 # mr_bundle = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
 # holochain = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
 # holochain_types = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
