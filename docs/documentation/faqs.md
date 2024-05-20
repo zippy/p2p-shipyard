@@ -19,6 +19,6 @@ In development, holochain works as expected in iOS. But Apple prevents JIT compi
 
 ## Well, okey... Then how does `tauri-plugin-holochain` help me now?
 
-For now, you can build a desktop executable hApp that your users can download and use, and start experimenting with Android support. After the issues with holochain mobile outlined above are resolved, you will be able to upgrade to a new version of the plugin to automatically get full mobile support in your hApp.
+For now, you can build a desktop executable hApp that your users can download and use, as all macOS, Linux and Windows are well supported. Furthermore, you can start experimenting with Android support, which has some UX downsides but is workable. After the issues with holochain mobile outlined above are resolved, you will be able to upgrade to a new version of the plugin to automatically get full mobile support in your hApp.
 
-This is the way ourselves in darskoil.studio are building hApps right now. We are monitoring the issues at the core holochain infrastructure level, and in constant communication with the core holochain development team to help get them fixed. 
+This is the way ourselves at darskoil.studio are building hApps right now. We are monitoring the issues at the core holochain infrastructure level, and in constant communication with the core holochain development team to help get them fixed. We hope that the remaining issues that prevent holochain to work on mobile outlined above get resolved soon, so that we can start deploying our holochain apps to end users.

@@ -1,4 +1,4 @@
-## Developing for Android
+# Developing for Android
 
 While developing a hApp, it's not that useful to just have one agent to test your hApp with. Instead, you usually need a couple of peers to be able to interact with one another. 
 

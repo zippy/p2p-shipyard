@@ -1365,9 +1365,9 @@ checksum = "393bc73c451830ff8dbb3a07f61843d6cb41a084f9996319917c0b291ed785bb"
 
 [[package]]
 name = "crc32fast"
-version = "1.4.0"
+version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3855a8a784b474f333699ef2bbca9db2c4a1f6d9088a90a2d25b1eb53111eaa"
+checksum = "58ebf8d6963185c7625d2c3c3962d99eb8936637b1427536d21dc36ae402ebad"
 dependencies = [
  "cfg-if 1.0.0",
 ]
@@ -2159,7 +2159,7 @@ dependencies = [
 [[package]]
 name = "file_tree_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#4103ad6ebfee9d6ca4e3beb84509a2342302a459"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
 dependencies = [
  "build-fs-tree",
  "ignore",
@@ -3430,7 +3430,7 @@ dependencies = [
 [[package]]
 name = "holochain_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#4103ad6ebfee9d6ca4e3beb84509a2342302a459"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
 dependencies = [
  "dialoguer",
  "file_tree_utils",
@@ -3901,7 +3901,7 @@ dependencies = [
  "httpdate",
  "itoa 1.0.11",
  "pin-project-lite",
- "socket2 0.4.10",
+ "socket2 0.5.7",
  "tokio",
  "tower-service",
  "tracing",
@@ -5394,7 +5394,7 @@ dependencies = [
 [[package]]
 name = "nix_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#4103ad6ebfee9d6ca4e3beb84509a2342302a459"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -5449,7 +5449,7 @@ checksum = "61807f77802ff30975e01f4f071c8ba10c022052f98b3294119f3e615d13e5be"
 [[package]]
 name = "npm_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#4103ad6ebfee9d6ca4e3beb84509a2342302a459"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -5577,7 +5577,7 @@ version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "681030a937600a36906c185595136d26abfebb4aa9c65701cefcaf8578bb982b"
 dependencies = [
- "proc-macro-crate 1.3.1",
+ "proc-macro-crate 3.1.0",
  "proc-macro2",
  "quote",
  "syn 2.0.65",
@@ -6359,6 +6359,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7e8366a6159044a37876a2b9817124296703c586a5c92e2c53751fa06d8d43e8"
 dependencies = [
  "toml_edit 0.20.7",
+]
+
+[[package]]
+name = "proc-macro-crate"
+version = "3.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6d37c51ca738a55da99dc0c4a34860fd675453b8b36209178c2249bb13651284"
+dependencies = [
+ "toml_edit 0.21.1",
 ]
 
 [[package]]
@@ -7223,6 +7232,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "rust_scaffolding_utils"
+version = "0.1.0"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
+dependencies = [
+ "anyhow",
+ "build-fs-tree",
+ "clap 4.5.4",
+ "colored",
+ "dialoguer",
+ "file_tree_utils",
+ "ignore",
+ "regex",
+ "serde",
+ "thiserror",
+ "toml 0.8.13",
+]
+
+[[package]]
 name = "rustc-demangle"
 version = "0.1.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7433,6 +7460,7 @@ dependencies = [
  "npm_scaffolding_utils",
  "path-clean",
  "regex",
+ "rust_scaffolding_utils",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -8689,7 +8717,7 @@ dependencies = [
 [[package]]
 name = "templates_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#4103ad6ebfee9d6ca4e3beb84509a2342302a459"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -9074,6 +9102,17 @@ name = "toml_edit"
 version = "0.20.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "70f427fce4d84c72b5b732388bf4a9f4531b53f74e2887e3ecb2481f68f66d81"
+dependencies = [
+ "indexmap 2.2.6",
+ "toml_datetime",
+ "winnow 0.5.40",
+]
+
+[[package]]
+name = "toml_edit"
+version = "0.21.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6a8534fd7f78b5405e860340ad6575217ce99f38d4d5c8f2442cb5ecb50090e1"
 dependencies = [
  "indexmap 2.2.6",
  "toml_datetime",

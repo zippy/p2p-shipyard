@@ -10,7 +10,7 @@ rm -rf forum-scaffold-tauri-app
 hc-scaffold web-app --template lit forum-scaffold-tauri-app --setup-nix true
 cd /tmp/forum-scaffold-tauri-app
 nix flake update
-nix develop --command bash -c \"npm i\"
+nix develop --command bash -c \"npm i && hc scaffold dna forum && hc scaffold zome posts --integrity dnas/forum/zomes/integrity/ --coordinator dnas/forum/zomes/coordinator/\"
 "
 
 nix run .#scaffold-tauri-app -- --path /tmp/forum-scaffold-tauri-app --ui-package ui

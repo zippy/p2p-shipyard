@@ -21,6 +21,7 @@ serde_yaml = "=0.9.33"
 serde = "1"
 clap = {version = "4.5.4", features = ["derive"]}
 nix_scaffolding_utils = { git ="https://github.com/holochain-open-dev/infrastructure", branch ="main"}
+rust_scaffolding_utils = { git ="https://github.com/holochain-open-dev/infrastructure", branch ="main"}
 file_tree_utils = { git ="https://github.com/holochain-open-dev/infrastructure", branch ="main"}
 npm_scaffolding_utils = { git ="https://github.com/holochain-open-dev/infrastructure", branch ="main"}
 holochain_scaffolding_utils = { git ="https://github.com/holochain-open-dev/infrastructure", branch ="main"}

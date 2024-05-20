@@ -95,6 +95,16 @@ pub fn scaffold_tauri_app(
     //    |package_json_content| {},
     // )?;
 
+    let workspace_cargo_toml_path = PathBuf::from("Cargo.toml");
+
+    map_file(
+       &mut file_tree,
+ &workspace_cargo_toml_path      .as_path(),
+       |cargo_toml_content| {
+           add_member_to_workspace(&(workspace_cargo_toml_path, cargo_toml_content), String::from("src-tauri"))
+       },
+    )?;
+
     let ui_package = match ui_package {
         Some(ui_package) => ui_package,
         None => choose_npm_package(&file_tree, &String::from("Which NPM package contains your UI?\n\nThis is needed so that the NPM scripts can start the UI and tauri can connect to it."))?,
