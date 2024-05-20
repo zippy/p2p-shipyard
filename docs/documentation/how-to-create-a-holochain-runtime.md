@@ -23,6 +23,9 @@ And follow along its instructions and prompts.
 
 That's it! We now have a working skeleton for a holochain runtime. 
 
+> [!WARNING]
+> The scaffolded tauri app is missing icons, which are needed for the app to compile. Run through the rest of this guide and the following one ("Getting to know Tauri") to be able to generate the icons for your Tauri app.
+
 ## Development Environment
 
 The `scaffold-holochain-apps` has added the necessary nix `devShells` to your `flake.nix` file so that you don't need to follow install anything to get the tauri or Android development environment.

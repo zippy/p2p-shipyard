@@ -1,4 +1,5 @@
 use anyhow::Result;
+use dialoguer::Input;
 use file_tree_utils::{dir_to_file_tree, map_file, FileTree, FileTreeError};
 use handlebars::{no_escape, RenderErrorReason};
 use holochain_scaffolding_utils::GetOrChooseWebAppManifestError;
@@ -8,6 +9,7 @@ use npm_scaffolding_utils::{
     add_npm_dev_dependency_to_package, add_npm_script_to_package, choose_npm_package,
     guess_or_choose_package_manager, NpmScaffoldingUtilsError,
 };
+use rust_scaffolding_utils::{add_member_to_workspace, RustScaffoldingUtilsError};
 use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
@@ -42,6 +44,9 @@ pub enum ScaffoldExecutableHappError {
     NixScaffoldingUtilsError(#[from] NixScaffoldingUtilsError),
 
     #[error(transparent)]
+    RustScaffoldingUtilsError(#[from] RustScaffoldingUtilsError),
+
+    #[error(transparent)]
     DialoguerError(#[from] dialoguer::Error),
 
     #[error(transparent)]
@@ -57,11 +62,13 @@ pub enum ScaffoldExecutableHappError {
 #[derive(Serialize, Deserialize, Debug)]
 struct ScaffoldExecutableHappData {
     app_name: String,
+    identifier: String,
 }
 
 pub fn scaffold_tauri_app(
     file_tree: FileTree,
     ui_package: Option<String>,
+    bundle_identifier: Option<String>,
 ) -> Result<FileTree, ScaffoldExecutableHappError> {
     // - Detect npm package manager
     let package_manager = guess_or_choose_package_manager(&file_tree)?;
@@ -80,11 +87,23 @@ pub fn scaffold_tauri_app(
     let h = register_case_helpers(h);
     let h = register_merge(h);
 
+    let identifier: String = match bundle_identifier {
+        Some(i) => i,
+        None => Input::with_theme(&ColorfulTheme::default()).with_prompt(format!("Input the bundle identifier for your app (eg: org.myorg.{app_name}): ")).validate_with(|input| {
+            if input.contains("-") || input.contains("_") {
+                Err(String::from("The bundle identifier can only contain alphanumerical characters."))
+            } else {
+                Ok(())
+            }
+        }).interact_text()?
+    };
+
     let mut file_tree = render_template_file_tree_and_merge_with_existing(
         file_tree,
         &h,
         &template_file_tree,
         &ScaffoldExecutableHappData {
+            identifier,
             app_name: app_name.clone(),
         },
     )?;
@@ -99,9 +118,9 @@ pub fn scaffold_tauri_app(
 
     map_file(
        &mut file_tree,
- &workspace_cargo_toml_path      .as_path(),
+       &workspace_cargo_toml_path.clone().as_path(),
        |cargo_toml_content| {
-           add_member_to_workspace(&(workspace_cargo_toml_path, cargo_toml_content), String::from("src-tauri"))
+           add_member_to_workspace(&(workspace_cargo_toml_path.clone(), cargo_toml_content), String::from("src-tauri"))
        },
     )?;
 
@@ -377,7 +396,7 @@ mod tests {
             }
         };
 
-        let repo = scaffold_tauri_app(repo, Some(String::from("package1"))).unwrap();
+        let repo = scaffold_tauri_app(repo, Some(String::from("package1")), Some(String::from("studio.darksoil.myapp"))).unwrap();
 
         assert_eq!(
             file_content(&repo, PathBuf::from("package.json").as_path()).unwrap(),

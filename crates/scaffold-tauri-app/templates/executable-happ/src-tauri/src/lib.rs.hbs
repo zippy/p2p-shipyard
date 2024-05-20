@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use tauri_plugin_holochain::{HolochainPluginConfig, HolochainExt};
 use url2::Url2;
+use tauri::AppHandle;
 
 const APP_ID: &'static str = "{{app_name}}";
 const PRODUCTION_SIGNAL_URL: &'static str = "wss://signal.holo.host";
@@ -38,7 +39,7 @@ pub fn run() {
 
             // After set up we can be sure our app is installed and up to date, so we can just open it
             app.holochain()?
-                .main_window_builder("main", false, Some(String::from("{{app_name}}")), None)?
+                .main_window_builder(String::from("main"), false, Some(String::from("{{app_name}}")), None)?
                 .build()?;
 
             Ok(())
@@ -68,7 +69,7 @@ async fn setup(handle: AppHandle) -> anyhow::Result<()> {
             .holochain()?
             .install_app(
                 String::from(APP_ID),
-                happ_bundle()
+                happ_bundle(),
                 HashMap::new(),
                 None,
             )

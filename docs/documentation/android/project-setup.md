@@ -1,4 +1,4 @@
-# Android Setup
+# Project Setup for Android Development
 
 > [!NOTE]
 > This guide assumes that you have already gone through either [how to create an executable hApp](./how-to-create-an-executable-happ.md) or [how to create a holochain runtime](./how-to-create-a-holochain-runtime.md).
@@ -87,49 +87,8 @@ dependencies {
 apply(from = "tauri.build.gradle.kts")
 ```
 
-3. In your Android device, enable the [developer options](https://developer.android.com/studio/debug/dev-options).
-
-4. After you have enabled the developer options, [enable USB debbuging](https://developer.android.com/studio/debug/dev-options#Enable-debugging).
-
-5. Connect your Android device to your computer with a USB cable, and confirm in your Android device that you allow USB debugging from this computer.
-
-6. In the root folder of your repository, run:
-
-```bash
-nix develop .#androidDev
-```
-
-This is a replacement command for the usual `nix develop`, which includes `Android Studio`, and all the necessary tooling that you need for Android development. Every time you want to test or build for the Android platform, you will need to enter the nix devShell this way and then your command from inside of it.
-
-> [!WARNING]
-> The first time this is run, it will take some time. This is because nix has to download and build all the necessary Android tooling. After the first time, it will be almost instant.
-
-7. Inside your `androidDev` devShell, run:
-
-```bash
-adb devices
-```
-
-If all the previous steps were successful, you should see your device in the list of devices.
-
-8. Verify that everything is working by running the app for android with:
-
-::: code-group
-```bash [npm]
-npm run tauri android dev
-```
-
-```bash [yarn]
-yarn tauri android dev
-```
-
-```bash [pnpm]
-pnpm tauri android dev
-```
-:::
-
 --- 
 
-That's it! You have completed the setup for the Android platform.
+That's it! Your project is now ready to develop for the Android platform.
 
-Continue to [Android developing](./developing) to learn how to develop your app while targeting the Android platform.
+Continue to [Device Setup](./device-setup) to learn how to setup an Android device for testing your hApp.

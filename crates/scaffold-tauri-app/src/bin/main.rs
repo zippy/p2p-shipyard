@@ -16,6 +16,10 @@ struct Args {
     #[clap(long)]
     pub ui_package: Option<String>,
 
+    /// The bundle identifier for the Tauri app
+    #[clap(long)]
+    pub bundle_identifier: Option<String>,
+
     /// The path of the file tree to modify.
     #[clap(long, default_value = "./.")]
     pub path: PathBuf,
@@ -34,7 +38,7 @@ fn internal_main() -> Result<()> {
 
     let file_tree = file_tree_utils::load_directory_into_memory(&args.path)?;
 
-    let file_tree = scaffold_tauri_app(file_tree, args.ui_package)?;
+    let file_tree = scaffold_tauri_app(file_tree, args.ui_package, args.bundle_identifier)?;
 
     let file_tree = MergeableFileSystemTree::<OsString, String>::from(file_tree);
 

@@ -22,15 +22,16 @@ tauri = { version = "2.0.0-beta", features = [] }
 tauri-plugin-holochain = { git = "https://github.com/darksoil-studio/tauri-plugin-holochain", branch = "main" }
 holochain_types = { version = "0.3.1-rc" }
 lair_keystore = { version = "0.4.0" }
-holochain_client = { version = "0.5.0-dev" }
+
+# Uncomment this crates dependency and add the appropriate holochain_client version 
+# compatible with holochain 0.3.x-rc when it's released to crates.io...
+# holochain_client = { version = "0.5.0-dev" }
+# ... and remove these git dependency
+holochain_client = { git="https://github.com/guillemcordoba/holochain-client-rust", branch = "main" }
+
 log = "0.4"
 tauri-plugin-log = "2.0.0-beta"
 url2 = "0.0.6"
 app_dirs2 = "2.5.5"
 tempdir = "0.3.7"
 anyhow = "1"
-
-[patch.crates-io]
-# TODO: remove these patches once https://github.com/holochain/tx5/issues/87 is resolved
-tx5-go-pion-sys = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }
-tx5-go-pion-turn = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }

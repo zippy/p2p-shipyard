@@ -36,16 +36,20 @@ export default defineConfig({
               text: "Android",
               items: [
                 {
-                  text: "Setup",
-                  link: "/documentation/android/setup",
+                  text: "Project Setup",
+                  link: "/documentation/android/project-setup",
+                },
+                {
+                  text: "Device Setup",
+                  link: "/documentation/android/device-setup",
                 },
                 {
                   text: "Developing",
                   link: "/documentation/android/developing",
                 },
                 {
-                  text: "Publishing",
-                  link: "/documentation/android/publishing",
+                  text: "Building for Production",
+                  link: "/documentation/android/building-for-production",
                 },
               ],
             },

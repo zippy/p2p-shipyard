@@ -1,3 +1,5 @@
+# OS
+
 ## NixOS
 
 ### Connect to devices

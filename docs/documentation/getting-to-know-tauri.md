@@ -73,6 +73,9 @@ pnpm tauri icon <PATH_TO_YOUR_ICON_IN_PNG_FORMAT>
 ```
 :::
 
+> [!WARNING]
+> Until you run this command with your icon, your app won't compile.
+
 - See all the available CLI commands with:
 
 ::: code-group
@@ -97,7 +100,7 @@ After the initial set up and scaffolding, our tauri app can only be built for de
 
 ### Android Setup
 
-Continue to the [Android setup](./android/setup).
+Continue to the [Android setup](./android/project-setup).
 
 ### iOS Setup
 

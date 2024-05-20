@@ -32,6 +32,7 @@ This will execute all the required steps to convert your previously scaffolded h
 
 - `flake.nix`: added the `tauri-plugin-holochain` input and its `devShells`.
 - `package.json`: added set up scripts and some `devDependencies`.
+- `ui/vite.config.ts`: set the server configuration necessary for tauri.
 - `src-tauri`: here is where the code for the backend of the tauri app lives.
   - The tauri app will just use the UI that the scaffolding tool produced as its own UI.
 
@@ -41,6 +42,9 @@ This will execute all the required steps to convert your previously scaffolded h
 > It also tries to make smart guesses about the structure of your project, but it can be tricky to support every repository structure. Please open an issue in the github repository if you find any bugs in it!
 
 That's it! We now have a fully functional end-user executable hApp. 
+
+> [!WARNING]
+> The scaffolded tauri app is missing icons, which are needed for the app to compile. Run through the rest of this guide and the following one ("Getting to know Tauri") to be able to generate the icons for your Tauri app.
 
 ## Development Environment
 
