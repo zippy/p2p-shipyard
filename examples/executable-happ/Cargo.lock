@@ -2088,6 +2088,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "example"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "app_dirs2",
+ "holochain_client",
+ "holochain_types",
+ "lair_keystore",
+ "log",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-holochain",
+ "tauri-plugin-log",
+ "tempdir",
+ "url2",
+]
+
+[[package]]
 name = "fallible-iterator"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8303,24 +8321,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "tauri-app"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "app_dirs2",
- "holochain_client",
- "holochain_types",
- "lair_keystore",
- "log",
- "tauri",
- "tauri-build",
- "tauri-plugin-holochain",
- "tauri-plugin-log",
- "tempdir",
- "url2",
-]
-
-[[package]]
 name = "tauri-build"
 version = "2.0.0-beta.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -9186,6 +9186,23 @@ dependencies = [
 [[package]]
 name = "tx5-core"
 version = "0.0.9-alpha"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9a45e91402a7c17bda8835acb47c7460dc3880dc067235d324401a7359857a75"
+dependencies = [
+ "base64 0.13.1",
+ "once_cell",
+ "rand 0.8.5",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "url",
+]
+
+[[package]]
+name = "tx5-core"
+version = "0.0.9-alpha"
+source = "git+https://github.com/guillemcordoba/tx5?branch=custom-go#9e0d775cfe2c166ee58d07b884d20d186c580aaa"
 dependencies = [
  "app_dirs2",
  "base64 0.13.1",
@@ -9195,22 +9212,6 @@ dependencies = [
  "serde_json",
  "sha2",
  "tempfile",
- "tokio",
- "tracing",
- "url",
-]
-
-[[package]]
-name = "tx5-core"
-version = "0.0.9-alpha"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9a45e91402a7c17bda8835acb47c7460dc3880dc067235d324401a7359857a75"
-dependencies = [
- "base64 0.13.1",
- "once_cell",
- "rand 0.8.5",
- "serde",
- "serde_json",
  "tokio",
  "tracing",
  "url",
@@ -9233,6 +9234,7 @@ dependencies = [
 [[package]]
 name = "tx5-go-pion-sys"
 version = "0.0.9-alpha"
+source = "git+https://github.com/guillemcordoba/tx5?branch=custom-go#9e0d775cfe2c166ee58d07b884d20d186c580aaa"
 dependencies = [
  "Inflector",
  "base64 0.13.1",
@@ -9243,13 +9245,14 @@ dependencies = [
  "ouroboros",
  "sha2",
  "tracing",
- "tx5-core 0.0.9-alpha",
+ "tx5-core 0.0.9-alpha (git+https://github.com/guillemcordoba/tx5?branch=custom-go)",
  "zip 0.6.6",
 ]
 
 [[package]]
 name = "tx5-go-pion-turn"
 version = "0.0.9-alpha"
+source = "git+https://github.com/guillemcordoba/tx5?branch=custom-go#9e0d775cfe2c166ee58d07b884d20d186c580aaa"
 dependencies = [
  "base64 0.13.1",
  "dirs",
@@ -9259,7 +9262,7 @@ dependencies = [
  "sha2",
  "tokio",
  "tracing",
- "tx5-core 0.0.9-alpha",
+ "tx5-core 0.0.9-alpha (git+https://github.com/guillemcordoba/tx5?branch=custom-go)",
  "zip 0.6.6",
 ]
 

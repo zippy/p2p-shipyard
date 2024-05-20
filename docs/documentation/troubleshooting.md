@@ -1,12 +1,12 @@
-### NixOS
+## NixOS
 
-#### Connect to devices
+### Connect to devices
 
 ```bash
 sudo adb devices
 ```
 
-#### Firewall
+### Firewall
 
 Disable the firewall to get the tauri frontend with:
 

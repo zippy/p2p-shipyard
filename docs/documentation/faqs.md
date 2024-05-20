@@ -8,9 +8,8 @@ Well, not quite. Let's break it down to the two main mobile platforms:
 
 Holochain has experimental support for Android. This means that holochain works as expected on Android, **except for these issues**:
 
-- [Go compiler issue on Android 11 or later](https://github.com/holochain/tx5/issues/87). This means that in these Android versions, the device can't communicate with anyone on the network, so in practicality holochain does not work.
-- [Installation of apps takes more than 40 seconds to complete on an average Android device](https://github.com/holochain/holochain/issues/3243).
 - [Every time the Android app is opened, holochain takes ~10 seconds to boot up, so there is a long loading screen](https://github.com/holochain/holochain/issues/3243).
+- [Go compiler issue on Android 11 or later](https://github.com/holochain/tx5/issues/87). `tauri-plugin-holochain` solves this issue by providing a custom go toolchain, which is already included in the `devShells` and scaffolded projects described in throughout this documentation site, so **if you use `tauri-plugin-holochain`, this issue is not present at all**.
 
 ### iOS
 
@@ -18,8 +17,8 @@ In development, holochain works as expected in iOS. But Apple prevents JIT compi
 
 ---
 
-## Well, okey... Then how does tauri-plugin-holochain help me now?
+## Well, okey... Then how does `tauri-plugin-holochain` help me now?
 
-For now, you can build a desktop only executable hApp that your users can download and use. It's ready to be deployed and iterated upon. After the issues with holochain mobile outlined above are resolved, you will be able to upgrade to a new version of the plugin to automatically get mobile support in your hApp.
+For now, you can build a desktop executable hApp that your users can download and use, and start experimenting with Android support. After the issues with holochain mobile outlined above are resolved, you will be able to upgrade to a new version of the plugin to automatically get full mobile support in your hApp.
 
-This is the way ourselves in darskoil studio are building hApps right now. We are monitoring the issues at the technical level, and in constant communication with the core holochain development team. At the same time, while they get resolved, we are building the MVP version for our hApps.
+This is the way ourselves in darskoil.studio are building hApps right now. We are monitoring the issues at the core holochain infrastructure level, and in constant communication with the core holochain development team to help get them fixed. 

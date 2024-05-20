@@ -33,8 +33,21 @@ export default defineConfig({
               link: "/documentation/getting-to-know-tauri",
             },
             {
-              text: "Setting up Android",
-              link: "/documentation/android-setup",
+              text: "Android",
+              items: [
+                {
+                  text: "Setup",
+                  link: "/documentation/android/setup",
+                },
+                {
+                  text: "Developing",
+                  link: "/documentation/android/developing",
+                },
+                {
+                  text: "Publishing",
+                  link: "/documentation/android/publishing",
+                },
+              ],
             },
           ],
         },

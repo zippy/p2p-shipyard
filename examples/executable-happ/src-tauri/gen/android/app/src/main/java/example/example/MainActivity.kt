@@ -1,3 +1,3 @@
-package example.tauri_app
+package example.example
 
 class MainActivity : TauriActivity()

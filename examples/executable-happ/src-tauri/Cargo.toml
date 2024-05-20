@@ -1,5 +1,5 @@
 [package]
-name = "tauri-app"
+name = "example"
 version = "0.0.0"
 description = "A Tauri App"
 authors = ["you"]
@@ -9,7 +9,7 @@ edition = "2021"
 rust-version = "1.70"
 
 [lib]
-name = "tauri_app_lib"
+name = "example_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

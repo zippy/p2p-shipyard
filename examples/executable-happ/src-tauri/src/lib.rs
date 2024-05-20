@@ -31,13 +31,9 @@ pub fn vec_to_locked(mut pass_tmp: Vec<u8>) -> std::io::Result<BufRead> {
 }
 
 fn internal_ip() -> String {
-    if cfg!(mobile) {
-        std::option_env!("INTERNAL_IP")
-            .expect("Environment variable INTERNAL_IP was not set")
-            .to_string()
-    } else {
-        String::from("localhost")
-    }
+    std::option_env!("INTERNAL_IP")
+        .expect("Environment variable INTERNAL_IP was not set")
+        .to_string()
 }
 
 fn bootstrap_url() -> Url2 {

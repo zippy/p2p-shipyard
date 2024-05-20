@@ -142,16 +142,32 @@ pub fn scaffold_tauri_app(
             let package_json_content = add_npm_script_to_package(
                 &(root_package_json_path.clone(), package_json_content),
                 &String::from("network"),
-                &format!("BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"{}\" \"{}\" \"{}\"", package_manager.run_script_command(String::from("local-services"), None ), 
-                package_manager.run_script_command(String::from("start"), Some(ui_package.clone())),
-                package_manager.run_script_command(String::from("launch"), None)
+                &format!("{} && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"{}\" \"UI_PORT=1420 {}\" \"{}\"", 
+                    
+                    package_manager.run_script_command(String::from("build:happ"), None),
+                    package_manager.run_script_command(String::from("local-services"), None ),
+                    package_manager.run_script_command(String::from("start"), Some(ui_package.clone())),
+                    package_manager.run_script_command(String::from("launch"), None)
                 ),
             )?;
             let package_json_content = add_npm_script_to_package(
                 &(root_package_json_path.clone(), package_json_content),
                 &String::from("local-services"),
-                &format!("hc run-local-services --bootstrap-port $BOOTSTRAP_PORT --signal-port $SIGNAL_PORT"),
+                &format!("hc run-local-services --bootstrap-interface $INTERNAL_IP --bootstrap-port $BOOTSTRAP_PORT --signal-interfaces $INTERNAL_IP --signal-port $SIGNAL_PORT"),
             )?;
+
+            let package_json_content = add_npm_script_to_package(
+                &(root_package_json_path.clone(), package_json_content),
+                &String::from("android:network"),
+                &format!("{} && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"{}\" \"UI_PORT=1420 {}\" \"{}\" \"{}\"",
+                    package_manager.run_script_command(String::from("build:happ"), None),
+                    package_manager.run_script_command(String::from("local-services"), None),
+                    package_manager.run_script_command(String::from("start"), Some(ui_package.clone())),
+                    package_manager.run_script_command(String::from("tauri dev"), None),
+                    package_manager.run_script_command(String::from("tauri android dev"), None),
+                ),
+            )?;
+
             let package_json_content = add_npm_script_to_package(
                 &(root_package_json_path.clone(), package_json_content),
                 &String::from("build:zomes"),

@@ -29,3 +29,8 @@ url2 = "0.0.6"
 app_dirs2 = "2.5.5"
 tempdir = "0.3.7"
 anyhow = "1"
+
+[patch.crates-io]
+# TODO: remove these patches once https://github.com/holochain/tx5/issues/87 is resolved
+tx5-go-pion-sys = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }
+tx5-go-pion-turn = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }

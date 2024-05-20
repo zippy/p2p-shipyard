@@ -131,3 +131,41 @@ pnpm tauri android dev
 --- 
 
 That's it! You have completed the setup for the Android platform.
+
+## Android Development
+
+### Developing
+
+::: code-group
+```bash [npm]
+npm run tauri android dev
+```
+
+```bash [yarn]
+yarn tauri android dev
+```
+
+```bash [pnpm]
+pnpm tauri android dev
+```
+:::
+
+```bash
+adb devices
+```
+
+### Publishing
+
+::: code-group
+```bash [npm]
+npm run tauri android build
+```
+
+```bash [yarn]
+yarn tauri android build
+```
+
+```bash [pnpm]
+pnpm tauri android build
+```
+:::

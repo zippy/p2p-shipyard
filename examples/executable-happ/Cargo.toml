@@ -20,9 +20,10 @@ path = "dnas/forum/zomes/coordinator/posts"
 path = "dnas/forum/zomes/integrity/posts"
 
 [patch.crates-io]
-# tx5-go-pion-sys = {git ="https://github.com/guillemcordoba/tx5", branch ="main"}
-tx5-go-pion-sys = {path ="/home/guillem/projects/holochain/core/tx5/crates/tx5-go-pion-sys"}
-tx5-go-pion-turn = {path ="/home/guillem/projects/holochain/core/tx5/crates/tx5-go-pion-turn"}
+# TODO: remove these patches once https://github.com/holochain/tx5/issues/87 is resolved
+tx5-go-pion-sys = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }
+tx5-go-pion-turn = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }
+
 # mr_bundle = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
 # holochain = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
 # holochain_types = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
@@ -34,4 +35,3 @@ tx5-go-pion-turn = {path ="/home/guillem/projects/holochain/core/tx5/crates/tx5-
 # holochain_zome_types = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
 # holo_hash= {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
 
-# holochain_client = {git ="https://github.com/guillemcordoba/holochain-client-rust", branch ="develop"}
