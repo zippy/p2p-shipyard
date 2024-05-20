@@ -3,7 +3,7 @@
 {
   perSystem = { inputs', pkgs, system, lib, ... }: {
     packages.scaffold-tauri-app = let
-      craneLib = inputs.crane.lib.${system};
+      craneLib = inputs.crane.mkLib pkgs;
 
       cratePath = ./.;
 

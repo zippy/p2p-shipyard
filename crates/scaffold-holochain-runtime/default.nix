@@ -4,7 +4,7 @@
   perSystem = { inputs', pkgs, system, lib, ... }: {
 
     packages.scaffold-holochain-runtime = let
-      craneLib = inputs.crane.lib.${system};
+      craneLib = inputs.crane.mkLib pkgs;
 
       cratePath = ./.;
 

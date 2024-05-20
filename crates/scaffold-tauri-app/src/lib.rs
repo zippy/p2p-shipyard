@@ -1,6 +1,6 @@
 use anyhow::Result;
 use file_tree_utils::{dir_to_file_tree, map_file, FileTree, FileTreeError};
-use handlebars::RenderErrorReason;
+use handlebars::{no_escape, RenderErrorReason};
 use holochain_scaffolding_utils::GetOrChooseWebAppManifestError;
 use include_dir::{include_dir, Dir};
 use nix_scaffolding_utils::{add_flake_input_to_flake_file, NixScaffoldingUtilsError};
@@ -75,7 +75,8 @@ pub fn scaffold_tauri_app(
 
     // - Create the src-tauri directory structure
     let template_file_tree = dir_to_file_tree(&TEMPLATE)?;
-    let h = handlebars::Handlebars::new();
+    let mut h = handlebars::Handlebars::new();
+    h.register_escape_fn(no_escape);
     let h = register_case_helpers(h);
     let h = register_merge(h);
 
