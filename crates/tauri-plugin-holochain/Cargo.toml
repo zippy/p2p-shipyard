@@ -5,7 +5,6 @@ authors = ["guillem@darksoil.studio"]
 description = ""
 edition = "2021"
 rust-version = "1.75"
-exclude = ["/examples", "/node_modules", "/ui"]
 links = "tauri-plugin-holochain"
 
 [dependencies]

@@ -9,7 +9,7 @@ Well, not quite. Let's break it down to the two main mobile platforms:
 Holochain has experimental support for Android. This means that holochain works as expected on Android, **except for these issues**:
 
 - [Every time the Android app is opened, holochain takes ~10 seconds to boot up, so there is a long loading screen](https://github.com/holochain/holochain/issues/3243).
-- [Go compiler issue on Android 11 or later](https://github.com/holochain/tx5/issues/87). `tauri-plugin-holochain` solves this issue by providing a custom go toolchain, which is already included in the `devShells` and scaffolded projects described in throughout this documentation site, so **if you use `tauri-plugin-holochain`, this issue is not present at all**.
+- [Go compiler issue on Android 11 or later](https://github.com/holochain/tx5/issues/87). `p2p-shipyard` solves this issue by providing a custom go toolchain, which is already included in the `devShells` and scaffolded projects described in throughout this documentation site, so **if you use `p2p-shipyard`, this issue is not present at all**.
 
 ### iOS
 
@@ -17,7 +17,7 @@ In development, holochain works as expected in iOS. But Apple prevents JIT compi
 
 ---
 
-## Well, okey... Then how does `tauri-plugin-holochain` help me now?
+## Well, okey... Then how does `p2p-shipyard` help me now?
 
 For now, you can build a desktop end-user hApp that your users can download and use, as all macOS, Linux and Windows are well supported. Furthermore, you can start experimenting with Android support, which has some UX downsides but is workable. After the issues with holochain mobile outlined above are resolved, you will be able to upgrade to a new version of the plugin to automatically get full mobile support in your hApp.
 

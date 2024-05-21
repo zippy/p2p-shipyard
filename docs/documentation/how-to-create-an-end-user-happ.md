@@ -9,7 +9,7 @@ The [scaffolding tool](https://github.com/holochain/scaffolding) is a great way 
 We need a way to create end-users applications for mobile platforms to create simple experiences similar to what users are used to in the existing app stores. 
 
 > [!NOTE]
-> This is also what [kangaroo](https://github.com/holochain-apps/holochain-kangaroo) accomplishes. However, the approach that kangaroo takes is to serve as a template for you to clone it. The approach for tauri-plugin-holochain is just to be another tauri plugin, which means that apps will get bug fixes and new features automatically when upgrading to a new version of the plugin.
+> This is also what [kangaroo](https://github.com/holochain-apps/holochain-kangaroo) accomplishes. However, the approach that kangaroo takes is to serve as a template for you to clone it. The approach for p2p-shipyard's `tauri-plugin-holochain` is just to be another tauri plugin, which means that apps will get bug fixes and new features automatically when upgrading to a new version of the plugin.
 
 ## Scaffolding the tauri app
 
