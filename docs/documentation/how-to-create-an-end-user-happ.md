@@ -4,14 +4,14 @@ This guide describes how to create a hApp that can be directly installed and exe
 
 ## Motivation
 
-The [scaffolding tool](https://github.com/holochain/scaffolding) is a great way to create and package holochain applications. However, its built-in templates don't produce an end-user installable application. They produce a `.webhapp` file, that needs to be installed in a holochain runtime, which is the actual app that is being executed in the OS of the end-user (eg. the [launcher](https://github.com/holochain/launcher)).
+The [scaffolding tool](https://github.com/holochain/scaffolding) is a great way to create and package holochain applications. However, its built-in templates don't produce an end-user installable application. They produce a `.webhapp` file that needs to be installed in a holochain runtime, which is the actual app that is being executed in the OS of the end-user (eg. the [launcher](https://github.com/holochain/launcher)).
 
 We need a way to create end-users applications for mobile platforms to create simple experiences similar to what users are used to in the existing app stores. 
 
 > [!NOTE]
-> This is also what [kangaroo](https://github.com/holochain-apps/holochain-kangaroo) accomplishes. However, the approach that kangaroo takes is to serve as a template for you to clone it. The approach for p2p-shipyard's `tauri-plugin-holochain` is just to be another tauri plugin, which means that apps will get bug fixes and new features automatically when upgrading to a new version of the plugin.
+> This is also what [kangaroo](https://github.com/holochain-apps/holochain-kangaroo) accomplishes. However, the approach that kangaroo takes is to serve as a template for you to clone it. The approach for `p2p-shipyard`'s `tauri-plugin-holochain` is just to be another Tauri plugin, which means that apps will get bug fixes and new features automatically when upgrading to a new version of the plugin.
 
-## Scaffolding the tauri app
+## Scaffolding the end-user app
 
 0. [Scaffold your hApp using the scaffolding tool](https://developer.holochain.org/get-started/3-forum-app-tutorial/).
 
@@ -26,13 +26,13 @@ nix run github:darksoil-studio/p2p-shipyard#scaffold-tauri-app
 
 And follow along to answer all the necessary prompts.
 
-This will execute all the required steps to convert your previously scaffolded hApp to an end-user tauri app.
+This will execute all the required steps to convert your previously scaffolded hApp to an end-user Tauri app.
 
 2. Take a look into the files that the scaffold command edited, and adapt them if necessary:
 
 - `flake.nix`: added the `p2p-shipyard` input and its `devShells`.
 - `package.json`: added set up scripts and some `devDependencies`.
-- `ui/vite.config.ts`: set the server configuration necessary for tauri.
+- `ui/vite.config.ts`: set the server configuration necessary for Tauri.
 - `src-tauri`: here is where the code for the backend of the tauri app lives. 
   - For now it's a simple Tauri app that includes the `tauri-plugin-holochain`, and installs your app when it's first launched.
   - The tauri app will just use the UI that the scaffolding tool produced as its own UI.
@@ -42,7 +42,7 @@ This will execute all the required steps to convert your previously scaffolded h
 >
 > It also tries to make smart guesses about the structure of your project, but it can be tricky to support every repository structure. Please open an issue in the github repository if you find any bugs in it!
 
-That's it! We now have a fully functional end-user, cross-platform hApp. 
+That's it! We now have an end-user, cross-platform hApp. 
 
 > [!WARNING]
 > The scaffolded tauri app is missing icons, which are needed for the app to compile. Run through the rest of this guide and the following one ("Getting to know Tauri") to be able to generate the icons for your Tauri app.

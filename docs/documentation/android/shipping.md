@@ -1,4 +1,4 @@
-# Building for Production
+# Shipping your app for Android
 
 To build a production version of your app, you just need to run this very simple command:
 

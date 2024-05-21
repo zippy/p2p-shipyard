@@ -1,5 +1,8 @@
 # Device Setup
 
+> [!NOTE] 
+> In this guide you will learn how to test your app directly using an Android device connected via USB to your computer.
+
 1. In your Android device, enable the [developer options](https://developer.android.com/studio/debug/dev-options).
 
 2. After you have enabled the developer options, [enable USB debbuging](https://developer.android.com/studio/debug/dev-options#Enable-debugging).

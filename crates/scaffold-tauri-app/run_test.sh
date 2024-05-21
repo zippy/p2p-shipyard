@@ -21,6 +21,5 @@ nix develop --override-input p2p-shipyard $DIR --command bash -c "
 set -e
 
 npm i
-npm run build:happ
 npm run tauri build
 "

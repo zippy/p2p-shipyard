@@ -38,6 +38,9 @@ pnpm tauri dev
 ```
 :::
 
+> [!WARNING]
+> In the case of an end-user hApp, this command won't actually work, since it needs environment variables to connect to the holochain local services to be set. Use `npm start` instead.
+
 - To create a production build for the current platform, run:
 
 ::: code-group
@@ -96,7 +99,7 @@ And learn more about the CLI in the [official Tauri guide](https://beta.tauri.ap
 
 ## Mobile
 
-After the initial set up and scaffolding, our tauri app can only be built for desktop apps. To enable mobile support, there is a bit more work that needs to be done.
+After the initial set up and scaffolding, our Tauri app can only be built for desktop apps. To enable mobile support, there is a bit more work that needs to be done.
 
 ### Android Setup
 

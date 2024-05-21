@@ -49,4 +49,4 @@ adb logcat
 
 ---
 
-That's it! Have fun while building your hApp. When you are satisfied with what you have and want to release a new production version of your app, go to [Building for Production](./building-for-production).
+That's it! Have fun while building your hApp. When you are satisfied with what you have and want to release a new production version of your app, go to [Shipping](./shipping).

@@ -48,8 +48,8 @@ export default defineConfig({
                   link: "/documentation/android/developing",
                 },
                 {
-                  text: "Building for Production",
-                  link: "/documentation/android/building-for-production",
+                  text: "Shipping",
+                  link: "/documentation/android/shipping",
                 },
               ],
             },

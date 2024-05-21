@@ -8,7 +8,7 @@ https://opencollective.com/darksoil/projects/p2p-shipyard
 
 Once the goal of the tier "Open-Source it!" is reached, we'll add the Open-Source license to the repository so that everyone can use it, for free.
 
-If you want to use the tauri plugin holochain module before it becomes Open Source, please reach out to us to setup a licensing agreement.
+If you want to use any of the `p2p-shipyard` components before it becomes Open Source, please reach out to us to setup a licensing agreement.
 
 # Support
 
