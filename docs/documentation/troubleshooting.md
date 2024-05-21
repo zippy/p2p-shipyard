@@ -40,6 +40,41 @@ pnpm tauri icon <PATH_TO_YOUR_ICON_IN_PNG_FORMAT>
 ```
 :::
 
+### `Error Have you installed the Android SDK?` 
+
+If you get this error:
+
+```
+Error Have you installed the Android SDK? The `ANDROID_HOME` environment variable isn't set, and is required: environment variable not found: environment variable not found
+npm run tauri android dev exited with code 1
+```
+
+It means you are trying to run your app in an Android device, but you are not inside your `androidDev` devShell, which is the one that includes the Android development environment and tooling.
+
+Enter the `androidDev` devShell with:
+
+```bash
+nix develop .#androidDev
+```
+
+And try again.
+
+### `Error Android Studio project directory src-tauri/gen/android doesn't exist.`
+
+If you get this error: 
+
+```
+ Error Android Studio project directory src-tauri/gen/android doesn't exist. Please run `tauri android init` and try again.
+```
+
+It means you haven't initialized your project for Android developm̀ent yet. You can do so by running:
+
+```bash
+npm run tauri android init
+```
+
+And then try running your command again.
+
 ## NixOS Issues
 
 ### Connect to devices
