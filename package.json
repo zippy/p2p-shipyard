@@ -1,11 +1,11 @@
 {
-  "name": "tauri-plugin-holochain-dev",
+  "name": "p2p-shipyard-dev",
   "version": "0.0.0",
   "author": "guillem@darksoil.studio",
   "description": "",
   "scripts": {
     "start": "cd examples/tauri-app && nix develop --command bash -c \"npm run tauri dev\"",
-    "android:start": "cd examples/tauri-app && nix develop .#androidDev --command bash -c \"npm run tauri android dev -- --release --no-watch\""
+    "android:start": "cd examples/tauri-app && nix develop .#androidDev --command bash -c \"npm run tauri android dev\""
   },
   "devDependencies": {},
   "dependencies": {

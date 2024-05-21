@@ -1,5 +1,5 @@
 {
-  description = "Holochain";
+  description = "Build cross-platform holochain apps and runtimes";
 
   inputs = {
     crane.url = "github:ipetkov/crane";
@@ -19,10 +19,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hc-infra.url = "github:holochain-open-dev/infrastructure";
-    scaffolding = {
-      url = "github:holochain/scaffolding";
-      # inputs.holochain.follows = "holochain";
-    };
   };
 
   outputs = inputs@{ ... }:

@@ -10,8 +10,7 @@
     nixpkgs.follows = "holochain/nixpkgs";
     flake-parts.follows = "holochain/flake-parts";
 
-    tauri-plugin-holochain.url =
-      "/home/guillem/projects/darksoil/tauri-plugin-holochain";
+    p2p-shipyard.url = "/home/guillem/projects/darksoil/p2p-shipyard";
   };
 
   outputs = inputs:
@@ -19,13 +18,11 @@
       systems = builtins.attrNames inputs.holochain.devShells;
       perSystem = { inputs', config, pkgs, system, ... }: {
         devShells.default = pkgs.mkShell {
-          inputsFrom =
-            [ inputs'.tauri-plugin-holochain.devShells.holochainTauriDev ];
+          inputsFrom = [ inputs'.p2p-shipyard.devShells.holochainTauriDev ];
         };
         devShells.androidDev = pkgs.mkShell {
-          inputsFrom = [
-            inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev
-          ];
+          inputsFrom =
+            [ inputs'.p2p-shipyard.devShells.holochainTauriAndroidDev ];
         };
       };
     };

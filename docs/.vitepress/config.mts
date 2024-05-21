@@ -2,15 +2,15 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Tauri Plugin Holochain",
-  description: "Cross-platform holochain runtimes and apps",
-  base: "/tauri-plugin-holochain",
+  title: "p2p-shipyard",
+  description: "Build cross-platform holochain apps and runtimes",
+  base: "/p2p-shipyard",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       {
         text: "Documentation",
-        link: "/documentation/how-to-create-an-executable-happ",
+        link: "/documentation/how-to-create-an-end-user-happ",
       },
       { text: "License", link: "/license/license" },
     ],
@@ -21,8 +21,8 @@ export default defineConfig({
           text: "Guides",
           items: [
             {
-              text: "How to create an executable hApp ",
-              link: "/documentation/how-to-create-an-executable-happ",
+              text: "How to create an end-user hApp",
+              link: "/documentation/how-to-create-an-end-user-happ",
             },
             {
               text: "How to create a holochain runtime",
@@ -70,7 +70,7 @@ export default defineConfig({
     socialLinks: [
       {
         icon: "github",
-        link: "https://github.com/darksoil-studio/tauri-plugin-holochain",
+        link: "https://github.com/darksoil-studio/p2p-shipyard",
       },
     ],
   },

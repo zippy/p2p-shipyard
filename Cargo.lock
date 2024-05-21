@@ -712,9 +712,9 @@ dependencies = [
 
 [[package]]
 name = "block2"
-version = "0.5.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "43ff7d91d3c1d568065b06c899777d1e48dcf76103a672a0adbc238a7f247f1e"
+checksum = "2c132eebf10f5cad5289222520a4a058514204aed6d791f1cf4fe8088b82d15f"
 dependencies = [
  "objc2",
 ]
@@ -1365,9 +1365,9 @@ checksum = "393bc73c451830ff8dbb3a07f61843d6cb41a084f9996319917c0b291ed785bb"
 
 [[package]]
 name = "crc32fast"
-version = "1.4.1"
+version = "1.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "58ebf8d6963185c7625d2c3c3962d99eb8936637b1427536d21dc36ae402ebad"
+checksum = "a97769d94ddab943e4510d138150169a2758b5ef3eb191a9ee688de3e23ef7b3"
 dependencies = [
  "cfg-if 1.0.0",
 ]
@@ -2159,7 +2159,7 @@ dependencies = [
 [[package]]
 name = "file_tree_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#bd05714adf6b5e16d306fd6daa657dc69803ac34"
 dependencies = [
  "build-fs-tree",
  "ignore",
@@ -3430,7 +3430,7 @@ dependencies = [
 [[package]]
 name = "holochain_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#bd05714adf6b5e16d306fd6daa657dc69803ac34"
 dependencies = [
  "dialoguer",
  "file_tree_utils",
@@ -4893,9 +4893,9 @@ dependencies = [
 
 [[package]]
 name = "libsodium-sys-stable"
-version = "1.20.7"
+version = "1.20.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eb55e94ce32b48f061dcef1c7272d63b855c2e8c11b5d461029320b741f266c5"
+checksum = "ef8e78c2da1deb8356ea2c0998be1249d897ccae4791d2335e2e6b11aa79115f"
 dependencies = [
  "cc",
  "libc",
@@ -5394,7 +5394,7 @@ dependencies = [
 [[package]]
 name = "nix_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#bd05714adf6b5e16d306fd6daa657dc69803ac34"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -5449,7 +5449,7 @@ checksum = "61807f77802ff30975e01f4f071c8ba10c022052f98b3294119f3e615d13e5be"
 [[package]]
 name = "npm_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#bd05714adf6b5e16d306fd6daa657dc69803ac34"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -5595,15 +5595,15 @@ dependencies = [
 
 [[package]]
 name = "objc-sys"
-version = "0.3.3"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da284c198fb9b7b0603f8635185e85fbd5b64ee154b1ed406d489077de2d6d60"
+checksum = "cdb91bdd390c7ce1a8607f35f3ca7151b65afc0ff5ff3b34fa350f7d7c7e4310"
 
 [[package]]
 name = "objc2"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4b25e1034d0e636cd84707ccdaa9f81243d399196b8a773946dcffec0401659"
+checksum = "46a785d4eeff09c14c487497c162e92766fbb3e4059a71840cecc03d9a50b804"
 dependencies = [
  "objc-sys",
  "objc2-encode",
@@ -5611,51 +5611,85 @@ dependencies = [
 
 [[package]]
 name = "objc2-app-kit"
-version = "0.2.0"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb79768a710a9a1798848179edb186d1af7e8a8679f369e4b8d201dd2a034047"
+checksum = "e4e89ad9e3d7d297152b17d39ed92cd50ca8063a89a9fa569046d41568891eff"
 dependencies = [
+ "bitflags 2.5.0",
  "block2",
+ "libc",
  "objc2",
  "objc2-core-data",
+ "objc2-core-image",
  "objc2-foundation",
+ "objc2-quartz-core",
 ]
 
 [[package]]
 name = "objc2-core-data"
-version = "0.2.0"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e092bc42eaf30a08844e6a076938c60751225ec81431ab89f5d1ccd9f958d6c"
+checksum = "617fbf49e071c178c0b24c080767db52958f716d9eabdf0890523aeae54773ef"
+dependencies = [
+ "bitflags 2.5.0",
+ "block2",
+ "objc2",
+ "objc2-foundation",
+]
+
+[[package]]
+name = "objc2-core-image"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "55260963a527c99f1819c4f8e3b47fe04f9650694ef348ffd2227e8196d34c80"
 dependencies = [
  "block2",
  "objc2",
  "objc2-foundation",
+ "objc2-metal",
 ]
 
 [[package]]
 name = "objc2-encode"
-version = "4.0.1"
+version = "4.0.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88658da63e4cc2c8adb1262902cd6af51094df0488b760d6fd27194269c0950a"
+checksum = "7891e71393cd1f227313c9379a26a584ff3d7e6e7159e988851f0934c993f0f8"
 
 [[package]]
 name = "objc2-foundation"
-version = "0.2.0"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cfaefe14254871ea16c7d88968c0ff14ba554712a20d76421eec52f0a7fb8904"
+checksum = "0ee638a5da3799329310ad4cfa62fbf045d5f56e3ef5ba4149e7452dcf89d5a8"
 dependencies = [
+ "bitflags 2.5.0",
  "block2",
+ "libc",
  "objc2",
 ]
 
 [[package]]
-name = "objc2-quartz-core"
-version = "0.2.0"
+name = "objc2-metal"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "153140331e87b21327f0be072ac7108e67b43986f64098e937077b1eed6e3191"
+checksum = "dd0cba1276f6023976a406a14ffa85e1fdd19df6b0f737b063b95f6c8c7aadd6"
 dependencies = [
+ "bitflags 2.5.0",
+ "block2",
  "objc2",
  "objc2-foundation",
+]
+
+[[package]]
+name = "objc2-quartz-core"
+version = "0.2.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e42bee7bff906b14b167da2bac5efe6b6a07e6f7c0a21a7308d40c960242dc7a"
+dependencies = [
+ "bitflags 2.5.0",
+ "block2",
+ "objc2",
+ "objc2-foundation",
+ "objc2-metal",
 ]
 
 [[package]]
@@ -7234,7 +7268,7 @@ dependencies = [
 [[package]]
 name = "rust_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#bd05714adf6b5e16d306fd6daa657dc69803ac34"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -8717,7 +8751,7 @@ dependencies = [
 [[package]]
 name = "templates_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#8b14b15141b54cbacb83242bc4f1dcd819cee6b8"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#bd05714adf6b5e16d306fd6daa657dc69803ac34"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -9350,7 +9384,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "tracing",
- "tx5-core",
+ "tx5-core 0.0.9-alpha (registry+https://github.com/rust-lang/crates.io-index)",
  "tx5-go-pion",
  "tx5-signal",
  "url",
@@ -9361,6 +9395,21 @@ name = "tx5-core"
 version = "0.0.9-alpha"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a45e91402a7c17bda8835acb47c7460dc3880dc067235d324401a7359857a75"
+dependencies = [
+ "base64 0.13.1",
+ "once_cell",
+ "rand 0.8.5",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "url",
+]
+
+[[package]]
+name = "tx5-core"
+version = "0.0.9-alpha"
+source = "git+https://github.com/guillemcordoba/tx5?branch=custom-go#9e0d775cfe2c166ee58d07b884d20d186c580aaa"
 dependencies = [
  "app_dirs2",
  "base64 0.13.1",
@@ -9392,8 +9441,7 @@ dependencies = [
 [[package]]
 name = "tx5-go-pion-sys"
 version = "0.0.9-alpha"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f4f42f441e7c186c5aa846618144d1e041215b7d68ecd747aec1e5478c06fccb"
+source = "git+https://github.com/guillemcordoba/tx5?branch=custom-go#9e0d775cfe2c166ee58d07b884d20d186c580aaa"
 dependencies = [
  "Inflector",
  "base64 0.13.1",
@@ -9404,15 +9452,14 @@ dependencies = [
  "ouroboros",
  "sha2",
  "tracing",
- "tx5-core",
+ "tx5-core 0.0.9-alpha (git+https://github.com/guillemcordoba/tx5?branch=custom-go)",
  "zip 0.6.6",
 ]
 
 [[package]]
 name = "tx5-go-pion-turn"
 version = "0.0.9-alpha"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "393e40552c56e0333a2e2e08090869f2494417c25d0168b8366caf4c9ae52391"
+source = "git+https://github.com/guillemcordoba/tx5?branch=custom-go#9e0d775cfe2c166ee58d07b884d20d186c580aaa"
 dependencies = [
  "base64 0.13.1",
  "dirs",
@@ -9422,7 +9469,7 @@ dependencies = [
  "sha2",
  "tokio",
  "tracing",
- "tx5-core",
+ "tx5-core 0.0.9-alpha (git+https://github.com/guillemcordoba/tx5?branch=custom-go)",
  "zip 0.6.6",
 ]
 
@@ -9450,7 +9497,7 @@ dependencies = [
  "tokio-rustls 0.23.4",
  "tokio-tungstenite 0.18.0",
  "tracing",
- "tx5-core",
+ "tx5-core 0.0.9-alpha (registry+https://github.com/rust-lang/crates.io-index)",
  "url",
  "webpki-roots 0.23.1",
 ]
@@ -9472,7 +9519,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
- "tx5-core",
+ "tx5-core 0.0.9-alpha (registry+https://github.com/rust-lang/crates.io-index)",
  "warp",
 ]
 
@@ -10223,9 +10270,9 @@ dependencies = [
 
 [[package]]
 name = "wide"
-version = "0.7.19"
+version = "0.7.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aab6594190de06d718a5dbc5fa781ab62f8903797056480e549ca74add6b7065"
+checksum = "21e005a4cc35784183a9e39cb22e9a9c46353ef6a7f113fd8d36ddc58c15ef3c"
 dependencies = [
  "bytemuck",
  "safe_arch",

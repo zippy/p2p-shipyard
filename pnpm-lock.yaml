@@ -24,8 +24,8 @@ importers:
   packages/frame:
     dependencies:
       '@holochain/client':
-        specifier: ^0.17.0-dev.7
-        version: 0.17.0-dev.7
+        specifier: ^0.18.0-dev.1
+        version: 0.18.0-dev.1
       '@msgpack/msgpack':
         specifier: ^3.0.0-beta2
         version: 3.0.0-beta2
@@ -55,8 +55,8 @@ importers:
   packages/signer:
     dependencies:
       '@holochain/client':
-        specifier: ^0.17.0-dev.12
-        version: 0.17.0-dev.12
+        specifier: ^0.18.0-dev.1
+        version: 0.18.0-dev.1
       '@msgpack/msgpack':
         specifier: ^3.0.0-beta2
         version: 3.0.0-beta2
@@ -479,12 +479,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  /@holochain/client@0.17.0-dev.12:
-    resolution: {integrity: sha512-aEOkD4wtFeHAv5AiEkBfsiGeAujCyQf1yfvmtcdERnv73zgZhxCiZ0ZrEi46kdJhRHMXX/1Qkqo6VY8afrepfQ==}
-    engines: {node: '>=18.0.0 || >=20.0.0'}
-
-  /@holochain/client@0.17.0-dev.7:
-    resolution: {integrity: sha512-dr0S+4Au/sS/PXu0T7Lm1uqwkPVpcWvbMBL9xD7bRv4pfWMratGdP3OpeA356l4bkpSJxkOltz2o2kN3pW3tRQ==}
+  /@holochain/client@0.18.0-dev.1:
+    resolution: {integrity: sha512-5BW+kG/VoB+AhrzquoZ1QHbc1fGwujLs2o6Ct+aOkqXATjQNFif6auX50cagZSaq9hWX5VuZLcqdDTXLWKhNrw==}
     engines: {node: '>=18.0.0 || >=20.0.0'}
 
   /@holochain/serialization@0.1.0-beta-rc.3:
@@ -638,10 +634,6 @@ packages:
 
   /@shikijs/transformers@1.2.4:
     resolution: {integrity: sha512-ysGkpsHxRxLmz8nGKeFdV+gKj1NXt+88sM/34kfKVWTWIXg5gsFOJxJBbG7k+fUR5JlD6sNh65W9qPXrbVE1wQ==}
-
-  /@tauri-apps/api@1.5.3:
-    resolution: {integrity: sha512-zxnDjHHKjOsrIzZm6nO5Xapb/BxqUq1tc7cGkFXsFkGTsSWgCPH1D8mm0XS9weJY2OaR73I3k3S+b7eSzJDfqA==}
-    engines: {node: '>= 14.6.0', npm: '>= 6.6.0', yarn: '>= 1.19.1'}
 
   /@tauri-apps/api@2.0.0-beta.4:
     resolution: {integrity: sha512-Nxtj28NYUo5iwYkpYslxmOPkdI2WkELU2e3UH9nbJm9Ydki2CQwJVGQxx4EANtdZcMNsEsUzRqaDTvEUYH1l6w==}
@@ -1679,28 +1671,11 @@ snapshots:
     dev: true
     optional: true
 
-  /@holochain/client@0.17.0-dev.12:
+  /@holochain/client@0.18.0-dev.1:
     dependencies:
       '@bitgo/blake2b': 3.2.4
       '@holochain/serialization': 0.1.0-beta-rc.3
       '@msgpack/msgpack': 2.8.0
-      emittery: 1.0.3
-      isomorphic-ws: 5.0.0(ws@8.16.0)
-      js-base64: 3.7.7
-      libsodium-wrappers: 0.7.13
-      lodash-es: 4.17.21
-      ws: 8.16.0
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
-    dev: false
-
-  /@holochain/client@0.17.0-dev.7:
-    dependencies:
-      '@bitgo/blake2b': 3.2.4
-      '@holochain/serialization': 0.1.0-beta-rc.3
-      '@msgpack/msgpack': 2.8.0
-      '@tauri-apps/api': 1.5.3
       emittery: 1.0.3
       isomorphic-ws: 5.0.0(ws@8.16.0)
       js-base64: 3.7.7
@@ -1855,9 +1830,6 @@ snapshots:
     dependencies:
       shiki: 1.2.4
     dev: true
-
-  /@tauri-apps/api@1.5.3:
-    dev: false
 
   /@tauri-apps/api@2.0.0-beta.4:
     dev: false

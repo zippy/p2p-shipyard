@@ -17,7 +17,7 @@ nix run .#scaffold-tauri-app -- --path /tmp/forum-scaffold-tauri-app --ui-packag
 
 cd /tmp/forum-scaffold-tauri-app
 
-nix develop --override-input tauri-plugin-holochain $DIR --command bash -c "
+nix develop --override-input p2p-shipyard $DIR --command bash -c "
 set -e
 
 npm i

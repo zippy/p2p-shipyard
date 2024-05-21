@@ -1,4 +1,4 @@
-# How to create an executable hApp
+# How to create an end-user hApp
 
 This guide describes how to create a hApp that can be directly installed and executed by the end users, for **both desktop and mobile platforms**.
 
@@ -16,7 +16,7 @@ We need a way to create end-users applications for mobile platforms to create si
 0. [Scaffold your hApp using the scaffolding tool](https://developer.holochain.org/get-started/3-forum-app-tutorial/).
 
 > [!NOTE]
-> If you already have a hApp that you want to convert to a tauri executable app, you can skip this step.
+> If you already have a hApp that you want to convert to a tauri end-user app, you can skip this step.
 
 1. Run this command inside the repository of your web-hApp:
 
@@ -26,7 +26,7 @@ nix run github:darksoil-studio/tauri-plugin-holochain#scaffold-tauri-app
 
 And follow along to answer all the necessary prompts.
 
-This will execute all the required steps to convert your previously scaffolded hApp to an end-user executable tauri app.
+This will execute all the required steps to convert your previously scaffolded hApp to an end-user tauri app.
 
 2. Take a look into the files that the scaffold command edited, and adapt them if necessary:
 
@@ -41,7 +41,7 @@ This will execute all the required steps to convert your previously scaffolded h
 >
 > It also tries to make smart guesses about the structure of your project, but it can be tricky to support every repository structure. Please open an issue in the github repository if you find any bugs in it!
 
-That's it! We now have a fully functional end-user executable hApp. 
+That's it! We now have a fully functional end-user, cross-platform hApp. 
 
 > [!WARNING]
 > The scaffolded tauri app is missing icons, which are needed for the app to compile. Run through the rest of this guide and the following one ("Getting to know Tauri") to be able to generate the icons for your Tauri app.

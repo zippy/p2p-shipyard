@@ -1,7 +1,7 @@
 # Project Setup for Android Development
 
 > [!NOTE]
-> This guide assumes that you have already gone through either [how to create an executable hApp](./how-to-create-an-executable-happ.md) or [how to create a holochain runtime](./how-to-create-a-holochain-runtime.md).
+> This guide assumes that you have already gone through either [how to create an end-user hApp](./how-to-create-an-end-user.md) or [how to create a holochain runtime](./how-to-create-a-holochain-runtime.md).
 
 1. In the root folder of your repository, run:
 

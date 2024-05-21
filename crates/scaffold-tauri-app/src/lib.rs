@@ -1,5 +1,5 @@
 use anyhow::Result;
-use dialoguer::Input;
+use dialoguer::{theme::ColorfulTheme, Input};
 use file_tree_utils::{dir_to_file_tree, map_file, FileTree, FileTreeError};
 use handlebars::{no_escape, RenderErrorReason};
 use holochain_scaffolding_utils::GetOrChooseWebAppManifestError;
@@ -18,10 +18,10 @@ use templates_scaffolding_utils::{
 };
 use thiserror::Error;
 
-static TEMPLATE: Dir<'static> = include_dir!("$CARGO_MANIFEST_DIR/templates/executable-happ");
+static TEMPLATE: Dir<'static> = include_dir!("$CARGO_MANIFEST_DIR/templates/end-user-happ");
 
 #[derive(Error, Debug)]
-pub enum ScaffoldExecutableHappError {
+pub enum ScaffoldEndUserHappError {
     #[error(transparent)]
     NpmScaffoldingUtilsError(#[from] NpmScaffoldingUtilsError),
 
@@ -60,7 +60,7 @@ pub enum ScaffoldExecutableHappError {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct ScaffoldExecutableHappData {
+struct ScaffoldEndUserHappData {
     app_name: String,
     identifier: String,
 }
@@ -69,7 +69,7 @@ pub fn scaffold_tauri_app(
     file_tree: FileTree,
     ui_package: Option<String>,
     bundle_identifier: Option<String>,
-) -> Result<FileTree, ScaffoldExecutableHappError> {
+) -> Result<FileTree, ScaffoldEndUserHappError> {
     // - Detect npm package manager
     let package_manager = guess_or_choose_package_manager(&file_tree)?;
 
@@ -89,7 +89,7 @@ pub fn scaffold_tauri_app(
 
     let identifier: String = match bundle_identifier {
         Some(i) => i,
-        None => Input::with_theme(&ColorfulTheme::default()).with_prompt(format!("Input the bundle identifier for your app (eg: org.myorg.{app_name}): ")).validate_with(|input| {
+        None => Input::with_theme(&ColorfulTheme::default()).with_prompt(format!("Input the bundle identifier for your app (eg: org.myorg.{app_name}): ")).validate_with(|input: &String| {
             if input.contains("-") || input.contains("_") {
                 Err(String::from("The bundle identifier can only contain alphanumerical characters."))
             } else {
@@ -102,7 +102,7 @@ pub fn scaffold_tauri_app(
         file_tree,
         &h,
         &template_file_tree,
-        &ScaffoldExecutableHappData {
+        &ScaffoldEndUserHappData {
             identifier,
             app_name: app_name.clone(),
         },
@@ -271,11 +271,11 @@ pub fn scaffold_tauri_app(
                     .to_string(),
             };
 
-            // - Add the `tauri-plugin-holochain` as input to the flake
+            // - Add the `p2p-shipyard` as input to the flake
             let flake_nix_content = add_flake_input_to_flake_file(
                 flake_nix_content,
-                String::from("tauri-plugin-holochain"),
-                String::from("github:darksoil-studio/tauri-plugin-holochain"),
+                String::from("p2p-shipyard"),
+                String::from("github:darksoil-studio/p2p-shipyard"),
             )?;
 
             let scope_opener = String::from("devShells.default = pkgs.mkShell {");
@@ -299,14 +299,14 @@ pub fn scaffold_tauri_app(
                 .replace(
                     "inputsFrom = [",
                     r#"inputsFrom = [
-              inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev"#,
+              inputs'.p2p-shipyard.devShells.holochainTauriAndroidDev"#,
                 );
 
             // - Add the holochainTauriDev to the default devShell
             let default_dev_shell = flake_nix_content[open..close].to_string().replace(
                 "inputsFrom = [",
                 r#"inputsFrom = [
-              inputs'.tauri-plugin-holochain.devShells.holochainTauriDev"#,
+              inputs'.p2p-shipyard.devShells.holochainTauriDev"#,
             );
 
             let flake_nix_content = format!(
@@ -317,7 +317,7 @@ pub fn scaffold_tauri_app(
                 &flake_nix_content[close..]
             );
 
-            let result: Result<String, ScaffoldExecutableHappError> = Ok(flake_nix_content);
+            let result: Result<String, ScaffoldEndUserHappError> = Ok(flake_nix_content);
             result
         },
     )?;
@@ -427,7 +427,7 @@ mod tests {
   description = "Template for Holochain app development";
   
   inputs = {
-    tauri-plugin-holochain.url = "github:darksoil-studio/tauri-plugin-holochain";
+    p2p-shipyard.url = "github:darksoil-studio/p2p-shipyard";
     nixpkgs.follows = "holochain/nixpkgs";
 
     versions.url = "github:holochain/holochain?dir=versions/weekly";
@@ -462,14 +462,14 @@ mod tests {
         }: {
           devShells.default = pkgs.mkShell {
             inputsFrom = [
-              inputs'.tauri-plugin-holochain.devShells.holochainTauriDev 
+              inputs'.p2p-shipyard.devShells.holochainTauriDev 
               inputs'.hc-infra.devShells.synchronized-pnpm
               inputs'.holochain.devShells.holonix 
             ];
           };
           devShells.androidDev = pkgs.mkShell {
             inputsFrom = [
-              inputs'.tauri-plugin-holochain.devShells.holochainTauriAndroidDev 
+              inputs'.p2p-shipyard.devShells.holochainTauriAndroidDev 
               inputs'.hc-infra.devShells.synchronized-pnpm
               inputs'.holochain.devShells.holonix 
             ];

@@ -2,7 +2,7 @@
 
 While developing a hApp, it's not that useful to just have one agent to test your hApp with. Instead, you usually need a couple of peers to be able to interact with one another. 
 
-The scaffolding setup steps in [how to create an executable hApp](../how-to-create-an-executable-happ) and [how to create a holochain runtime](../how-to-create-a-holochain-runtime) create a new script in the top level `package.json` file called `android:network`. This script runs an agent in your local computer and another in an Android device, and enables communication between them. 
+The scaffolding setup steps in [how to create an end-user hApp](../how-to-create-an-end-user-happ) and [how to create a holochain runtime](../how-to-create-a-holochain-runtime) create a new script in the top level `package.json` file called `android:network`. This script runs an agent in your local computer and another in an Android device, and enables communication between them. 
 
 Since we want to develop for the Android platform, we need to be inside the `androidDev` devShell:
 

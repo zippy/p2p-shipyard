@@ -34,6 +34,9 @@ use filesystem::{AppBundleStore, BundleStore, FileSystem};
 pub use launch::launch;
 use url2::Url2;
 
+const ZOME_CALL_SIGNER_INITIALIZATION_SCRIPT: &'static str =
+    include_str!("../../../packages/signer/dist/index.js");
+
 /// Access to the holochain APIs.
 pub struct HolochainPlugin<R: Runtime> {
     pub app_handle: AppHandle<R>,
@@ -94,7 +97,7 @@ impl<R: Runtime> HolochainPlugin<R> {
                     )
                     .as_str(),
                 )
-                .initialization_script(include_str!("../../packages/signer/dist/index.js"));
+                .initialization_script(ZOME_CALL_SIGNER_INITIALIZATION_SCRIPT);
 
         let mut capability_builder =
             CapabilityBuilder::new("sign-zome-call").permission("holochain:allow-sign-zome-call");
@@ -166,7 +169,7 @@ impl<R: Runtime> HolochainPlugin<R> {
                     )
                     .as_str(),
                 )
-                .initialization_script(include_str!("../../packages/signer/dist/index.js"));
+                .initialization_script(ZOME_CALL_SIGNER_INITIALIZATION_SCRIPT);
 
             let mut capability_builder = CapabilityBuilder::new("sign-zome-call")
                 .permission("holochain:allow-sign-zome-call");
