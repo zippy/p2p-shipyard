@@ -21,7 +21,7 @@ We need a way to create end-users applications for mobile platforms to create si
 1. Run this command inside the repository of your web-hApp:
 
 ```bash
-nix run github:darksoil-studio/tauri-plugin-holochain#scaffold-tauri-app
+nix run github:darksoil-studio/p2p-shipyard#scaffold-tauri-app
 ```
 
 And follow along to answer all the necessary prompts.
@@ -30,10 +30,11 @@ This will execute all the required steps to convert your previously scaffolded h
 
 2. Take a look into the files that the scaffold command edited, and adapt them if necessary:
 
-- `flake.nix`: added the `tauri-plugin-holochain` input and its `devShells`.
+- `flake.nix`: added the `p2p-shipyard` input and its `devShells`.
 - `package.json`: added set up scripts and some `devDependencies`.
 - `ui/vite.config.ts`: set the server configuration necessary for tauri.
-- `src-tauri`: here is where the code for the backend of the tauri app lives.
+- `src-tauri`: here is where the code for the backend of the tauri app lives. 
+  - For now it's a simple Tauri app that includes the `tauri-plugin-holochain`, and installs your app when it's first launched.
   - The tauri app will just use the UI that the scaffolding tool produced as its own UI.
 
 > [!WARNING]

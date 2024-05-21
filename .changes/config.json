@@ -1,5 +1,5 @@
 {
-  "gitSiteUrl": "https://www.github.com/your-org/tauri-plugin-holochain/",
+  "gitSiteUrl": "https://www.github.com/darksoil-studio/p2p-shipyard/",
   "pkgManagers": {
     "rust": {
       "version": true,
@@ -82,9 +82,7 @@
     "tauri-plugin-holochain-api": {
       "path": ".",
       "manager": "javascript",
-      "dependencies": [
-        "tauri-plugin-holochain"
-      ],
+      "dependencies": ["tauri-plugin-holochain"],
       "releaseTag": "npm-v${ pkgFile.version }"
     }
   }

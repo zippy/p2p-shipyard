@@ -7,16 +7,16 @@ A **holochain runtime** is an end-user application that is able to install and o
 In the repository where you want to create your new holochain runtime, run this command:
 
 ```bash
-nix run github:darksoil-studio/tauri-plugin-holochain#scaffold-holochain-runtime
+nix run github:darksoil-studio/p2p-shipyard#scaffold-holochain-runtime
 ```
 
 And follow along its instructions and prompts.
 
 2. Take a look into the repository structure that the scaffold command created, specially:
 
-- `flake.nix`: with the `tauri-plugin-holochain` input and its `devShells`.
+- `flake.nix`: with the `p2p-shipyard` input and its `devShells`.
 - `package.json`: added set up scripts and some `devDependencies`.
-- `src-tauri`: here is where the code for the backend of the tauri app lives.
+- `src-tauri`: here is where the code for the backend of the tauri app lives. For now it's a simple Tauri app that includes the `tauri-plugin-holochain`.
 - `index.html`: main `index.html` file that will be displayed when the app is opened.
 - `src`: this is where the code for the UI lives.
   - The scaffolded template contains a very bare bones vanilla JS app. Look in `src/main.ts` to see how the frontend for your runtime can connect to the `AdminWebsocket`.
