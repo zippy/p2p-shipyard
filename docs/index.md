@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "p2p-shipyard"
-  text: "Build cross-platform holochain apps and runtimes"
-  tagline: Ship holochain to Android, Linux, MacOS and Windows
+  text: Ship cross-platform p2p apps and runtimes
+  tagline: Combining Tauri and Holochain to ship end-user apps to Android, Linux, MacOS and Windows
   actions:
     - theme: brand
       text: Contribute to making it Open-Source!
@@ -24,9 +24,7 @@ features:
   - title: Experimental mobile support
     details: Android has experimental support (see FAQs for more details), iOS support coming soon
     link: /documentation/faqs
-  - title: Works on desktop as well
-    details: Maintain one codebase, ship to all platforms 
-  - title: tauri-plugin-holochain, just another tauri plugin
-    details: Integrate with all the existing tauri plugins (camera, notification, NFC...) to create great cross-platform apps
+  - title: Integrate with all the other plugins in the Tauri ecosystem
+    details: tauri-plugin-holochain is just another tauri plugin
 ---
 

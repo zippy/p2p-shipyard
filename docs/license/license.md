@@ -1,14 +1,33 @@
 # License
 
-`p2p-shipyard` is [Source-Available](https://en.wikipedia.org/wiki/Source-available_software), you can see its source code [here](https://github.com/darksoil-studio/p2p-shipyard). We are raising funds to make it Open Source. 
+We’re using a retroactive crowdfunding mechanism to fund the `p2p-shipyard`.
 
-If you'd like to contribute to `p2p-shipyard` being open-source and free to use by everyone, please go to our open-collective page to contribute!
+The `p2p-shipyard` is currently Source-Available, and once the retroactive crowdfunding goal is reached, it will be Free and Open Source, Forever. 
 
-https://opencollective.com/darksoil/projects/p2p-shipyard
+Up until the retroactive crowdfunding goal is reached, you just have to ask us to use it, and then we’ll work out a contribution to the open source goal together to give you a license to use it.
 
-Once the goal of the tier "Open-Source it!" is reached, we'll add the Open-Source license to the repository so that everyone can use it, for free.
+Once the retroactive crowdfunding goal is met, no one will have to ask anyone to use it ever again. 
 
-If you want to use any of the `p2p-shipyard` components before it becomes Open Source, please reach out to us to setup a licensing agreement.
+### The Plan
+
+#### Phase 1 – Build p2p Shipyard		
+
+* Make the thing (DONE*)
+
+#### Phase 2 – Fund		
+
+* Retroactive Crowdfunding 
+  * Contributions through the [darksoil Open Collective](https://opencollective.com/darksoil/projects/p2p-shipyard)
+  * Contributions of HOT, ETH (link to wallet addresses here)
+* License fees
+  * All license fees go towards the Open-Sourcing goal
+
+#### Phase 3 – Maintenance
+
+* Offer Support Tickets for maintenance, integration, and coaching
+* Possibly create a recurring monthly maintenance goal
+
+*except it’s software so it will never be 100% done :)
 
 # Support
 
@@ -19,3 +38,7 @@ The basic cost of an engagement is 1 ticket. darksoil studio reserves the right 
 To buy a ticket, go to our open collective page:
 
 https://opencollective.com/darksoil/projects/p2p-shipyard
+
+---
+
+Learn more about our approach in [our substack post](), and contribute to our crowdfunding in [our Open Collective page](https://opencollective.com/darksoil/projects/p2p-shipyard).

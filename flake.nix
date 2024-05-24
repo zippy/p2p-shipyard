@@ -6,8 +6,7 @@
 
     nixpkgs.follows = "holochain/nixpkgs";
 
-    versions.url =
-      "github:holochain/holochain?dir=versions/0_3_rc";
+    versions.url = "github:holochain/holochain?dir=versions/0_3_rc";
 
     holochain = {
       url = "github:holochain/holochain";
@@ -21,6 +20,19 @@
     hc-infra.url = "github:holochain-open-dev/infrastructure";
   };
 
+  nixConfig = {
+    extra-substituters = [
+      "https://holochain-ci.cachix.org"
+      "https://holochain-open-dev.cachix.org"
+      "https://darksoil-studio.cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "holochain-ci.cachix.org-1:5IUSkZc0aoRS53rfkvH9Kid40NpyjwCMCzwRTXy+QN8="
+      "holochain-open-dev.cachix.org-1:3Tr+9in6uo44Ga7qiuRIfOTFXog+2+YbyhwI/Z6Cp4U="
+      "darksoil-studio.cachix.org-1:UEi+aujy44s41XL/pscLw37KEVpTEIn8N/kn7jO8rkc="
+    ];
+  };
+
   outputs = inputs@{ ... }:
     inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } rec {
       flake = {
@@ -32,6 +44,7 @@
                 # this is required for glib-networking
                 glib
               ]) ++ (lib.optionals pkgs.stdenv.isLinux (with pkgs; [
+                webkitgtk_4_1
                 webkitgtk_4_1.dev
                 gdk-pixbuf
                 gtk3
@@ -100,12 +113,7 @@
         };
 
         devShells.androidDev = pkgs.mkShell {
-          packages = [
-            packages.android-sdk
-            pkgs.gradle
-            pkgs.jdk17
-            pkgs.aapt
-          ];
+          packages = [ packages.android-sdk pkgs.gradle pkgs.jdk17 pkgs.aapt ];
 
           shellHook = ''
             export GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${pkgs.aapt}/bin/aapt2";
@@ -115,13 +123,6 @@
         };
 
         devShells.androidEmulatorDev = let
-          androidPkgs = import pkgs.path {
-            inherit system;
-            config = {
-              android_sdk.accept_license = true;
-              allowUnfree = true;
-            };
-          };
           android-sdk = inputs.android-nixpkgs.sdk.${system} (sdkPkgs:
             with sdkPkgs; [
               emulator
@@ -129,9 +130,7 @@
             ]);
         in pkgs.mkShell {
           inputsFrom = [ devShells.androidDev ];
-          packages = [
-            android-sdk
-          ];
+          packages = [ android-sdk ];
 
           shellHook = ''
             echo "no" | avdmanager -s create avd -n Pixel -k "system-images;android-33;google_apis_playstore;x86_64" --force
@@ -158,59 +157,57 @@
         in pkgs.mkShell {
           inputsFrom = [ devShells.androidDev devShells.tauriDev ];
           packages = [ rust ];
-
-#          shellHook = ''
- #           export RUSTFLAGS+=" -C link-arg=$(gcc -print-libgcc-file-name)"
- #         '';
         };
 
-        packages.android-sdk = let
-          android-sdk = inputs.android-nixpkgs.sdk.${system} (sdkPkgs:
-            with sdkPkgs; [
-              cmdline-tools-latest
-              build-tools-30-0-3
-              platform-tools
-              ndk-bundle
-              platforms-android-33
-            ]);
-          in android-sdk;
+        packages.android-sdk = inputs.android-nixpkgs.sdk.${system} (sdkPkgs:
+          with sdkPkgs; [
+            cmdline-tools-latest
+            build-tools-30-0-3
+            platform-tools
+            ndk-bundle
+            platforms-android-33
+          ]);
 
         packages.tauriRust = let
-              overlays = [ (import inputs.rust-overlay) ];
-              rustPkgs = import pkgs.path { inherit system overlays; };
-              rust = rustPkgs.rust-bin.stable."1.77.2".default.override {
-                extensions = [ "rust-src" ];
-              };
-              modifiedCargo = pkgs.symlinkJoin {
-  name = "rust";
-  paths = [ rust ];
-  buildInputs = [ pkgs.makeWrapper ];
-  postBuild = ''
-    wrapProgram $out/bin/cargo \
-      --prefix RUSTFLAGS " " "-C link-arg=$(gcc -print-libgcc-file-name)"
-  '';
-};
-            in if pkgs.stdenv.isLinux then modifiedCargo else rust;
+          overlays = [ (import inputs.rust-overlay) ];
+          rustPkgs = import pkgs.path { inherit system overlays; };
+          rust = rustPkgs.rust-bin.stable."1.77.2".default.override {
+            extensions = [ "rust-src" ];
+          };
+          linuxCargo = pkgs.writeShellApplication {
+            name = "cargo";
+            runtimeInputs = [ rust ];
+            text = ''
+              RUSTFLAGS="-C link-arg=$(gcc -print-libgcc-file-name)" cargo "$@"
+            '';
+          };
+          linuxRust = pkgs.symlinkJoin {
+            name = "rust";
+            paths = [ linuxCargo rust ];
+          };
+        in if pkgs.stdenv.isLinux then linuxRust else rust;
 
         packages.holochainTauriRust = let
-              overlays = [ (import inputs.rust-overlay) ];
-              rustPkgs = import pkgs.path { inherit system overlays; };
-              rust = rustPkgs.rust-bin.stable."1.77.2".default.override {
-                extensions = [ "rust-src" ];
-                targets = [ "wasm32-unknown-unknown" ];
-              };
-              modifiedCargo = pkgs.symlinkJoin {
-  name = "rust";
-  paths = [ rust ];
-  buildInputs = [ pkgs.makeWrapper ];
-  postBuild = ''
-    wrapProgram $out/bin/cargo \
-      --prefix RUSTFLAGS " " "-C link-arg=$(gcc -print-libgcc-file-name)"
-  '';
-};
-            in if pkgs.stdenv.isLinux then modifiedCargo else rust;
+          overlays = [ (import inputs.rust-overlay) ];
+          rustPkgs = import pkgs.path { inherit system overlays; };
+          rust = rustPkgs.rust-bin.stable."1.77.2".default.override {
+            extensions = [ "rust-src" ];
+            targets = [ "wasm32-unknown-unknown" ];
+          };
+          linuxCargo = pkgs.writeShellApplication {
+            name = "cargo";
+            runtimeInputs = [ rust ];
+            text = ''
+              RUSTFLAGS="-C link-arg=$(gcc -print-libgcc-file-name)" cargo "$@"
+            '';
+          };
+          linuxRust = pkgs.symlinkJoin {
+            name = "rust";
+            paths = [ linuxCargo rust ];
+          };
+        in if pkgs.stdenv.isLinux then linuxRust else rust;
 
-        packages.androidTauriRust = let 
+        packages.androidTauriRust = let
           overlays = [ (import inputs.rust-overlay) ];
           rustPkgs = import pkgs.path { inherit system overlays; };
           rust = rustPkgs.rust-bin.stable."1.77.2".default.override {
@@ -227,52 +224,51 @@
               "aarch64-linux-android"
             ];
           };
-                        linuxRust = pkgs.symlinkJoin {
-  name = "rust";
-  paths = [ rust ];
-  buildInputs = [ pkgs.makeWrapper ];
-  postBuild = ''
-    wrapProgram $out/bin/cargo \
-      --prefix RUSTFLAGS " " "-C link-arg=$(gcc -print-libgcc-file-name)"
-  '';
-};
+          linuxCargo = pkgs.writeShellApplication {
+            name = "cargo";
+            runtimeInputs = [ rust ];
+            text = ''
+              RUSTFLAGS="-C link-arg=$(gcc -print-libgcc-file-name)" cargo "$@"
+            '';
+          };
+          linuxRust = pkgs.symlinkJoin {
+            name = "rust";
+            paths = [ linuxCargo rust packages.android-sdk ];
+          };
           customZigbuildCargo = pkgs.writeShellApplication {
-                name = "cargo";
+            name = "cargo";
 
-  runtimeInputs = [ 
-    rust 
-    (pkgs.callPackage ./custom-cargo-zigbuild.nix {}) 
-  ];
+            runtimeInputs =
+              [ rust (pkgs.callPackage ./custom-cargo-zigbuild.nix { }) ];
 
-  text = ''
-    if [ "$#" -ne 0 ] && [ "$1" = "build" ]
-    then
-      cargo-zigbuild "$@"
-    else
-      cargo "$@"
-    fi
-  '';
-            };
-            darwinAndroidRust = pkgs.symlinkJoin {
-  name = "darwin-rust-for-android";
-  paths = [ customZigbuildCargo rust packages.android-sdk ];
-  buildInputs = [ pkgs.makeWrapper ];
-  postBuild = '' 
-    wrapProgram $out/bin/cargo \
-      --set RUSTFLAGS "-L linker=clang" \
-      --set RANLIB ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ranlib \
-      --set CC_aarch64_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
-      --set CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
-      --set CC_i686_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android24-clang \
-      --set CARGO_TARGET_I686_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android24-clang \
-      --set CC_x86_64_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android24-clang \
-      --set CARGO_TARGET_x86_64_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android24-clang \
-      --set CC_armv7_linux_androideabi ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi24-clang \
-      --set CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi24-clang
-  '';
-};
-          in if pkgs.stdenv.isDarwin then darwinAndroidRust else linuxRust;
-
+            text = ''
+              if [ "$#" -ne 0 ] && [ "$1" = "build" ]
+              then
+                cargo-zigbuild "$@"
+              else
+                cargo "$@"
+              fi
+            '';
+          };
+          darwinAndroidRust = pkgs.symlinkJoin {
+            name = "darwin-rust-for-android";
+            paths = [ customZigbuildCargo rust packages.android-sdk ];
+            buildInputs = [ pkgs.makeWrapper ];
+            postBuild = ''
+              wrapProgram $out/bin/cargo \
+                --set RUSTFLAGS "-L linker=clang" \
+                --set RANLIB ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ranlib \
+                --set CC_aarch64_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
+                --set CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
+                --set CC_i686_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android24-clang \
+                --set CARGO_TARGET_I686_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android24-clang \
+                --set CC_x86_64_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android24-clang \
+                --set CARGO_TARGET_x86_64_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android24-clang \
+                --set CC_armv7_linux_androideabi ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi24-clang \
+                --set CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi24-clang
+            '';
+          };
+        in if pkgs.stdenv.isDarwin then darwinAndroidRust else linuxRust;
 
         devShells.holochainTauriAndroidDev = pkgs.mkShell {
           inputsFrom = [
@@ -280,29 +276,13 @@
             devShells.androidDev
             inputs'.holochain.devShells.holonix
           ];
-          packages = [ 
-            packages.androidTauriRust
-            self'.packages.custom-go-wrapper
-          ];
-
-          #OPENSSL_DIR = "${inputs.nixpkgs.outputs.legacyPackages.aarch64-linux.openssl.dev}";
-          #OPENSSL_LIB_DIR = "${inputs.nixpkgs.outputs.legacyPackages.aarch64-linux.openssl.dev}/lib";
-          #OPENSSL_INCLUDE_DIR = "${inputs.nixpkgs.outputs.legacyPackages.aarch64-linux.openssl.dev}/include";
-          #SODIUM_LIB_DIR = "${pkgs.libsodium.dev}/lib";
-          #SODIUM_SHARED = "1";
-
-            #export TARGET_AR=$NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar
-#                      export CC=$NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android31-clang
-            #export AS=$NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-as
-            #export AR=$NDK_HOME/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ar
-            #export RUSTC_LINKER=$NDK_HOME/toolchains/llvm/prebuilt/${if pkgs.stdenv.isLinux then "linux-x86_64" else "darwin-x86_64"}/bin/aarch64-linux-android24-clang
-            #export CARGO_TARGET_AARCH64_LINUX_ANDROID_RUSTFLAGS="-c linker=clang"
-            #export TARGET_CC=$NDK_HOME/toolchains/llvm/prebuilt/${if pkgs.stdenv.isLinux then "linux-x86_64" else "darwin-x86_64"}/bin/aarch64-linux-android24-clang
-
+          packages =
+            [ packages.androidTauriRust self'.packages.custom-go-wrapper ];
         };
 
-        devShells.holochainTauriDev =  pkgs.mkShell {
-          inputsFrom = [ devShells.tauriDev inputs'.holochain.devShells.holonix ];
+        devShells.holochainTauriDev = pkgs.mkShell {
+          inputsFrom =
+            [ devShells.tauriDev inputs'.holochain.devShells.holonix ];
           packages = [ packages.holochainTauriRust ];
         };
 

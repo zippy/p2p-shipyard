@@ -13,12 +13,28 @@ We need a way to create end-users applications for mobile platforms to create si
 
 ## Scaffolding the end-user app
 
-0. [Scaffold your hApp using the scaffolding tool](https://developer.holochain.org/get-started/3-forum-app-tutorial/).
+> [!WARNING]
+> `p2p-shipyard` relies heavily on [`nix`](https://nixos.org/) to achieve reproducible environments. Unfortunately, `nix` does not support Windows. So if you have a Windows OS, you will need to [install Windows Subsystem Linux](https://learn.microsoft.com/en-us/windows/wsl/install) and run all the steps in this guide inside of its environment.
+
+0. If you haven't already, [install the nix package manager](https://nixos.org/download/#nix-install-linux) with: 
+
+::: code-group
+```bash [Linux]
+sh <(curl -L https://nixos.org/nix/install) --daemon
+```
+```bash [MacOs]
+sh <(curl -L https://nixos.org/nix/install)
+```
+:::
+
+And follow along its instructions and prompts.
+
+1. [Scaffold your hApp using the scaffolding tool](https://developer.holochain.org/get-started/3-forum-app-tutorial/).
 
 > [!NOTE]
 > If you already have a hApp that you want to convert to a tauri end-user app, you can skip this step.
 
-1. Run this command inside the repository of your web-hApp:
+2. Run this command inside the repository of your web-hApp:
 
 ```bash
 nix run github:darksoil-studio/p2p-shipyard#scaffold-tauri-app
@@ -28,7 +44,7 @@ And follow along to answer all the necessary prompts.
 
 This will execute all the required steps to convert your previously scaffolded hApp to an end-user Tauri app.
 
-2. Take a look into the files that the scaffold command edited, and adapt them if necessary:
+3. Take a look into the files that the scaffold command edited, and adapt them if necessary:
 
 - `flake.nix`: added the `p2p-shipyard` input and its `devShells`.
 - `package.json`: added set up scripts and some `devDependencies`.

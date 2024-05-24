@@ -188,7 +188,7 @@ pub fn scaffold_tauri_app(
 
             let package_json_content = add_npm_script_to_package(
                 &(root_package_json_path.clone(), package_json_content),
-                &String::from("android:network"),
+                &String::from("network:android"),
                 &format!("{} && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"{}\" \"UI_PORT=1420 {}\" \"{}\" \"{}\"",
                     package_manager.run_script_command(String::from("build:happ"), None),
                     package_manager.run_script_command(String::from("local-services"), None),

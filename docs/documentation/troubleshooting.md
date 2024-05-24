@@ -87,7 +87,7 @@ sudo adb devices
 
 ### Firewall
 
-In NixOS, the firewall is enabled by default, which means that you can't directly run `npm run android:network` and have your Android device connect to the vite server running on your computer.
+In NixOS, the firewall is enabled by default, which means that you can't directly run `npm run network:android` and have your Android device connect to the vite server running on your computer.
 
 Disable the firewall to enable your Android device to connect to it:
 

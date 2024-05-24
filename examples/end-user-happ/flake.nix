@@ -21,7 +21,11 @@
           inputsFrom = [ inputs'.p2p-shipyard.devShells.holochainTauriDev ];
         };
         devShells.androidDev = pkgs.mkShell {
-          inputsFrom = [ inputs'.p2p-shipyard.devShells.holochainTauriAndroidDev ];
+          inputsFrom =
+            [ inputs'.p2p-shipyard.devShells.holochainTauriAndroidDev ];
+          # shellHook = ''
+          #   export RUSTFLAGS="-C link-arg=$(gcc -print-libgcc-file-name)"
+          # '';
         };
       };
     };
