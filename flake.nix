@@ -264,7 +264,7 @@
       --set CC_aarch64_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
       --set CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
       --set CC_i686_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android24-clang \
-      --set CARGO_TARGET_I686_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android24-clang \
+      --set CARGO_TARGET_I686_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android24-clang \
       --set CC_x86_64_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android24-clang \
       --set CARGO_TARGET_x86_64_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android24-clang \
       --set CC_armv7_linux_androideabi ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi24-clang \
