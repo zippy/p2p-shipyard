@@ -202,7 +202,7 @@
             '';
           };
           linuxRust = pkgs.symlinkJoin {
-            name = "rust";
+            name = "holochain-tauri-rust-for-linux";
             paths = [ linuxCargo rust ];
           };
         in if pkgs.stdenv.isLinux then linuxRust else rust;
@@ -270,6 +270,12 @@
           };
         in if pkgs.stdenv.isDarwin then darwinAndroidRust else linuxRust;
 
+        devShells.holochainTauriDev = pkgs.mkShell {
+          inputsFrom =
+            [ devShells.tauriDev inputs'.holochain.devShells.holonix ];
+          packages = [ packages.holochainTauriRust ];
+        };
+
         devShells.holochainTauriAndroidDev = pkgs.mkShell {
           inputsFrom = [
             devShells.tauriDev
@@ -278,12 +284,6 @@
           ];
           packages =
             [ packages.androidTauriRust self'.packages.custom-go-wrapper ];
-        };
-
-        devShells.holochainTauriDev = pkgs.mkShell {
-          inputsFrom =
-            [ devShells.tauriDev inputs'.holochain.devShells.holonix ];
-          packages = [ packages.holochainTauriRust ];
         };
 
         devShells.default = pkgs.mkShell {
