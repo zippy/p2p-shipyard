@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "identifier": "example",
   "build": {
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "npm run build -w ui",
     "devUrl": "http://localhost:1420",
     "frontendDist": "../ui/dist"
   },

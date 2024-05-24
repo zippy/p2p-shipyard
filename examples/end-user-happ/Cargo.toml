@@ -23,15 +23,3 @@ path = "dnas/forum/zomes/integrity/posts"
 # TODO: remove these patches once https://github.com/holochain/tx5/issues/87 is resolved
 tx5-go-pion-sys = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }
 tx5-go-pion-turn = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }
-
-# mr_bundle = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-# holochain = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-# holochain_types = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-# holochain_keystore = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-# holochain_conductor_api = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-# holochain_nonce = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-# kitsune_p2p_timestamp = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-# holochain_integrity_types = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-# holochain_zome_types = {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-# holo_hash= {git ="https://github.com/guillemcordoba/holochain", branch ="lair-startup-timing"}
-

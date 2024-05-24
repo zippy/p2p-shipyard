@@ -64,6 +64,7 @@
         src = pkgs.fetchgit {
           url = "https://github.com/wlynxg/go";
           rev = "bff8d409ebfb8d4c8488325f13cb212b07cf6bb4";
+          #sha256 = if pkgs.stdenv.isLinux then "5uMfEqGc2UzxAnJUj8mAd7ojdWF537Ey1DRHWTqjLDY=" else "v7vhTlGOgbUx9uCssYtfxqPmAN74qcoCExH3D6hHm1A=";
           sha256 = "5uMfEqGc2UzxAnJUj8mAd7ojdWF537Ey1DRHWTqjLDY=";
           leaveDotGit = true;
         };

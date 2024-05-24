@@ -26,8 +26,7 @@ lair_keystore = "0.4.0"
 lair_keystore_api = "0.4.0"
 
 # Holochain client
-# holochain_client = "=0.5.0-dev.32"
-holochain_client = { git="https://github.com/guillemcordoba/holochain-client-rust", branch = "main" }
+holochain_client = { version = "0.5.0-rc.1" }
 
 serde_json = "1"
 sha256 = "1"

@@ -15,15 +15,14 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-tauri-build = { version = "2.0.0-beta.10", default-features = false , features = [] }
+tauri-build = { version = "2.0.0-beta.15", default-features = false , features = [] }
 
 [dependencies]
 tauri = { version = "2.0.0-beta.13", features = [] }
 tauri-plugin-holochain = { path = "../../../crates/tauri-plugin-holochain" }
 holochain_types = { version = "0.3.1-rc" }
 lair_keystore = { version = "0.4.0" }
-holochain_client = { git="https://github.com/guillemcordoba/holochain-client-rust", branch = "main" }
-# holochain_client = { version = "0.5.0-dev" }
+holochain_client = { version = "0.5.0-rc.1" }
 log = "0.4"
 tauri-plugin-log = "2.0.0-beta"
 url2 = "0.0.6"
