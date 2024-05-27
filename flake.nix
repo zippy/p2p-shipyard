@@ -2,7 +2,6 @@
   description = "Build cross-platform holochain apps and runtimes";
 
   inputs = {
-    crane.url = "github:ipetkov/crane";
 
     nixpkgs.follows = "holochain/nixpkgs";
 
@@ -18,6 +17,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hc-infra.url = "github:holochain-open-dev/infrastructure";
+    crane.follows = "hc-infra/crane";
   };
 
   nixConfig = {
