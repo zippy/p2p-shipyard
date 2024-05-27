@@ -1,43 +1,27 @@
 # License
 
-We’re using a retroactive crowdfunding mechanism to fund the `p2p-shipyard`.
+The p2p Shipyard is currently [Source-Available](https://en.wikipedia.org/wiki/Source-available_software), and once our retroactive crowdfunding goal is reached, it will be [Free and Open Source](https://en.wikipedia.org/wiki/Free_and_open-source_software), Forever.
 
-The `p2p-shipyard` is currently Source-Available, and once the retroactive crowdfunding goal is reached, it will be Free and Open Source, Forever. 
+Until then, you just have to reach out to us to work out a contribution towards the retroactive crowdfunding goal in exchange for a license to use it. We’re committed to making it accessible, so don’t hesitate to reach out.
 
-Up until the retroactive crowdfunding goal is reached, you just have to ask us to use it, and then we’ll work out a contribution to the open source goal together to give you a license to use it.
+Once the retroactive crowdfunding goal is met, no one will ever have to ask anyone to use it again. 
 
-Once the retroactive crowdfunding goal is met, no one will have to ask anyone to use it ever again. 
+If you need support for integration, bug fixes, or feature requests for the p2p Shipyard, we will be offering [support tickets here](https://opencollective.com/darksoil/projects/p2pshipyard).
 
-### The Plan
 
-#### Phase 1 – Build p2p Shipyard		
+[Reach out to us here!](hello@darksoil.studio)
 
-* Make the thing (DONE*)
 
-#### Phase 2 – Fund		
+[Support the p2p Shipyard on Open Collective!](https://opencollective.com/darksoil/projects/p2pshipyard)
 
-* Retroactive Crowdfunding 
-  * Contributions through the [darksoil Open Collective](https://opencollective.com/darksoil/projects/p2p-shipyard)
-  * Contributions of HOT, ETH (link to wallet addresses here)
-* License fees
-  * All license fees go towards the Open-Sourcing goal
 
-#### Phase 3 – Maintenance
+**Support with ETH or HOT:**
 
-* Offer Support Tickets for maintenance, integration, and coaching
-* Possibly create a recurring monthly maintenance goal
+**Ethereum Address:** 0x848e32fA8FBf3402C0d191E918cE50103eE76A4D
 
-*except it’s software so it will never be 100% done :)
+![Crypto Address](./qrcode-crypto-address.png)
 
-# Support
-
-You can buy support tickets that can be used for bug fixes and feature requests on our software, and for coaching for support and integration.
-
-The basic cost of an engagement is 1 ticket. darksoil studio reserves the right to define when an engagement becomes more than a single ticket and how many tickets that engagement requires. darksoil studio will tell you how many tickets we think something’s going to take, and we won’t move forward with something if it needs a new ticket without your permission. 
-
-To buy a ticket, go to our open collective page:
-
-https://opencollective.com/darksoil/projects/p2p-shipyard
+(all crypto contributions will also count towards the retroactive crowdfunding Goal on Open Collective)
 
 ---
 

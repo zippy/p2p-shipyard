@@ -5,7 +5,7 @@ A **holochain runtime** is an end-user application that is able to install and o
 ## Scaffolding
 
 > [!WARNING]
-> `p2p-shipyard` relies heavily on [`nix`](https://nixos.org/) to achieve reproducible environments. Unfortunately, `nix` does not support Windows. So if you have a Windows OS, you will need to [install Windows Subsystem Linux](https://learn.microsoft.com/en-us/windows/wsl/install) and run all the steps in this guide inside of its environment.
+> p2p Shipyard relies heavily on [`nix`](https://nixos.org/) to achieve reproducible environments. Unfortunately, `nix` does not support Windows. So if you have a Windows OS, you will need to [install Windows Subsystem Linux](https://learn.microsoft.com/en-us/windows/wsl/install) and run all the steps in this guide inside of its environment.
 
 0. If you haven't already, [install the nix package manager](https://nixos.org/download/#nix-install-linux) with: 
 

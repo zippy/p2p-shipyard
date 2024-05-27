@@ -9,5 +9,9 @@
 }
 
 .main .text {
-  max-width: 800px !important;
+  max-width: 850px !important;
+}
+
+.main .tagline {
+  max-width: 850px !important;
 }

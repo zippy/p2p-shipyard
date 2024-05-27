@@ -9,12 +9,12 @@ The [scaffolding tool](https://github.com/holochain/scaffolding) is a great way 
 We need a way to create end-users applications for mobile platforms to create simple experiences similar to what users are used to in the existing app stores. 
 
 > [!NOTE]
-> This is also what [kangaroo](https://github.com/holochain-apps/holochain-kangaroo) accomplishes. However, the approach that kangaroo takes is to serve as a template for you to clone it. The approach for `p2p-shipyard`'s `tauri-plugin-holochain` is just to be another Tauri plugin, which means that apps will get bug fixes and new features automatically when upgrading to a new version of the plugin.
+> This is also what [kangaroo](https://github.com/holochain-apps/holochain-kangaroo) accomplishes. However, the approach that kangaroo takes is to serve as a template for you to clone it. The approach for p2p Shipyard's `tauri-plugin-holochain` is just to be another Tauri plugin, which means that apps will get bug fixes and new features automatically when upgrading to a new version of the plugin.
 
 ## Scaffolding the end-user app
 
 > [!WARNING]
-> `p2p-shipyard` relies heavily on [`nix`](https://nixos.org/) to achieve reproducible environments. Unfortunately, `nix` does not support Windows. So if you have a Windows OS, you will need to [install Windows Subsystem Linux](https://learn.microsoft.com/en-us/windows/wsl/install) and run all the steps in this guide inside of its environment.
+> p2p Shipyard relies heavily on [`nix`](https://nixos.org/) to achieve reproducible environments. Unfortunately, `nix` does not support Windows. So if you have a Windows OS, you will need to [install Windows Subsystem Linux](https://learn.microsoft.com/en-us/windows/wsl/install) and run all the steps in this guide inside of its environment.
 
 0. If you haven't already, [install the nix package manager](https://nixos.org/download/#nix-install-linux) with: 
 

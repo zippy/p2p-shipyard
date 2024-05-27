@@ -2,7 +2,7 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "p2p-shipyard",
+  title: "p2p Shipyard",
   description: "Build cross-platform holochain apps and runtimes",
   base: "/p2p-shipyard",
   themeConfig: {
