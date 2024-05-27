@@ -13,7 +13,7 @@ nix flake update
 nix develop --command bash -c \"npm i && hc scaffold dna forum && hc scaffold zome posts --integrity dnas/forum/zomes/integrity/ --coordinator dnas/forum/zomes/coordinator/\"
 "
 
-nix run .#scaffold-tauri-app -- --path /tmp/forum-scaffold-tauri-app --ui-package ui --bundle-identifier org.myorg.myapp
+nix run --accept-flake-config  .#scaffold-tauri-app -- --path /tmp/forum-scaffold-tauri-app --ui-package ui --bundle-identifier org.myorg.myapp
 
 cd /tmp/forum-scaffold-tauri-app
 
