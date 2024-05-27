@@ -66,7 +66,7 @@ jobs:
         with:
           projectPath: src-tauri
           tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version
-          releaseName: "{{title_case app_name}} v__VERSION__"
+          releaseName: "{{title_case runtime_name}} v__VERSION__"
           releaseBody: "See assets below to download and install this version."
           releaseDraft: true
           prerelease: true
