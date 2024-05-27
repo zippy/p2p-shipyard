@@ -218,7 +218,7 @@ impl<R: Runtime> HolochainPlugin<R> {
             return Ok(app_websocket_auth.clone());
         }
 
-        let mut admin_ws = self.admin_websocket().await?;
+        let admin_ws = self.admin_websocket().await?;
 
         // Allow any when the app is build in debug mode to allow normal tauri development pointing to http://localhost:1420
         let allowed_origins = if cfg!(debug_assertions) {
@@ -298,9 +298,9 @@ impl<R: Runtime> HolochainPlugin<R> {
             .store_web_happ_bundle(app_id.clone(), &web_app_bundle)
             .await?;
 
-        let mut admin_ws = self.admin_websocket().await?;
+        let admin_ws = self.admin_websocket().await?;
         let app_info = install_web_app(
-            &mut admin_ws,
+            &admin_ws,
             app_id.clone(),
             web_app_bundle,
             membrane_proofs,
@@ -326,7 +326,7 @@ impl<R: Runtime> HolochainPlugin<R> {
         membrane_proofs: HashMap<RoleName, MembraneProof>,
         network_seed: Option<NetworkSeed>,
     ) -> crate::Result<AppInfo> {
-        let mut admin_ws = self.admin_websocket().await?;
+        let admin_ws = self.admin_websocket().await?;
 
         self.holochain_runtime
             .filesystem
@@ -334,7 +334,7 @@ impl<R: Runtime> HolochainPlugin<R> {
             .store_happ_bundle(app_id.clone(), &app_bundle)?;
 
         let app_info = install_app(
-            &mut admin_ws,
+            &admin_ws,
             app_id.clone(),
             app_bundle,
             membrane_proofs,
@@ -361,12 +361,12 @@ impl<R: Runtime> HolochainPlugin<R> {
             .store_web_happ_bundle(app_id.clone(), &web_app_bundle)
             .await?;
 
-        let mut admin_ws = self
+        let admin_ws = self
             .admin_websocket()
             .await
             .map_err(|_err| UpdateAppError::WebsocketError)?;
         update_app(
-            &mut admin_ws,
+            &admin_ws,
             app_id.clone(),
             web_app_bundle.happ_bundle().await?,
         )

@@ -18,8 +18,3 @@ path = "dnas/forum/zomes/coordinator/posts"
 
 [workspace.dependencies.posts_integrity]
 path = "dnas/forum/zomes/integrity/posts"
-
-[patch.crates-io]
-# TODO: remove these patches once https://github.com/holochain/tx5/issues/87 is resolved
-tx5-go-pion-sys = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }
-tx5-go-pion-turn = { git = "https://github.com/guillemcordoba/tx5", branch = "custom-go" }

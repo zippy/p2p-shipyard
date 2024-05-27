@@ -3264,9 +3264,9 @@ dependencies = [
 
 [[package]]
 name = "holochain_client"
-version = "0.5.0-rc.1"
+version = "0.5.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "850d41651b155a465043fa17821d4552ead19188d244e5b2b6ffdd9fccc825de"
+checksum = "e039758da87cfcb795e72e76a5542b982d723a83fd102561f3a761f3e8b050e5"
 dependencies = [
  "again",
  "anyhow",
@@ -5578,7 +5578,7 @@ version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "681030a937600a36906c185595136d26abfebb4aa9c65701cefcaf8578bb982b"
 dependencies = [
- "proc-macro-crate 1.3.1",
+ "proc-macro-crate 2.0.0",
  "proc-macro2",
  "quote",
  "syn 2.0.65",
@@ -9365,7 +9365,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "tracing",
- "tx5-core 0.0.9-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "tx5-core",
  "tx5-go-pion",
  "tx5-signal",
  "url",
@@ -9376,21 +9376,6 @@ name = "tx5-core"
 version = "0.0.9-alpha"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9a45e91402a7c17bda8835acb47c7460dc3880dc067235d324401a7359857a75"
-dependencies = [
- "base64 0.13.1",
- "once_cell",
- "rand 0.8.5",
- "serde",
- "serde_json",
- "tokio",
- "tracing",
- "url",
-]
-
-[[package]]
-name = "tx5-core"
-version = "0.0.9-alpha"
-source = "git+https://github.com/guillemcordoba/tx5?branch=custom-go#9e0d775cfe2c166ee58d07b884d20d186c580aaa"
 dependencies = [
  "app_dirs2",
  "base64 0.13.1",
@@ -9422,7 +9407,8 @@ dependencies = [
 [[package]]
 name = "tx5-go-pion-sys"
 version = "0.0.9-alpha"
-source = "git+https://github.com/guillemcordoba/tx5?branch=custom-go#9e0d775cfe2c166ee58d07b884d20d186c580aaa"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4f42f441e7c186c5aa846618144d1e041215b7d68ecd747aec1e5478c06fccb"
 dependencies = [
  "Inflector",
  "base64 0.13.1",
@@ -9433,14 +9419,15 @@ dependencies = [
  "ouroboros",
  "sha2",
  "tracing",
- "tx5-core 0.0.9-alpha (git+https://github.com/guillemcordoba/tx5?branch=custom-go)",
+ "tx5-core",
  "zip 0.6.6",
 ]
 
 [[package]]
 name = "tx5-go-pion-turn"
 version = "0.0.9-alpha"
-source = "git+https://github.com/guillemcordoba/tx5?branch=custom-go#9e0d775cfe2c166ee58d07b884d20d186c580aaa"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "393e40552c56e0333a2e2e08090869f2494417c25d0168b8366caf4c9ae52391"
 dependencies = [
  "base64 0.13.1",
  "dirs",
@@ -9450,7 +9437,7 @@ dependencies = [
  "sha2",
  "tokio",
  "tracing",
- "tx5-core 0.0.9-alpha (git+https://github.com/guillemcordoba/tx5?branch=custom-go)",
+ "tx5-core",
  "zip 0.6.6",
 ]
 
@@ -9478,7 +9465,7 @@ dependencies = [
  "tokio-rustls 0.23.4",
  "tokio-tungstenite 0.18.0",
  "tracing",
- "tx5-core 0.0.9-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "tx5-core",
  "url",
  "webpki-roots 0.23.1",
 ]
@@ -9500,7 +9487,7 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-subscriber",
- "tx5-core 0.0.9-alpha (registry+https://github.com/rust-lang/crates.io-index)",
+ "tx5-core",
  "warp",
 ]
 

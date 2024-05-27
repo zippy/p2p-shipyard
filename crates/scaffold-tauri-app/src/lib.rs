@@ -506,15 +506,7 @@ export default defineConfig({
 
         assert_eq!(
             file_content(&repo, PathBuf::from("Cargo.toml").as_path()).unwrap(),
-        r#"[patch.crates-io.tx5-go-pion-sys]
-branch = "custom-go"
-git = "https://github.com/guillemcordoba/tx5"
-
-[patch.crates-io.tx5-go-pion-turn]
-branch = "custom-go"
-git = "https://github.com/guillemcordoba/tx5"
-
-[profile.dev]
+        r#"[profile.dev]
 opt-level = "z"
 
 [profile.release]

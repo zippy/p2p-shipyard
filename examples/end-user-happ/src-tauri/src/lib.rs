@@ -123,7 +123,7 @@ pub fn run() {
 //
 // You can modify this function to suit your needs if they become more complex
 async fn setup(handle: AppHandle) -> anyhow::Result<()> {
-    let mut admin_ws = handle.holochain()?.admin_websocket().await?;
+    let admin_ws = handle.holochain()?.admin_websocket().await?;
 
     let installed_apps = admin_ws
         .list_apps(None)

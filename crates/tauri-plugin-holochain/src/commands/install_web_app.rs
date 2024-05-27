@@ -18,7 +18,7 @@ use mr_bundle::{error::MrBundleError, Bundle, ResourceBytes};
 use crate::filesystem::FileSystemError;
 
 pub async fn install_web_app(
-    admin_ws: &mut AdminWebsocket,
+    admin_ws: &AdminWebsocket,
     app_id: String,
     bundle: WebAppBundle,
     membrane_proofs: HashMap<RoleName, MembraneProof>,
@@ -39,7 +39,7 @@ pub async fn install_web_app(
 }
 
 pub async fn install_app(
-    admin_ws: &mut AdminWebsocket,
+    admin_ws: &AdminWebsocket,
     app_id: String,
     bundle: AppBundle,
     membrane_proofs: HashMap<RoleName, MembraneProof>,
@@ -108,7 +108,7 @@ pub enum UpdateAppError {
 }
 
 pub async fn update_app(
-    admin_ws: &mut AdminWebsocket,
+    admin_ws: &AdminWebsocket,
     app_id: String,
     bundle: AppBundle,
 ) -> Result<(), UpdateAppError> {

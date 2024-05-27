@@ -59,8 +59,8 @@
 
     packages.custom-go-compiler = let
       go = lib.overrideDerivation pkgs.go_1_21 (attrs: rec {
-        name = "go-${version}-dev";
         version = "1.21";
+        name = "custom-go-${version}-dev";
         src = let
           gitSrc = pkgs.fetchgit {
             url = "https://github.com/wlynxg/go";
@@ -73,7 +73,7 @@
             cp -R . $out
             ls $out
 
-            echo "${version}" > $out/VERSION
+            echo "go${version}" > $out/VERSION
           '';
         in finalGo;
         buildInputs = with pkgs; [ pcre git ];

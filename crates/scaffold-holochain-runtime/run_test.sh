@@ -1,6 +1,8 @@
 #!/usr/bin/bash
 set -e
 
+DIR=$(pwd)
+
 rm -rf /tmp/test-scaffold-holochain-runtime
 
 nix run --accept-flake-config .#scaffold-holochain-runtime -- --name test-scaffold-holochain-runtime --path /tmp
