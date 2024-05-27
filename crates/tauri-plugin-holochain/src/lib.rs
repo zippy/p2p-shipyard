@@ -64,7 +64,7 @@ impl<R: Runtime> HolochainPlugin<R> {
     /// Build a window that opens the UI for the given holochain web-app.
     ///
     /// * `app_id` - the app whose UI will be open. The must have been installed before with `Self::install_web_app()`.
-    /// * `url_path` - url path for the window that will be opened.
+    /// * `url_path` - [url path](https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname) for the window that will be opened.
     pub fn web_happ_window_builder(
         &self,
         app_id: InstalledAppId,
@@ -126,7 +126,7 @@ impl<R: Runtime> HolochainPlugin<R> {
     /// * `label` - the identifier of the window.
     /// * `enable_admin_websocket` - whether the window should have direct access to the `AdminWebsocket`'s API.
     /// * `enabled_app` - an optional `app_id` for the app whose `AppWebsocket` should be enabled in the window.
-    /// * `url_path` - url path for the window that will be opened.
+    /// * `url_path` - [url path](https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname) for the window that will be opened.
     pub fn main_window_builder(
         &self,
         label: String,

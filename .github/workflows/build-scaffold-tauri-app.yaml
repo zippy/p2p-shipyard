@@ -44,6 +44,7 @@ jobs:
 
       - name: Test scaffold-tauri-app
         run: |
+          cargo test -p scaffold-tauri-app
           sh ./crates/scaffold-tauri-app/run_test.sh
 
       - name: Cache scaffold-tauri-app

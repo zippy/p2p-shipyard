@@ -39,5 +39,5 @@ jobs:
         with:
           name: darksoil-studio
 
-      - name: Run tests
+      - name: Run flake tests
         run: nix flake check -L

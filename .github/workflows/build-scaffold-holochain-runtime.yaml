@@ -44,6 +44,7 @@ jobs:
 
       - name: Test scaffold-holochain-runtime
         run: |
+          cargo test -p scaffold-holochain-runtime
           sh ./crates/scaffold-holochain-runtime/run_test.sh
 
       - name: Cache scaffold-holochain-runtime
