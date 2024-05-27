@@ -39,6 +39,13 @@ nix run nixpkgs#cachix use darksoil-studio
 
 2. [Scaffold your hApp using the scaffolding tool](https://developer.holochain.org/get-started/3-forum-app-tutorial/).
 
+After it completes, make sure you execute its lasts steps:
+
+```bash
+nix develop
+npm install
+```
+
 > [!NOTE]
 > If you already have a hApp that you want to convert to a tauri end-user app, you can skip this step.
 
@@ -69,7 +76,7 @@ This will execute all the required steps to convert your previously scaffolded h
 That's it! We now have an end-user, cross-platform hApp. 
 
 > [!WARNING]
-> The scaffolded tauri app is missing icons, which are needed for the app to compile. Run through the rest of this guide and the following one ("Getting to know Tauri") to be able to generate the icons for your Tauri app.
+> The scaffolded tauri app is missing icons, which are needed for the app to compile. Run through the rest of this guide and the following one ([Getting to know Tauri](./getting-to-know-tauri)) to be able to generate the icons for your Tauri app.
 
 ## Development Environment
 
