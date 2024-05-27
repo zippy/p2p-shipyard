@@ -1,4 +1,4 @@
-name: "build-scaffold-tauri-app"
+name: "cache-devshells"
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
@@ -6,7 +6,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-cache:
+  cache-devshells:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]

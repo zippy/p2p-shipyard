@@ -114,16 +114,17 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1716745752,
-        "narHash": "sha256-8K1R9Yg4r08rYk86Yq+lu3E9L3uRUb4xMqYHgl0VGS0=",
+        "lastModified": 1716569590,
+        "narHash": "sha256-5eDbq8TuXFGGO3mqJFzhUbt5zHVTf5zilQoyW5jnJwo=",
         "owner": "ipetkov",
         "repo": "crane",
-        "rev": "19ca94ec2d288de334ae932107816b4a97736cd8",
+        "rev": "109987da061a1bf452f435f1653c47511587d919",
         "type": "github"
       },
       "original": {
         "owner": "ipetkov",
         "repo": "crane",
+        "rev": "109987da061a1bf452f435f1653c47511587d919",
         "type": "github"
       }
     },
@@ -443,11 +444,11 @@
         "versions": "versions"
       },
       "locked": {
-        "lastModified": 1716805448,
-        "narHash": "sha256-4olAk4B4wXCSlEbxhYqGkQcKuSq0luZhWYzSHSKxigM=",
+        "lastModified": 1716817753,
+        "narHash": "sha256-p2li3kQrvgLUxFAdjYpx52A6ss5XTJB7B3xaiuvZ0OI=",
         "owner": "holochain-open-dev",
         "repo": "infrastructure",
-        "rev": "1a95063de433230ee423a9a01d5e9515adb0cbf4",
+        "rev": "b01a45fd818541315f5b4fbd4e83277b8c7fcc16",
         "type": "github"
       },
       "original": {
