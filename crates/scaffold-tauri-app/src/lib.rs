@@ -2,14 +2,13 @@ use anyhow::Result;
 use dialoguer::{theme::ColorfulTheme, Input};
 use file_tree_utils::{dir_to_file_tree, map_file, FileTree, FileTreeError};
 use handlebars::{no_escape, RenderErrorReason};
-use holochain_scaffolding_utils::GetOrChooseWebAppManifestError;
 use include_dir::{include_dir, Dir};
 use nix_scaffolding_utils::{add_flake_input_to_flake_file, NixScaffoldingUtilsError};
 use npm_scaffolding_utils::{
     add_npm_dev_dependency_to_package, add_npm_script_to_package, choose_npm_package,
     guess_or_choose_package_manager, NpmScaffoldingUtilsError,
 };
-use rust_scaffolding_utils::{add_member_to_workspace, RustScaffoldingUtilsError};
+use rust_scaffolding_utils::add_member_to_workspace;
 use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
@@ -32,7 +31,7 @@ pub enum ScaffoldEndUserHappError {
     TemplatesScaffoldingUtilsError(#[from] TemplatesScaffoldingUtilsError),
 
     #[error(transparent)]
-    GetOrChooseWebAppManifestError(#[from] GetOrChooseWebAppManifestError),
+    HolochainScaffoldingUtilsError(#[from] holochain_scaffolding_utils::Error),
 
     #[error(transparent)]
     IoError(#[from] std::io::Error),
@@ -44,7 +43,7 @@ pub enum ScaffoldEndUserHappError {
     NixScaffoldingUtilsError(#[from] NixScaffoldingUtilsError),
 
     #[error(transparent)]
-    RustScaffoldingUtilsError(#[from] RustScaffoldingUtilsError),
+    RustScaffoldingUtilsError(#[from] rust_scaffolding_utils::Error),
 
     #[error(transparent)]
     DialoguerError(#[from] dialoguer::Error),
@@ -62,6 +61,7 @@ pub enum ScaffoldEndUserHappError {
 #[derive(Serialize, Deserialize, Debug)]
 struct ScaffoldEndUserHappData {
     app_name: String,
+    app_bundle_location_from_root: PathBuf,
     identifier: String,
 }
 
@@ -74,9 +74,9 @@ pub fn scaffold_tauri_app(
     let package_manager = guess_or_choose_package_manager(&file_tree)?;
 
     // - Guess the name of the app -> from the web-happ.yaml file
-    let (_web_happ_manifest_path, web_happ_manifest) =
-        holochain_scaffolding_utils::get_or_choose_web_app_manifest(&file_tree)?;
-    let app_name = web_happ_manifest.app_name().to_string();
+    let (happ_manifest_path, happ_manifest) =
+        holochain_scaffolding_utils::get_or_choose_app_manifest(&file_tree)?;
+    let app_name = happ_manifest.app_name().to_string();
 
     // let final_web_happ_path_from_root = web_happ_manifest_path.join(format!("{app_name}.webhapp"));
 
@@ -98,6 +98,10 @@ pub fn scaffold_tauri_app(
         }).interact_text()?
     };
 
+    let mut app_bundle_location_from_root = happ_manifest_path.clone();
+    app_bundle_location_from_root.pop();
+    app_bundle_location_from_root = app_bundle_location_from_root.join(format!("{app_name}.happ"));
+
     let mut file_tree = render_template_file_tree_and_merge_with_existing(
         file_tree,
         &h,
@@ -105,14 +109,9 @@ pub fn scaffold_tauri_app(
         &ScaffoldEndUserHappData {
             identifier,
             app_name: app_name.clone(),
+            app_bundle_location_from_root
         },
     )?;
-    // TODO: what about this?? - In lib.rs, change the name of the app
-    // map_file(
-    //    &mut file_tree,
-    //    PathBuf::from("src-tauri/").as_path(),
-    //    |package_json_content| {},
-    // )?;
 
     let workspace_cargo_toml_path = PathBuf::from("Cargo.toml");
 
@@ -381,19 +380,16 @@ mod tests {
     fn simple_case_test() {
         let repo: FileTree = dir! {
             "flake.nix" => file!(default_flake_nix()),
-            "workdir" => dir! {
-                "web-happ.yaml" => file!(empty_web_happ_yaml("mywebhapp"))
+            "workdir2" => dir! {
+                "happ.yaml" => file!(empty_happ_yaml("myhapp"))
             },
+            "ui" => dir! {
+                "vite.config.ts" => file!(default_vite_config()),
+                "package.json" => file!(empty_package_json("package1"))
+            },
+            "Cargo.toml" => file!(workspace_cargo_toml()),
             "package.json" => file!(empty_package_json("root")),
             "package-lock.json" => file!(empty_package_json("root")),
-            "packages" => dir! {
-                "package1" => dir! {
-                    "package.json" => file!(empty_package_json("package1"))
-                },
-                "package2" => dir! {
-                    "package.json" => file!(empty_package_json("package2"))
-                }
-            }
         };
 
         let repo = scaffold_tauri_app(repo, Some(String::from("package1")), Some(String::from("studio.darksoil.myapp"))).unwrap();
@@ -403,20 +399,22 @@ mod tests {
             r#"{
   "name": "root",
   "dependencies": {},
+  "scripts": {
+    "build:happ": "npm run build:zomes && hc app pack workdir2",
+    "start": "AGENTS=2 npm run network",
+    "network": "npm run build:happ && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"npm run local-services\" \"UI_PORT=1420 npm run -w package1 start\" \"npm run launch\"",
+    "local-services": "hc run-local-services --bootstrap-interface $INTERNAL_IP --bootstrap-port $BOOTSTRAP_PORT --signal-interfaces $INTERNAL_IP --signal-port $SIGNAL_PORT",
+    "network:android": "npm run build:happ && BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"npm run local-services\" \"UI_PORT=1420 npm run -w package1 start\" \"npm run tauri dev\" \"npm run tauri android dev\"",
+    "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude myhapp",
+    "launch": "concurrently-repeat \"npm run tauri dev\" $AGENTS",
+    "tauri": "tauri"
+  },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0-beta.17",
     "concurrently": "^8.2.2",
     "concurrently-repeat": "^0.0.1",
     "internal-ip-cli": "^2.0.0",
     "new-port-cli": "^1.0.0"
-  },
-  "scripts": {
-    "start": "AGENTS=2 npm run network",
-    "network": "BOOTSTRAP_PORT=$(port) SIGNAL_PORT=$(port) INTERNAL_IP=$(internal-ip --ipv4) concurrently -k \"npm run local-services\" \"npm run -w package1 start\" \"npm run launch\"",
-    "local-services": "hc run-local-services --bootstrap-port $BOOTSTRAP_PORT --signal-port $SIGNAL_PORT",
-    "build:zomes": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown --workspace --exclude mywebhapp",
-    "launch": "concurrently-repeat \"npm run tauri dev\" $AGENTS",
-    "tauri": "tauri"
   }
 }"#
         );
@@ -442,7 +440,7 @@ mod tests {
   outputs = inputs @ { ... }:
     inputs.holochain.inputs.flake-parts.lib.mkFlake
     {
-      specialArgs.nonWasmCrates = [ "mywebhapp" ];
+      specialArgs.nonWasmCrates = [ "myhapp" ];
       inherit inputs;
       specialArgs = {
         rootPath = ./.;
@@ -479,28 +477,136 @@ mod tests {
 }
 "#
         );
+
+        assert!(
+            file_content(&repo, PathBuf::from("src-tauri/src/lib.rs").as_path()).unwrap().contains("../../workdir2/myhapp.happ"),
+        );
+
+        assert_eq!(
+            file_content(&repo, PathBuf::from("ui/vite.config.ts").as_path()).unwrap(),
+            r#"import { internalIpV4Sync } from "internal-ip";
+import { defineConfig } from "vite";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  server: {
+    host: "0.0.0.0",
+    port: 1420,
+    strictPort: true,
+    hmr: {
+      protocol: "ws",
+      host: internalIpV4Sync(),
+      port: 1421,
+    }
+  },
+  plugins: [svelte()],
+});
+"#);
+
+        assert_eq!(
+            file_content(&repo, PathBuf::from("Cargo.toml").as_path()).unwrap(),
+        r#"[patch.crates-io.tx5-go-pion-sys]
+branch = "custom-go"
+git = "https://github.com/guillemcordoba/tx5"
+
+[patch.crates-io.tx5-go-pion-turn]
+branch = "custom-go"
+git = "https://github.com/guillemcordoba/tx5"
+
+[profile.dev]
+opt-level = "z"
+
+[profile.release]
+opt-level = "z"
+
+[workspace]
+members = ["dnas/*/zomes/coordinator/*", "dnas/*/zomes/integrity/*", "src-tauri"]
+resolver = "2"
+
+[workspace.dependencies]
+hdi = "0.4.1-rc"
+hdk = "0.3.1-rc"
+serde = "1.0"
+
+[workspace.dependencies.posts]
+path = "dnas/forum/zomes/coordinator/posts"
+
+[workspace.dependencies.posts_integrity]
+path = "dnas/forum/zomes/integrity/posts"
+"#)
+            }
+
+            fn workspace_cargo_toml() -> String {
+                String::from(r#"[profile.dev]
+opt-level = "z"
+
+[profile.release]
+opt-level = "z"
+
+[workspace]
+resolver = "2"
+members = ["dnas/*/zomes/coordinator/*", "dnas/*/zomes/integrity/*"]
+
+[workspace.dependencies]
+hdi = "0.4.1-rc"
+hdk = "0.3.1-rc"
+serde = "1.0"
+
+[workspace.dependencies.posts]
+path = "dnas/forum/zomes/coordinator/posts"
+
+[workspace.dependencies.posts_integrity]
+path = "dnas/forum/zomes/integrity/posts"
+"#)
     }
 
     fn empty_package_json(package_name: &str) -> String {
         format!(
             r#"{{
   "name": "{package_name}",
-  "dependencies": {{}}
+  "dependencies": {{}},
+  "scripts": {{
+    "build:happ": "npm run build:zomes && hc app pack workdir2"
+  }}
 }}
 "#
         )
     }
 
-    fn empty_web_happ_yaml(web_happ_name: &str) -> String {
+    fn default_vite_config() -> String {
+        String::from(
+            r#"import { defineConfig } from "vite";
+import { svelte } from "@sveltejs/vite-plugin-svelte";
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [svelte()],
+});
+"#)
+        }
+
+    fn empty_happ_yaml(happ_name: &str) -> String {
         format!(
             r#"
 ---
 manifest_version: "1"
-name: {web_happ_name}
-ui:
-  bundled: "../ui/dist.zip"
-happ_manifest:
-  bundled: "./plenty.happ"
+name: {happ_name}
+description: ~
+roles:
+  - name: forum
+    provisioning:
+      strategy: create
+      deferred: false
+    dna:
+      bundled: "../dnas/forum/workdir/forum.dna"
+      modifiers:
+        network_seed: ~
+        properties: ~
+        origin_time: ~
+        quantum_time: ~
+      installed_hash: ~
+      clone_limit: 0
 "#
         )
     }
