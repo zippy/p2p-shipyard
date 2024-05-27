@@ -9,7 +9,7 @@ Once the retroactive crowdfunding goal is met, no one will ever have to ask anyo
 If you need support for integration, bug fixes, or feature requests for the p2p Shipyard, we will be offering [support tickets here](https://opencollective.com/darksoil/projects/p2pshipyard).
 
 
-[Reach out to us here!](hello@darksoil.studio)
+[Reach out to us here!](mailto:hello@darksoil.studio)
 
 
 [Support the p2p Shipyard on Open Collective!](https://opencollective.com/darksoil/projects/p2pshipyard)
@@ -25,4 +25,4 @@ If you need support for integration, bug fixes, or feature requests for the p2p 
 
 ---
 
-Learn more about our approach in [our substack post](), and contribute to our crowdfunding in [our Open Collective page](https://opencollective.com/darksoil/projects/p2p-shipyard).
+Learn more about our approach in [our substack post](https://substack.com/@darksoil), and contribute to our crowdfunding in [our Open Collective page](https://opencollective.com/darksoil/projects/p2p-shipyard).
