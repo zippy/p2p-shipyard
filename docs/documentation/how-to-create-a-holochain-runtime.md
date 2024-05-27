@@ -20,7 +20,15 @@ sh <(curl -L https://nixos.org/nix/install)
 
 And follow along its instructions and prompts.
 
-1. In the folder where you want to create your new holochain runtime, run this command:
+1. Add the appropriate nix caches to your environment:
+
+```bash
+nix run nixpkgs#cachix use holochain-ci
+nix run nixpkgs#cachix use holochain-open-dev
+nix run nixpkgs#cachix use darksoil-studio
+```
+
+2. In the folder where you want to create your new holochain runtime, run this command:
 
 ```bash
 nix run github:darksoil-studio/p2p-shipyard#scaffold-holochain-runtime
@@ -28,7 +36,7 @@ nix run github:darksoil-studio/p2p-shipyard#scaffold-holochain-runtime
 
 And follow along its instructions and prompts.
 
-2. Take a look into the repository structure that the scaffold command created, specially:
+3. Take a look into the repository structure that the scaffold command created, specially:
 
 - `flake.nix`: with the `p2p-shipyard` input and its `devShells`.
 - `package.json`: added set up scripts and some `devDependencies`.

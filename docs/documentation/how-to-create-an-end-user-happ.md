@@ -29,12 +29,20 @@ sh <(curl -L https://nixos.org/nix/install)
 
 And follow along its instructions and prompts.
 
-1. [Scaffold your hApp using the scaffolding tool](https://developer.holochain.org/get-started/3-forum-app-tutorial/).
+1. Add the appropriate nix caches to your environment:
+
+```bash
+nix run nixpkgs#cachix use holochain-ci
+nix run nixpkgs#cachix use holochain-open-dev
+nix run nixpkgs#cachix use darksoil-studio
+```
+
+2. [Scaffold your hApp using the scaffolding tool](https://developer.holochain.org/get-started/3-forum-app-tutorial/).
 
 > [!NOTE]
 > If you already have a hApp that you want to convert to a tauri end-user app, you can skip this step.
 
-2. Run this command inside the repository of your web-hApp:
+3. Run this command inside the repository of your web-hApp:
 
 ```bash
 nix run github:darksoil-studio/p2p-shipyard#scaffold-tauri-app
@@ -44,7 +52,7 @@ And follow along to answer all the necessary prompts.
 
 This will execute all the required steps to convert your previously scaffolded hApp to an end-user Tauri app.
 
-3. Take a look into the files that the scaffold command edited, and adapt them if necessary:
+4. Take a look into the files that the scaffold command edited, and adapt them if necessary:
 
 - `flake.nix`: added the `p2p-shipyard` input and its `devShells`.
 - `package.json`: added set up scripts and some `devDependencies`.

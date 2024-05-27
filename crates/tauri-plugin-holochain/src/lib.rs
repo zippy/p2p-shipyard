@@ -61,6 +61,10 @@ fn happ_origin(app_id: &String) -> Url2 {
 }
 
 impl<R: Runtime> HolochainPlugin<R> {
+    /// Build a window that opens the UI for the given holochain web-app.
+    ///
+    /// * `app_id` - the app whose UI will be open. The must have been installed before with `Self::install_web_app()`.
+    /// * `url_path` - url path for the window that will be opened.
     pub fn web_happ_window_builder(
         &self,
         app_id: InstalledAppId,
@@ -116,6 +120,13 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(window_builder)
     }
 
+    /// Build a window that opens the main UI for your Tauri app.
+    /// This is equivalent to creating a window with `WebviewUrl::App(PathBuf::from("index.html"))`.
+    ///
+    /// * `label` - the identifier of the window.
+    /// * `enable_admin_websocket` - whether the window should have direct access to the `AdminWebsocket`'s API.
+    /// * `enabled_app` - an optional `app_id` for the app whose `AppWebsocket` should be enabled in the window.
+    /// * `url_path` - url path for the window that will be opened.
     pub fn main_window_builder(
         &self,
         label: String,
@@ -189,6 +200,7 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(window_builder)
     }
 
+    /// Builds an `AdminWebsocket` ready to use
     pub async fn admin_websocket(&self) -> crate::Result<AdminWebsocket> {
         let admin_ws =
             AdminWebsocket::connect(format!("localhost:{}", self.holochain_runtime.admin_port))
@@ -244,6 +256,9 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(app_websocket_auth)
     }
 
+    /// Builds an `AppWebsocket` for the given app ready to use
+    ///
+    /// * `app_id` - the app to build the `AppWebsocket` for
     pub async fn app_websocket(&self, app_id: InstalledAppId) -> crate::Result<AppWebsocket> {
         let app_websocket_auth = self.get_app_websocket_auth(&app_id).await?;
         let app_ws = AppWebsocket::connect(
@@ -263,6 +278,13 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(app_ws)
     }
 
+    /// Install the given `WebAppBundle` in the holochain runtime
+    /// It installs the hApp in the holochain conductor, and extracts the UI for it to be opened using `Self::web_happ_window_builder()`
+    ///
+    /// * `app_id` - the app id to give to the installed app
+    /// * `web_app_bundle` - the web-app bundle to install
+    /// * `membrane_proofs` - the input membrane proofs for the app
+    /// * `network_seed` - the network seed for the app
     pub async fn install_web_app(
         &self,
         app_id: InstalledAppId,
@@ -291,6 +313,12 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(app_info)
     }
 
+    /// Install the given `AppBundle` in the holochain conductor
+    ///
+    /// * `app_id` - the app id to give to the installed app
+    /// * `app_bundle` - the web-app bundle to install
+    /// * `membrane_proofs` - the input membrane proofs for the app
+    /// * `network_seed` - the network seed for the app
     pub async fn install_app(
         &self,
         app_id: InstalledAppId,
@@ -318,6 +346,10 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(app_info)
     }
 
+    /// Updates the coordinator zomes and UI for the given app with an updated `WebAppBundle`
+    ///
+    /// * `app_id` - the app to update
+    /// * `web_app_bundle` - the new version of the web-hApp bundle
     pub async fn update_web_app(
         &self,
         app_id: InstalledAppId,
@@ -345,6 +377,10 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(())
     }
 
+    /// Updates the coordinator zomes for the given app with an updated `AppBundle`
+    ///
+    /// * `app_id` - the app to update
+    /// * `app_bundle` - the new version of the hApp bundle
     pub async fn update_app(
         &self,
         app_id: InstalledAppId,
@@ -360,6 +396,14 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(app_info)
     }
 
+    /// Checks whether it is necessary to update the hApp, and if so,
+    /// updates the coordinator zomes for the given app with an updated `AppBundle`
+    ///
+    /// To do the check it compares the hash of the `AppBundle` that was installed for the given `app_id`
+    /// with the hash of the `current_app_bundle`, and proceeds to update the coordinator zomes for the app if they are different
+    ///
+    /// * `app_id` - the app to update
+    /// * `current_app_bundle` - the new version of the hApp bundle
     pub async fn update_app_if_necessary(
         &self,
         app_id: InstalledAppId,
@@ -384,6 +428,14 @@ impl<R: Runtime> HolochainPlugin<R> {
         Ok(())
     }
 
+    /// Checks whether it is necessary to update the web-hApp, and if so,
+    /// updates the coordinator zomes and the UI for the given app with an updated `WebAppBundle`
+    ///
+    /// To do the check it compares the hash of the `WebAppBundle` that was installed for the given `app_id`
+    /// with the hash of the `current_web_app_bundle`, and proceeds to update the coordinator zomes and the UI for the app if they are different
+    ///
+    /// * `app_id` - the app to update
+    /// * `current_web_app_bundle` - the new version of the hApp bundle
     pub async fn update_web_app_if_necessary(
         &self,
         app_id: InstalledAppId,
@@ -415,6 +467,7 @@ pub trait HolochainExt<R: Runtime> {
 }
 
 impl<R: Runtime, T: Manager<R>> crate::HolochainExt<R> for T {
+    /// Access the holochain runtime for this Tauri app
     fn holochain(&self) -> crate::Result<&HolochainPlugin<R>> {
         let s = self
             .try_state::<HolochainPlugin<R>>()
