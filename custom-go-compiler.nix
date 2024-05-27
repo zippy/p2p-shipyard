@@ -64,8 +64,11 @@
         src = pkgs.fetchgit {
           url = "https://github.com/wlynxg/go";
           rev = "bff8d409ebfb8d4c8488325f13cb212b07cf6bb4";
-          #sha256 = if pkgs.stdenv.isLinux then "5uMfEqGc2UzxAnJUj8mAd7ojdWF537Ey1DRHWTqjLDY=" else "v7vhTlGOgbUx9uCssYtfxqPmAN74qcoCExH3D6hHm1A=";
-          sha256 = "NTVa7gGnPnTGfBWElRuiZs0f8FHqux0jCDRvceZiBSI=";
+          sha256 = if pkgs.stdenv.isLinux then
+            "NTVa7gGnPnTGfBWElRuiZs0f8FHqux0jCDRvceZiBSI="
+          else
+            "8xt45wLNUGo4zBduEh3lGDkxzpAnd47AEuluJNlRbgc=";
+          # sha256 = "NTVa7gGnPnTGfBWElRuiZs0f8FHqux0jCDRvceZiBSI=";
           leaveDotGit = true;
         };
         buildInputs = with pkgs; [ pcre git ];
