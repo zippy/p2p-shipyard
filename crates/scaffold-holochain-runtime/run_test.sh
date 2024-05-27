@@ -13,7 +13,7 @@ nix develop --override-input p2p-shipyard $DIR --command bash -c "
 set -e
 npm i
 npm run tauri icon $DIR/examples/end-user-happ/src-tauri/icons/icon.png
-npm run tauri build
+cargo build
 "
 nix develop --override-input p2p-shipyard $DIR .#androidDev --command bash -c "
 set -e

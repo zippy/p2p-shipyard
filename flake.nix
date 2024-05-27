@@ -44,7 +44,7 @@
                 # this is required for glib-networking
                 glib
               ]) ++ (lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-                webkitgtk_4_1
+                webkitgtk.dev
                 webkitgtk_4_1.dev
                 gdk-pixbuf
                 gtk3
@@ -78,6 +78,16 @@
                 pkgs.xcbuild
                 pkgs.libiconv
               ]);
+              libraries = {pkgs}: with pkgs;[
+                webkitgtk
+                gtk3
+                cairo
+                gdk-pixbuf
+                glib
+                dbus
+                openssl_3
+                librsvg
+            ];
           };
         };
       };
