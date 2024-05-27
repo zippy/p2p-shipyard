@@ -57,7 +57,7 @@ jobs:
 
       - name: Install and prepare
         run: |
-          npm install
+          {{lower_case package_manager}} install
 
       - name: build the app
         uses: tauri-apps/tauri-action@v0

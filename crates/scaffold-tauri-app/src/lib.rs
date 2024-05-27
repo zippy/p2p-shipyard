@@ -5,8 +5,7 @@ use handlebars::{no_escape, RenderErrorReason};
 use include_dir::{include_dir, Dir};
 use nix_scaffolding_utils::{add_flake_input_to_flake_file, NixScaffoldingUtilsError};
 use npm_scaffolding_utils::{
-    add_npm_dev_dependency_to_package, add_npm_script_to_package, choose_npm_package,
-    guess_or_choose_package_manager, NpmScaffoldingUtilsError,
+    add_npm_dev_dependency_to_package, add_npm_script_to_package, choose_npm_package, guess_or_choose_package_manager, NpmScaffoldingUtilsError, PackageManager
 };
 use rust_scaffolding_utils::add_member_to_workspace;
 use regex::{Captures, Regex};
@@ -63,6 +62,7 @@ struct ScaffoldEndUserHappData {
     app_name: String,
     app_bundle_location_from_root: PathBuf,
     identifier: String,
+    package_manager: PackageManager,
 }
 
 pub fn scaffold_tauri_app(
@@ -109,7 +109,8 @@ pub fn scaffold_tauri_app(
         &ScaffoldEndUserHappData {
             identifier,
             app_name: app_name.clone(),
-            app_bundle_location_from_root
+            app_bundle_location_from_root,
+            package_manager
         },
     )?;
 
