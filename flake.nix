@@ -125,6 +125,11 @@
         devShells.androidEmulatorDev = let
           android-sdk = inputs.android-nixpkgs.sdk.${system} (sdkPkgs:
             with sdkPkgs; [
+              cmdline-tools-latest
+              build-tools-30-0-3
+              platform-tools
+              ndk-bundle
+              platforms-android-33
               emulator
               system-images-android-33-google-apis-playstore-x86-64
             ]);
