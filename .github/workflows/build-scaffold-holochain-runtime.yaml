@@ -41,7 +41,7 @@ jobs:
 
       - name: Build scaffold-holochain-runtime
         run: |
-          nix build -L .#scaffold-holochain-runtime
+          nix build --accept-flake-config -L .#scaffold-holochain-runtime
 
       - name: Test scaffold-holochain-runtime
         run: |
@@ -53,6 +53,7 @@ jobs:
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
-          cachix push darksoil-studio $(nix path-info .#scaffold-holochain-runtime)
+          nix build --accept-flake-config -L .#scaffold-holochain-runtime
+          cachix push darksoil-studio $(nix path-info --accept-flake-config .#scaffold-holochain-runtime)
           cachix pin darksoil-studio scaffold-holochain-runtime $(nix path-info .#scaffold-holochain-runtime)
 

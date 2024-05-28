@@ -41,7 +41,7 @@ jobs:
 
       - name: Build scaffold-tauri-app
         run: |
-          nix build -L .#scaffold-tauri-app
+          nix build --accept-flake-config -L .#scaffold-tauri-app
 
       - name: Test scaffold-tauri-app
         run: |
@@ -53,6 +53,7 @@ jobs:
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
-          cachix push darksoil-studio $(nix path-info .#scaffold-tauri-app)
+          nix build --accept-flake-config -L .#scaffold-tauri-app
+          cachix push darksoil-studio $(nix path-info --accept-flake-config .#scaffold-tauri-app)
           cachix pin darksoil-studio scaffold-tauri-app $(nix path-info .#scaffold-tauri-app)
 

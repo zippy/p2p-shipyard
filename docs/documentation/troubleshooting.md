@@ -40,6 +40,8 @@ pnpm tauri icon <PATH_TO_YOUR_ICON_IN_PNG_FORMAT>
 ```
 :::
 
+---
+
 ### `Error Have you installed the Android SDK?` 
 
 If you get this error:
@@ -58,6 +60,8 @@ nix develop .#androidDev
 ```
 
 And try again.
+
+---
 
 ### `Error Android Studio project directory src-tauri/gen/android doesn't exist.`
 
