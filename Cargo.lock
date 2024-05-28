@@ -2159,7 +2159,7 @@ dependencies = [
 [[package]]
 name = "file_tree_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#885ce4ce6a9d9911de51f5201e67ca983b08a820"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#7f6c2b3d8dad490cc11477560aae0cee40c775bb"
 dependencies = [
  "build-fs-tree",
  "ignore",
@@ -3431,7 +3431,7 @@ dependencies = [
 [[package]]
 name = "holochain_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#885ce4ce6a9d9911de51f5201e67ca983b08a820"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#7f6c2b3d8dad490cc11477560aae0cee40c775bb"
 dependencies = [
  "dialoguer",
  "file_tree_utils",
@@ -5395,7 +5395,7 @@ dependencies = [
 [[package]]
 name = "nix_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#885ce4ce6a9d9911de51f5201e67ca983b08a820"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#7f6c2b3d8dad490cc11477560aae0cee40c775bb"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -5450,7 +5450,7 @@ checksum = "61807f77802ff30975e01f4f071c8ba10c022052f98b3294119f3e615d13e5be"
 [[package]]
 name = "npm_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#885ce4ce6a9d9911de51f5201e67ca983b08a820"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#7f6c2b3d8dad490cc11477560aae0cee40c775bb"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -5578,7 +5578,7 @@ version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "681030a937600a36906c185595136d26abfebb4aa9c65701cefcaf8578bb982b"
 dependencies = [
- "proc-macro-crate 1.3.1",
+ "proc-macro-crate 2.0.0",
  "proc-macro2",
  "quote",
  "syn 2.0.65",
@@ -7260,7 +7260,7 @@ dependencies = [
 [[package]]
 name = "rust_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#885ce4ce6a9d9911de51f5201e67ca983b08a820"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#7f6c2b3d8dad490cc11477560aae0cee40c775bb"
 dependencies = [
  "anyhow",
  "build-fs-tree",
@@ -8743,7 +8743,7 @@ dependencies = [
 [[package]]
 name = "templates_scaffolding_utils"
 version = "0.1.0"
-source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#885ce4ce6a9d9911de51f5201e67ca983b08a820"
+source = "git+https://github.com/holochain-open-dev/infrastructure?branch=main#7f6c2b3d8dad490cc11477560aae0cee40c775bb"
 dependencies = [
  "anyhow",
  "build-fs-tree",
