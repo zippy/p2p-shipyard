@@ -44,8 +44,11 @@
                 # this is required for glib-networking
                 glib
               ]) ++ (lib.optionals pkgs.stdenv.isLinux (with pkgs; [
-                webkitgtk.dev
-                webkitgtk_4_1.dev
+                webkitgtk
+                webkitgtk.dev # Brings libwebkitgtk-4.0.so.37
+                webkitgtk_4_1 # Needed for javascriptcoregtk
+                # webkitgtk_4_1.dev
+                # webkitgtk_6_0
                 gdk-pixbuf
                 gtk3
                 # Video/Audio data composition framework tools like "gst-inspect", "gst-launch" ...
@@ -61,6 +64,9 @@
                 # Support the Video Audio (Hardware) Acceleration API
                 gst_all_1.gst-vaapi
                 libsoup_3
+                dbus
+                openssl_3
+                librsvg
               ])) ++ lib.optionals pkgs.stdenv.isDarwin (with pkgs; [
                 darwin.apple_sdk.frameworks.Security
                 darwin.apple_sdk.frameworks.CoreServices
