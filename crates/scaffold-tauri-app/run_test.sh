@@ -23,7 +23,7 @@ set -e
 npm i
 npm run tauri icon $DIR/examples/end-user-happ/src-tauri/icons/icon.png
 npm run build:happ
-cargo build
+npm run tauri build -- --no-bundle
 "
 
 nix develop --override-input p2p-shipyard $DIR .#androidDev --command bash -c "
@@ -31,5 +31,5 @@ set -e
 
 npm i
 npm run tauri android init
-npm run tauri android build
+cargo build --target aarch64-linux-android
 "
