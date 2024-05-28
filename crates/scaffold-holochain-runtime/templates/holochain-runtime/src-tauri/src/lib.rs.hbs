@@ -25,7 +25,7 @@ pub fn run() {
         ))
         .setup(|app| {
             app.holochain()?
-                .main_window_builder("main", true, None, None)?
+                .main_window_builder(String::from("main"), true, None, None)?
                 .build()?;
 
             Ok(())
