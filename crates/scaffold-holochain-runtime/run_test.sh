@@ -22,5 +22,5 @@ set -e
 
 npm i
 npm run tauri android init
-cargo build --target aarch64-linux-android
+cd src-tauri && cargo build --target aarch64-linux-android
 "
