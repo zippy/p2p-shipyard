@@ -84,16 +84,6 @@
                 pkgs.xcbuild
                 pkgs.libiconv
               ]);
-              libraries = {pkgs}: with pkgs;[
-                webkitgtk
-                gtk3
-                cairo
-                gdk-pixbuf
-                glib
-                dbus
-                openssl_3
-                librsvg
-            ];
           };
         };
       };
@@ -252,15 +242,11 @@
               RUSTFLAGS="-C link-arg=$(gcc -print-libgcc-file-name)" cargo "$@"
             '';
           };
-          linuxRust = pkgs.symlinkJoin {
-            name = "rust";
-            paths = [ linuxCargo rust packages.android-sdk ];
-          };
           customZigbuildCargo = pkgs.writeShellApplication {
             name = "cargo";
 
-            runtimeInputs =
-              [ rust (pkgs.callPackage ./custom-cargo-zigbuild.nix { }) ];
+            runtimeInputs = (lib.optionals pkgs.stdenv.isLinux [ linuxCargo ])
+              ++ [ rust (pkgs.callPackage ./custom-cargo-zigbuild.nix { }) ];
 
             text = ''
               if [ "$#" -ne 0 ] && [ "$1" = "build" ]
@@ -271,25 +257,33 @@
               fi
             '';
           };
-          darwinAndroidRust = pkgs.symlinkJoin {
-            name = "darwin-rust-for-android";
+          androidRust = pkgs.symlinkJoin {
+            name = "rust-for-android";
             paths = [ customZigbuildCargo rust packages.android-sdk ];
             buildInputs = [ pkgs.makeWrapper ];
-            postBuild = ''
+            postBuild = let
+              toolchainBinsPath =
+                "${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/${
+                  if pkgs.stdenv.isLinux then
+                    "linux-x86_64"
+                  else
+                    "darwin-x86_64"
+                }/bin";
+            in ''
               wrapProgram $out/bin/cargo \
                 --set RUSTFLAGS "-L linker=clang" \
-                --set RANLIB ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-ranlib \
-                --set CC_aarch64_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
-                --set CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android24-clang \
-                --set CC_i686_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android24-clang \
-                --set CARGO_TARGET_I686_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android24-clang \
-                --set CC_x86_64_linux_android ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android24-clang \
-                --set CARGO_TARGET_x86_64_LINUX_ANDROID_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android24-clang \
-                --set CC_armv7_linux_androideabi ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi24-clang \
-                --set CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER ${packages.android-sdk}/share/android-sdk/ndk-bundle/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi24-clang
+                --set RANLIB ${toolchainBinsPath}/llvm-ranlib \
+                --set CC_aarch64_linux_android ${toolchainBinsPath}/aarch64-linux-android24-clang \
+                --set CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER ${toolchainBinsPath}/aarch64-linux-android24-clang \
+                --set CC_i686_linux_android ${toolchainBinsPath}/i686-linux-android24-clang \
+                --set CARGO_TARGET_I686_LINUX_ANDROID_LINKER ${toolchainBinsPath}/i686-linux-android24-clang \
+                --set CC_x86_64_linux_android ${toolchainBinsPath}/x86_64-linux-android24-clang \
+                --set CARGO_TARGET_x86_64_LINUX_ANDROID_LINKER ${toolchainBinsPath}/x86_64-linux-android24-clang \
+                --set CC_armv7_linux_androideabi n{toolchainBinsPath}/armv7a-linux-androideabi24-clang \
+                --set CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER ${toolchainBinsPath}/armv7a-linux-androideabi24-clang
             '';
           };
-        in if pkgs.stdenv.isDarwin then darwinAndroidRust else linuxRust;
+        in androidRust;
 
         devShells.holochainTauriDev = pkgs.mkShell {
           inputsFrom =
