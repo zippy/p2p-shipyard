@@ -31,5 +31,5 @@ set -e
 
 npm i
 npm run tauri android init
-TAURI_ANDROID_PACKAGE_NAME_PREFIX=myorg TAURI_ANDROID_PACKAGE_NAME_APP_NAME=mypackage cargo build --target aarch64-linux-android
+npm run tauri android build -- --target aarch64
 "
