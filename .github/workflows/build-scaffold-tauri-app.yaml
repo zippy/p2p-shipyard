@@ -1,4 +1,4 @@
-name: "build-scaffold-tauri-app"
+name: "build-scaffold-tauri-happ"
 on:
   # Trigger the workflow on push or pull request,
   # but only for the main branch
@@ -8,7 +8,7 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build-scaffold-tauri-app:
+  build-scaffold-tauri-happ:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -39,21 +39,21 @@ jobs:
         with:
           name: darksoil-studio
 
-      - name: Build scaffold-tauri-app
+      - name: Build scaffold-tauri-happ
         run: |
-          nix build --accept-flake-config -L .#scaffold-tauri-app
+          nix build --accept-flake-config -L .#scaffold-tauri-happ
 
-      - name: Test scaffold-tauri-app
+      - name: Test scaffold-tauri-happ
         run: |
-          cargo test -p scaffold-tauri-app
-          sh ./crates/scaffold-tauri-app/run_test.sh
+          cargo test -p scaffold-tauri-happ
+          sh ./crates/scaffold-tauri-happ/run_test.sh
 
-      - name: Cache scaffold-tauri-app
+      - name: Cache scaffold-tauri-happ
         if: github.event_name != 'pull_request' && github.ref_name == 'main'
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
-          nix build --accept-flake-config -L .#scaffold-tauri-app
-          cachix push darksoil-studio $(nix path-info --accept-flake-config .#scaffold-tauri-app)
-          cachix pin darksoil-studio scaffold-tauri-app $(nix path-info --accept-flake-config .#scaffold-tauri-app)
+          nix build --accept-flake-config -L .#scaffold-tauri-happ
+          cachix push darksoil-studio $(nix path-info --accept-flake-config .#scaffold-tauri-happ)
+          cachix pin darksoil-studio scaffold-tauri-happ $(nix path-info --accept-flake-config .#scaffold-tauri-happ)
 

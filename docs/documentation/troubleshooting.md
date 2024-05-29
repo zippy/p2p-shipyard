@@ -14,9 +14,9 @@ error: proc macro panicked
 47 |         .run(tauri::generate_context!())
    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
-   = help: message: failed to read icon /tmp/forum-scaffold-tauri-app/src-tauri/icons/32x32.png: No such file or directory (os error 2)
+   = help: message: failed to read icon /tmp/forum-scaffold-tauri-happ/src-tauri/icons/32x32.png: No such file or directory (os error 2)
 
-error: could not compile `forum-scaffold-tauri-app` (lib) due to previous error
+error: could not compile `forum-scaffold-tauri-happ` (lib) due to previous error
     Error failed to build app: failed to build app
 ```
 

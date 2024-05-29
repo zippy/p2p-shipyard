@@ -89,7 +89,7 @@
       };
 
       imports = [
-        ./crates/scaffold-tauri-app/default.nix
+        ./crates/scaffold-tauri-happ/default.nix
         ./crates/scaffold-holochain-runtime/default.nix
         ./custom-go-compiler.nix
       ];
