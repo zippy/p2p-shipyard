@@ -135,16 +135,16 @@
               build-tools-30-0-3
               platform-tools
               ndk-bundle
-              platforms-android-33
+              platforms-android-34
               emulator
-              system-images-android-33-google-apis-playstore-x86-64
+              system-images-android-34-google-apis-playstore-x86-64
             ]);
         in pkgs.mkShell {
           inputsFrom = [ devShells.androidDev ];
           packages = [ android-sdk ];
 
           shellHook = ''
-            echo "no" | avdmanager -s create avd -n Pixel -k "system-images;android-33;google_apis_playstore;x86_64" --force
+            echo "no" | avdmanager -s create avd -n Pixel -k "system-images;android-34;google_apis_playstore;x86_64" --force
           '';
         };
 
@@ -176,7 +176,7 @@
             build-tools-30-0-3
             platform-tools
             ndk-bundle
-            platforms-android-33
+            platforms-android-34
           ]);
 
         packages.tauriRust = let

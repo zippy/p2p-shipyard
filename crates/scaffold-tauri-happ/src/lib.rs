@@ -65,7 +65,7 @@ struct ScaffoldEndUserHappData {
     package_manager: PackageManager,
 }
 
-pub fn scaffold_tauri_app(
+pub fn scaffold_tauri_happ(
     file_tree: FileTree,
     ui_package: Option<String>,
     bundle_identifier: Option<String>,
@@ -393,7 +393,7 @@ mod tests {
             "package-lock.json" => file!(empty_package_json("root")),
         };
 
-        let repo = scaffold_tauri_app(repo, Some(String::from("package1")), Some(String::from("studio.darksoil.myapp"))).unwrap();
+        let repo = scaffold_tauri_happ(repo, Some(String::from("package1")), Some(String::from("studio.darksoil.myapp"))).unwrap();
 
         assert_eq!(
             file_content(&repo, PathBuf::from("package.json").as_path()).unwrap(),
