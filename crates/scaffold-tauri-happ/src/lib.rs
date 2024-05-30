@@ -151,7 +151,7 @@ pub fn scaffold_tauri_happ(
             let package_json_content = add_npm_dev_dependency_to_package(
                 &(root_package_json_path.clone(), package_json_content),
                 &String::from("@tauri-apps/cli"),
-                &String::from("^2.0.0-beta.17"),
+                &String::from("^2.0.0-beta.20"),
             )?;
             let package_json_content = add_npm_dev_dependency_to_package(
                 &(root_package_json_path.clone(), package_json_content),
