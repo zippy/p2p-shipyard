@@ -15,6 +15,7 @@ use templates_scaffolding_utils::{
     helpers::merge::register_merge, register_case_helpers, render_template_file_tree_and_merge_with_existing, TemplatesScaffoldingUtilsError
 };
 use thiserror::Error;
+use convert_case::{Case, Casing};
 
 static TEMPLATE: Dir<'static> = include_dir!("$CARGO_MANIFEST_DIR/templates/end-user-happ");
 
@@ -53,6 +54,9 @@ pub enum ScaffoldEndUserHappError {
     #[error("JSON serialization error: {0}")]
     SerdeJsonError(#[from] serde_json::Error),
 
+    #[error("Invalid identifier: {0}")]
+    InvalidIdentifierError(String),
+
     #[error("Malformed package.json {0}: {1}")]
     MalformedJsonError(PathBuf, String),
 }
@@ -65,6 +69,16 @@ struct ScaffoldEndUserHappData {
     package_manager: PackageManager,
 }
 
+fn validate_identifier(identifier: &String) -> Result<(), ScaffoldEndUserHappError> {
+    if identifier.contains("-") || identifier.contains("_") {
+        Err(ScaffoldEndUserHappError::InvalidIdentifierError( String::from("The bundle identifier can only contain alphanumerical characters.")))
+    } else if identifier.split(".").collect::<Vec<&str>>().len() != 3 {
+        Err(ScaffoldEndUserHappError::InvalidIdentifierError(String::from("The bundle identifier must contain three segments split by points (eg. 'org.myorg.myapp').")))
+    } else {
+        Ok(())
+    }
+}
+
 pub fn scaffold_tauri_happ(
     file_tree: FileTree,
     ui_package: Option<String>,
@@ -73,12 +87,10 @@ pub fn scaffold_tauri_happ(
     // - Detect npm package manager
     let package_manager = guess_or_choose_package_manager(&file_tree)?;
 
-    // - Guess the name of the app -> from the web-happ.yaml file
+    // - Guess the name of the app -> from the happ.yaml file
     let (happ_manifest_path, happ_manifest) =
         holochain_scaffolding_utils::get_or_choose_app_manifest(&file_tree)?;
     let app_name = happ_manifest.app_name().to_string();
-
-    // let final_web_happ_path_from_root = web_happ_manifest_path.join(format!("{app_name}.webhapp"));
 
     // - Create the src-tauri directory structure
     let template_file_tree = dir_to_file_tree(&TEMPLATE)?;
@@ -88,14 +100,14 @@ pub fn scaffold_tauri_happ(
     let h = register_merge(h);
 
     let identifier: String = match bundle_identifier {
-        Some(i) => i,
-        None => Input::with_theme(&ColorfulTheme::default()).with_prompt(format!("Input the bundle identifier for your app (eg: org.myorg.{app_name}): ")).validate_with(|input: &String| {
-            if input.contains("-") || input.contains("_") {
-                Err(String::from("The bundle identifier can only contain alphanumerical characters."))
-            } else {
-                Ok(())
-            }
-        }).interact_text()?
+        Some(i) => {
+            validate_identifier(&i)?;
+            i
+        },
+        None => Input::with_theme(&ColorfulTheme::default())
+            .with_prompt(format!("Input the bundle identifier for your app (eg: org.myorg.{}): ", app_name.to_case(Case::Flat)))
+            .validate_with(|input: &String| validate_identifier(input))
+            .interact_text()?
     };
 
     let mut app_bundle_location_from_root = happ_manifest_path.clone();

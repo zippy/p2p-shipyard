@@ -1,5 +1,6 @@
 use anyhow::Result;
 use build_fs_tree::dir;
+use convert_case::{Case, Casing};
 use dialoguer::{theme::ColorfulTheme, Input};
 use file_tree_utils::{dir_to_file_tree, FileTree, FileTreeError};
 use handlebars::RenderError;
@@ -27,6 +28,9 @@ pub enum ScaffoldHolochainRuntimeError {
     #[error(transparent)]
     DialoguerError(#[from] dialoguer::Error),
 
+    #[error("Invalid identifier: {0}")]
+    InvalidIdentifierError(String),
+
     #[error(transparent)]
     FileTreeError(#[from] FileTreeError),
 }
@@ -34,15 +38,45 @@ pub enum ScaffoldHolochainRuntimeError {
 #[derive(Serialize, Deserialize, Debug)]
 struct ScaffoldHolochainRuntimeData {
     runtime_name: String,
+    identifier: String,
+}
+
+fn validate_identifier(identifier: &String) -> Result<(), ScaffoldHolochainRuntimeError> {
+    if identifier.contains("-") || identifier.contains("_") {
+        Err(ScaffoldHolochainRuntimeError::InvalidIdentifierError(
+            String::from("The bundle identifier can only contain alphanumerical characters."),
+        ))
+    } else if identifier.split(".").collect::<Vec<&str>>().len() != 3 {
+        Err(ScaffoldHolochainRuntimeError::InvalidIdentifierError(
+            String::from("The bundle identifier must contain three segments split by points (eg. 'org.myorg.myapp').")
+        ))
+    } else {
+        Ok(())
+    }
 }
 
 pub fn scaffold_holochain_runtime(
     name: Option<String>,
+    bundle_identifier: Option<String>,
 ) -> Result<(String, FileTree), ScaffoldHolochainRuntimeError> {
     let name = match name {
         Some(name) => name,
         None => Input::with_theme(&ColorfulTheme::default())
             .with_prompt("Choose a name for your holochain runtime (eg. launcher):")
+            .interact_text()?,
+    };
+
+    let identifier: String = match bundle_identifier {
+        Some(i) => {
+            validate_identifier(&i)?;
+            i
+        }
+        None => Input::with_theme(&ColorfulTheme::default())
+            .with_prompt(format!(
+                "Input the bundle identifier for your tauri app (eg: org.myorg.{}): ",
+                name.to_case(Case::Flat)
+            ))
+            .validate_with(|input: &String| validate_identifier(input))
             .interact_text()?,
     };
 
@@ -59,6 +93,7 @@ pub fn scaffold_holochain_runtime(
         &template_file_tree,
         &ScaffoldHolochainRuntimeData {
             runtime_name: name.clone(),
+            identifier,
         },
     )?;
 

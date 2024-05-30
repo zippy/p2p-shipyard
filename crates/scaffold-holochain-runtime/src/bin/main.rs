@@ -17,6 +17,10 @@ struct Args {
     #[clap(long)]
     pub name: Option<String>,
 
+    /// The name of the holochain runtime
+    #[clap(long)]
+    pub bundle_identifier: Option<String>,
+
     /// The path of the file tree to modify.
     #[clap(long, default_value = "./.")]
     pub path: PathBuf,
@@ -33,7 +37,7 @@ fn main() -> ExitCode {
 fn internal_main() -> Result<()> {
     let args = Args::parse();
 
-    let (name, file_tree) = scaffold_holochain_runtime(args.name)?;
+    let (name, file_tree) = scaffold_holochain_runtime(args.name, args.bundle_identifier)?;
 
     let runtime_path = args.path.join(&name);
 
