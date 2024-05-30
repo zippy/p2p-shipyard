@@ -411,7 +411,7 @@ mod tests {
     "tauri": "tauri"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2.0.0-beta.17",
+    "@tauri-apps/cli": "^2.0.0-beta.20",
     "concurrently": "^8.2.2",
     "concurrently-repeat": "^0.0.1",
     "internal-ip-cli": "^2.0.0",
