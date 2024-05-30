@@ -37,11 +37,14 @@ jobs:
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
-          nix develop --profile holochainTauriDev -c true .#holochainTauriDev
+          nix develop --accept-flake-config --profile holochainTauriDev -c true .#holochainTauriDev
           cachix push darksoil-studio holochainTauriDev
-          nix develop --profile holochainTauriAndroidDev -c true .#holochainTauriAndroidDev
+          nix develop --accept-flake-config --profile holochainTauriAndroidDev -c true .#holochainTauriAndroidDev
           cachix push darksoil-studio holochainTauriAndroidDev
-          nix build .#holochainTauriRust -L
-          nix build .#androidTauriRust -L
+          nix build .#holochainTauriRust -L --accept-flake-config 
+          nix build .#androidTauriRust -L --accept-flake-config 
+          
+          cachix push darksoil-studio $(nix path-info --accept-flake-config .#holochainTauriRust)
+          cachix push darksoil-studio $(nix path-info --accept-flake-config .#androidTauriRust)
           cachix pin darksoil-studio holochainTauriRust $(nix path-info --accept-flake-config .#holochainTauriRust)
           cachix pin darksoil-studio androidTauriRust $(nix path-info --accept-flake-config .#androidTauriRust)
