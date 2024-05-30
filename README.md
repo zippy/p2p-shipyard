@@ -8,7 +8,7 @@ Build cross-platform holochain apps and runtimes.
 
 If you'd like to contribute to `p2p-shipyard` being open-source and free to use by everyone, please go to our open-collective page to contribute!
 
-https://opencollective.com/darksoil/projects/p2p-shipyard
+https://opencollective.com/darksoil/projects/p2pshipyard
 
 Learn more in the main documentation page:
 
