@@ -8,7 +8,7 @@ rust-version = "1.75"
 links = "tauri-plugin-holochain"
 
 [dependencies]
-tauri = { version = "2.0.0-beta", features = [
+tauri = { version = "2.0.0-beta.22", features = [
   "devtools",
   "native-tls-vendored",
 ] }
@@ -16,8 +16,8 @@ tauri = { version = "2.0.0-beta", features = [
 # Holochain dependencies
 mr_bundle = "0.3.1-rc"
 holochain = "=0.3.1-rc.0"
-holochain_types =  "0.3.1-rc"
-holochain_keystore = "0.3.1-rc" 
+holochain_types = "0.3.1-rc"
+holochain_keystore = "0.3.1-rc"
 holochain_conductor_api = "0.3.1-rc"
 
 # Lair dependencies
@@ -53,4 +53,3 @@ one_err = "0"
 
 [build-dependencies]
 tauri-plugin = { version = "2.0.0-beta", features = ["build"] }
-

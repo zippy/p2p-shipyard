@@ -1,16 +1,16 @@
 [package]
-name = "scaffold-tauri-app"
+name = "scaffold-tauri-happ"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "scaffold_tauri_app"
+name = "scaffold_tauri_happ"
 path = "src/lib.rs"
 
 [[bin]]
-name = "scaffold-tauri-app"
+name = "scaffold-tauri-happ"
 path = "src/bin/main.rs"
 
 [dependencies]
@@ -34,3 +34,4 @@ regex = "1.10.4"
 path-clean = "1"
 dialoguer = "0.11"
 colored = "2.1.0"
+convert_case = "0.6"

@@ -52,7 +52,7 @@ npm install
 3. Run this command inside the repository of your web-hApp:
 
 ```bash
-nix run github:darksoil-studio/p2p-shipyard#scaffold-tauri-app
+nix run github:darksoil-studio/p2p-shipyard#scaffold-tauri-happ
 ```
 
 And follow along to answer all the necessary prompts.
@@ -69,7 +69,7 @@ This will execute all the required steps to convert your previously scaffolded h
   - The tauri app will just use the UI that the scaffolding tool produced as its own UI.
 
 > [!WARNING]
-> The `scaffold-tauri-app` command assumes that you have scaffolded your app using the scaffolding tool.
+> The `scaffold-tauri-happ` command assumes that you have scaffolded your app using the scaffolding tool.
 >
 > It also tries to make smart guesses about the structure of your project, but it can be tricky to support every repository structure. Please open an issue in the github repository if you find any bugs in it!
 
@@ -80,7 +80,7 @@ That's it! We now have an end-user, cross-platform hApp.
 
 ## Development Environment
 
-The `scaffold-tauri-app` has added the necessary nix `devShells` to your `flake.nix` file so that you don't need to follow install anything to get the tauri or Android development environment.
+The `scaffold-tauri-happ` has added the necessary nix `devShells` to your `flake.nix` file so that you don't need to follow install anything to get the tauri or Android development environment.
 
 > [!NOTE]
 > Nix `devShells` are packages that describe development environments, with all their dependencies and environment variables, so that the developer does not need to configure manually their setup.

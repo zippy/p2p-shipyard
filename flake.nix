@@ -2,7 +2,6 @@
   description = "Build cross-platform holochain apps and runtimes";
 
   inputs = {
-
     nixpkgs.follows = "holochain/nixpkgs";
 
     versions.url = "github:holochain/holochain?dir=versions/0_3_rc";
@@ -11,7 +10,7 @@
       url = "github:holochain/holochain";
       inputs.versions.follows = "versions";
     };
-    rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay.follows = "holochain/rust-overlay";
     android-nixpkgs = {
       url = "github:tadfisher/android-nixpkgs/stable";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -89,7 +88,7 @@
       };
 
       imports = [
-        ./crates/scaffold-tauri-app/default.nix
+        ./crates/scaffold-tauri-happ/default.nix
         ./crates/scaffold-holochain-runtime/default.nix
         ./custom-go-compiler.nix
       ];
@@ -135,16 +134,16 @@
               build-tools-30-0-3
               platform-tools
               ndk-bundle
-              platforms-android-33
+              platforms-android-34
               emulator
-              system-images-android-33-google-apis-playstore-x86-64
+              system-images-android-34-google-apis-playstore-x86-64
             ]);
         in pkgs.mkShell {
           inputsFrom = [ devShells.androidDev ];
           packages = [ android-sdk ];
 
           shellHook = ''
-            echo "no" | avdmanager -s create avd -n Pixel -k "system-images;android-33;google_apis_playstore;x86_64" --force
+            echo "no" | avdmanager -s create avd -n Pixel -k "system-images;android-34;google_apis_playstore;x86_64" --force
           '';
         };
 
@@ -176,7 +175,7 @@
             build-tools-30-0-3
             platform-tools
             ndk-bundle
-            platforms-android-33
+            platforms-android-34
           ]);
 
         packages.tauriRust = let
@@ -271,14 +270,17 @@
                 }/bin";
             in ''
               wrapProgram $out/bin/cargo \
-                --set RUSTFLAGS "-L linker=clang" \
+                --set CARGO_TARGET_AARCH64_LINUX_ANDROID_RUSTFLAGS "-L linker=clang" \
+                --set CARGO_TARGET_I686_LINUX_ANDROID_RUSTFLAGS "-L linker=clang" \
+                --set CARGO_TARGET_X86_64_LINUX_ANDROID_RUSTFLAGS "-L linker=clang" \
+                --set CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_RUSTFLAGS "-L linker=clang" \
                 --set RANLIB ${toolchainBinsPath}/llvm-ranlib \
                 --set CC_aarch64_linux_android ${toolchainBinsPath}/aarch64-linux-android24-clang \
                 --set CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER ${toolchainBinsPath}/aarch64-linux-android24-clang \
                 --set CC_i686_linux_android ${toolchainBinsPath}/i686-linux-android24-clang \
                 --set CARGO_TARGET_I686_LINUX_ANDROID_LINKER ${toolchainBinsPath}/i686-linux-android24-clang \
                 --set CC_x86_64_linux_android ${toolchainBinsPath}/x86_64-linux-android24-clang \
-                --set CARGO_TARGET_x86_64_LINUX_ANDROID_LINKER ${toolchainBinsPath}/x86_64-linux-android24-clang \
+                --set CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER ${toolchainBinsPath}/x86_64-linux-android24-clang \
                 --set CC_armv7_linux_androideabi n{toolchainBinsPath}/armv7a-linux-androideabi24-clang \
                 --set CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER ${toolchainBinsPath}/armv7a-linux-androideabi24-clang
             '';

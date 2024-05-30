@@ -41,4 +41,7 @@ jobs:
           cachix push darksoil-studio holochainTauriDev
           nix develop --profile holochainTauriAndroidDev -c true .#holochainTauriAndroidDev
           cachix push darksoil-studio holochainTauriAndroidDev
-
+          nix build .#holochainTauriRust -L
+          nix build .#androidTauriRust -L
+          cachix pin darksoil-studio holochainTauriRust $(nix path-info --accept-flake-config .#holochainTauriRust)
+          cachix pin darksoil-studio androidTauriRust $(nix path-info --accept-flake-config .#androidTauriRust)

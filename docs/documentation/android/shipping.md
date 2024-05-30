@@ -1,17 +1,20 @@
 # Shipping your app for Android
 
-To build a production version of your app, you just need to run this very simple command:
+To build a production version of your app, you just need to run this very simple command inside the `androidDev` devShell:
 
 ::: code-group
 ```bash [npm]
+nix develop .#androidDev
 npm run tauri android build
 ```
 
 ```bash [yarn]
+nix develop .#androidDev
 yarn tauri android build
 ```
 
 ```bash [pnpm]
+nix develop .#androidDev
 pnpm tauri android build
 ```
 :::

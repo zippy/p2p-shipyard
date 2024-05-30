@@ -1,7 +1,7 @@
 {
   "productName": "example",
-  "version": "0.0.0",
-  "identifier": "example",
+  "version": "0.0.1",
+  "identifier": "my.org.example",
   "build": {
     "beforeBuildCommand": "npm run build -w ui",
     "devUrl": "http://localhost:1420",

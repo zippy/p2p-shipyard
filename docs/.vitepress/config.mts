@@ -33,6 +33,15 @@ export default defineConfig({
               link: "/documentation/getting-to-know-tauri",
             },
             {
+              text: "Desktop",
+              items: [
+                {
+                  text: "Shipping",
+                  link: "/documentation/desktop/shipping",
+                },
+              ],
+            },
+            {
               text: "Android",
               items: [
                 {
