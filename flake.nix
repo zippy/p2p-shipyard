@@ -238,8 +238,7 @@
             name = "cargo";
             runtimeInputs = [ rust ];
             text = ''
-                           # RUSTFLAGS="-C link-arg=$(gcc -print-libgcc-file-name)" cargo "$@"
-              cargo "$@"
+              RUSTFLAGS="-C link-arg=$(gcc -print-libgcc-file-name)" cargo "$@"
             '';
           };
           customZigbuildCargo = pkgs.writeShellApplication {
