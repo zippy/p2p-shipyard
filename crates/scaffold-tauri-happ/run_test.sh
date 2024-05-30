@@ -20,8 +20,11 @@ cd /tmp/forum-scaffold-tauri-happ
 nix develop --override-input p2p-shipyard $DIR --command bash -c "
 set -e
 
-npm i
+npm install
 npm run tauri icon $DIR/examples/end-user-happ/src-tauri/icons/icon.png
+cd src-tauri
+cargo add -p forum-scaffold-tauri-happ --path $DIR/crates/tauri-plugin-holochain
+cd ..
 npm run build:happ
 npm run tauri build -- --no-bundle
 "
@@ -29,7 +32,7 @@ npm run tauri build -- --no-bundle
 nix develop --override-input p2p-shipyard $DIR .#androidDev --command bash -c "
 set -e
 
-npm i
+npm install
 npm run tauri android init
 npm run tauri android build -- --target aarch64
 "
