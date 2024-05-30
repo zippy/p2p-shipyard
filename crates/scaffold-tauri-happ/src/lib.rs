@@ -8,7 +8,6 @@ use npm_scaffolding_utils::{
     add_npm_dev_dependency_to_package, add_npm_script_to_package, choose_npm_package, guess_or_choose_package_manager, NpmScaffoldingUtilsError, PackageManager
 };
 use rust_scaffolding_utils::add_member_to_workspace;
-use regex::{Captures, Regex};
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use templates_scaffolding_utils::{
@@ -253,35 +252,6 @@ pub fn scaffold_tauri_happ(
         &mut file_tree,
         PathBuf::from("flake.nix").as_path(),
         |flake_nix_content| {
-            // - If it exists or specialArgs exist, add the name of the app to the excludedCrates list
-            let non_wasm_crates_re = Regex::new(r#"nonWasmCrates = \["#)?;
-
-            let captures_iter: Vec<Captures<'_>> = non_wasm_crates_re
-                .captures_iter(&flake_nix_content)
-                .collect();
-
-            let flake_nix_content = match captures_iter.len() {
-                0 => {
-                    let mk_flake_re = Regex::new(r#"mkFlake(\\n)*\s*\{"#)?;
-
-                    mk_flake_re
-                        .replace(
-                            &flake_nix_content,
-                            format!(
-                                r#"mkFlake
-    {{
-      specialArgs.nonWasmCrates = [ "{app_name}" ];"#
-                            ),
-                        )
-                        .to_string()
-                }
-                _ => non_wasm_crates_re
-                    .replace(
-                        &flake_nix_content,
-                        format!("nonWasmCrates = [ \"{app_name}\" "),
-                    )
-                    .to_string(),
-            };
 
             // - Add the `p2p-shipyard` as input to the flake
             let flake_nix_content = add_flake_input_to_flake_file(
@@ -453,7 +423,6 @@ mod tests {
   outputs = inputs @ { ... }:
     inputs.holochain.inputs.flake-parts.lib.mkFlake
     {
-      specialArgs.nonWasmCrates = [ "myhapp" ];
       inherit inputs;
       specialArgs = {
         rootPath = ./.;
