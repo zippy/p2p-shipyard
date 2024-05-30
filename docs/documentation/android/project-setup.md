@@ -31,14 +31,14 @@ plugins {
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
     namespace = "com.tauri.tauri_app"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false" // [!code --]
         manifestPlaceholders["usesCleartextTraffic"] = "true" // [!code ++]
         applicationId = "com.tauri.tauri_app"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }

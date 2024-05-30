@@ -1,7 +1,7 @@
 {
   "productName": "launcher",
-  "version": "0.0.0",
-  "identifier": "launcherhi",
+  "version": "0.0.1",
+  "identifier": "my.org.launcher",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
