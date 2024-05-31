@@ -18,7 +18,8 @@ fn override_gossip_arc_clamping() -> Option<String> {
 
 // pub static RUNNING_HOLOCHAIN: RwLock<Option<RunningHolochainInfo>> = RwLock::const_new(None);
 
-pub async fn launch(
+/// Launch the holochain conductor in the background
+pub async fn launch_holochain_runtime(
     passphrase: BufRead,
     config: HolochainPluginConfig,
 ) -> crate::Result<HolochainRuntime> {
