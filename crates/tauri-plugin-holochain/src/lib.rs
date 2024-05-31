@@ -7,6 +7,7 @@ use std::{
 use async_std::sync::Mutex;
 use hc_seed_bundle::dependencies::sodoken::BufRead;
 use http_server::{pong_iframe, read_asset};
+use launch::launch_holochain_runtime;
 use tauri::{
     http::response,
     ipc::CapabilityBuilder,
@@ -31,7 +32,6 @@ mod launch;
 use commands::install_web_app::{install_app, install_web_app, update_app, UpdateAppError};
 pub use error::{Error, Result};
 use filesystem::{AppBundleStore, BundleStore, FileSystem};
-pub use launch::launch;
 use url2::Url2;
 
 const ZOME_CALL_SIGNER_INITIALIZATION_SCRIPT: &'static str = include_str!("../zome-call-signer.js");
@@ -603,7 +603,7 @@ async fn launch_and_setup_holochain<R: Runtime>(
     // http_server::start_http_server(app_handle.clone(), http_server_port).await?;
     // log::info!("Starting http server at port {http_server_port:?}");
 
-    let holochain_runtime = launch(passphrase, config).await?;
+    let holochain_runtime = launch_holochain_runtime(passphrase, config).await?;
 
     let p = HolochainPlugin::<R> {
         app_handle: app_handle.clone(),
