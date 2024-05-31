@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "rollup -c rollup.config.js",
+    "build": "rollup -c rollup.config.js && cp dist/index.js ../../crates/tauri-plugin-holochain/zome-call-signer.js",
     "prepare": "pnpm build"
   },
   "dependencies": {

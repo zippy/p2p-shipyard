@@ -34,8 +34,7 @@ use filesystem::{AppBundleStore, BundleStore, FileSystem};
 pub use launch::launch;
 use url2::Url2;
 
-const ZOME_CALL_SIGNER_INITIALIZATION_SCRIPT: &'static str =
-    include_str!("../../../packages/signer/dist/index.js");
+const ZOME_CALL_SIGNER_INITIALIZATION_SCRIPT: &'static str = include_str!("../zome-call-signer.js");
 
 /// Access to the holochain APIs.
 pub struct HolochainPlugin<R: Runtime> {
