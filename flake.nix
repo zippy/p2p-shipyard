@@ -94,7 +94,8 @@
       imports = [
         ./crates/scaffold-tauri-happ/default.nix
         ./crates/scaffold-holochain-runtime/default.nix
-        ./custom-go-compiler.nix
+        ./nix/modules/custom-go-compiler.nix
+        ./nix/modules/tauri-cli.nix
       ];
 
       systems = builtins.attrNames inputs.holochain.devShells;
@@ -249,7 +250,7 @@
             name = "cargo";
 
             runtimeInputs = (lib.optionals pkgs.stdenv.isLinux [ linuxCargo ])
-              ++ [ rust (pkgs.callPackage ./custom-cargo-zigbuild.nix { }) ];
+              ++ [ rust (pkgs.callPackage ./nix/custom-cargo-zigbuild.nix { }) ];
 
             text = ''
               if [ "$#" -ne 0 ] && [ "$1" = "build" ]
