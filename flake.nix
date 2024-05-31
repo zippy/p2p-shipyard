@@ -88,6 +88,38 @@
               let craneLib = inputs.crane.mkLib pkgs;
               in craneLib.callPackage ./nix/holochain-tauri-app-deps.nix { };
           };
+
+          # TODO
+          # tauriApp = {pkgs,lib}: ;
+
+          # holochainTauriApp = { pkgs, lib, holochain, happ }:
+          #   let
+          #     getFreePort = pkgs.writeShellScriptBin "get-free-port" ''
+          #       function get_unused_port() {
+          #         for port in $(seq 4444 65000);
+          #         do
+          #           echo -ne "\035" | ${pkgs.inetutils}/bin/telnet 127.0.0.1 $port > /dev/null 2>&1;
+          #           [ $? -eq 1 ] && echo "$port" && break;
+          #         done
+          #       }
+          #       FREE_PORT="$(get_unused_port)"
+          #       echo $FREE_PORT
+          #     '';
+          #     network = pkgs.writeShellApplication {
+          #       name = "local-holochain-network";
+          #       runtimeInputs =
+          #         [ getFreePort holochain.packages.hc-run-local-services ];
+          #       text = ''
+          #         BOOTSTRAP_PORT=$(get-free-port)
+          #         SIGNAL_PORT=$(get-free-port)
+          #         INTERNAL_IP=localhost
+          #         hc-run-local-services --bootstrap-interface $INTERNAL_IP --bootstrap-port $BOOTSTRAP_PORT --signal-interfaces $INTERNAL_IP --signal-port $SIGNAL_PORT
+
+          #       '';
+          #     };
+
+          #   in { inherit network; };
+
         };
       };
 
@@ -250,7 +282,10 @@
             name = "cargo";
 
             runtimeInputs = (lib.optionals pkgs.stdenv.isLinux [ linuxCargo ])
-              ++ [ rust (pkgs.callPackage ./nix/custom-cargo-zigbuild.nix { }) ];
+              ++ [
+                rust
+                (pkgs.callPackage ./nix/custom-cargo-zigbuild.nix { })
+              ];
 
             text = ''
               if [ "$#" -ne 0 ] && [ "$1" = "build" ]
