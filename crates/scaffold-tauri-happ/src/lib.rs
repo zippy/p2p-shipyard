@@ -273,6 +273,8 @@ pub fn scaffold_tauri_happ(
             }
             close += 2;
 
+            // TODO: check if there is per system, and if there is, check if there are inputs' in there 
+
             // - Add an androidDev devshell by copying the default devShell, and adding the holochainTauriAndroidDev
             let android_dev_shell = flake_nix_content[open..close]
                 .to_string()

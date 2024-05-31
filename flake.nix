@@ -83,6 +83,10 @@
                 pkgs.xcbuild
                 pkgs.libiconv
               ]);
+
+            holochainTauriAppDeps = pkgs:
+              let craneLib = inputs.crane.mkLib pkgs;
+              in craneLib.callPackage ./nix/holochain-tauri-app-deps.nix { };
           };
         };
       };
