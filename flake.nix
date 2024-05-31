@@ -80,7 +80,6 @@
               ++ (lib.optionals pkgs.stdenv.isLinux
                 (with pkgs; [ wrapGAppsHook ]))
               ++ (lib.optionals pkgs.stdenv.isDarwin [
-                pkgs.xcbuild
                 pkgs.libiconv
               ]);
 
