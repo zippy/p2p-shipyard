@@ -19,6 +19,7 @@
       perSystem = { inputs', config, pkgs, system, ... }: {
         devShells.default = pkgs.mkShell {
           inputsFrom = [ inputs'.p2p-shipyard.devShells.holochainTauriDev ];
+          packages = [ inputs'.p2p-shipyard.packages.tauri-cli ];
         };
         devShells.androidDev = pkgs.mkShell {
           inputsFrom =

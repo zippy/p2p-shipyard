@@ -138,7 +138,8 @@ impl<R: Runtime> HolochainPlugin<R> {
         let mut window_builder = WebviewWindowBuilder::new(
             &self.app_handle,
             label.clone(),
-            WebviewUrl::App(format!("index.html/{url_path}").into()),
+            // Pointing to index.html
+            WebviewUrl::App(format!("{url_path}").into()),
         );
 
         if enable_admin_websocket {
