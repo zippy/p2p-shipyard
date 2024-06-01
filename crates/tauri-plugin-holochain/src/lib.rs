@@ -221,7 +221,7 @@ impl<R: Runtime> HolochainPlugin<R> {
         let admin_ws = self.admin_websocket().await?;
 
         // Allow any when the app is build in debug mode to allow normal tauri development pointing to http://localhost:1420
-        let allowed_origins = if cfg!(debug_assertions) {
+        let allowed_origins = if tauri::is_dev() {
             AllowedOrigins::Any
         } else {
             let mut origins: HashSet<String> = HashSet::new();
