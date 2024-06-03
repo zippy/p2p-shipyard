@@ -35,7 +35,7 @@
   outputs = inputs@{ ... }:
     inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } rec {
       flake = {
-        lib = {
+        lib = rec {
           tauriAppDeps = {
             buildInputs = { pkgs, lib }:
               (with pkgs; [
@@ -79,14 +79,22 @@
               (with pkgs; [ perl pkg-config makeWrapper ])
               ++ (lib.optionals pkgs.stdenv.isLinux
                 (with pkgs; [ wrapGAppsHook ]))
-              ++ (lib.optionals pkgs.stdenv.isDarwin [
-                pkgs.libiconv
-              ]);
-
-            holochainTauriAppDeps = pkgs:
-              let craneLib = inputs.crane.mkLib pkgs;
-              in craneLib.callPackage ./nix/holochain-tauri-app-deps.nix { };
+              ++ (lib.optionals pkgs.stdenv.isDarwin [ pkgs.libiconv ]);
           };
+
+          holochainTauriHappCargoArtifacts = { pkgs, lib }:
+            let craneLib = inputs.crane.mkLib pkgs;
+            in craneLib.callPackage ./nix/holochain-tauri-app-artifacts.nix {
+              buildInputs = (tauriAppDeps.buildInputs { inherit pkgs lib; })
+                ++ (inputs.hc-infra.lib.holochainAppDeps.buildInputs {
+                  inherit pkgs lib;
+                });
+              nativeBuildInputs =
+                (tauriAppDeps.nativeBuildInputs { inherit pkgs lib; })
+                ++ (inputs.hc-infra.lib.holochainAppDeps.nativeBuildInputs {
+                  inherit pkgs lib;
+                });
+            };
 
           # TODO
           # tauriApp = {pkgs,lib}: ;
