@@ -4,11 +4,9 @@ let
   commonArgs = {
     inherit src buildInputs nativeBuildInputs;
 
+    strictDeps = true;
     doCheck = false;
-    cargoExtraArgs = "";
-    cargoCheckCommand = "";
-    cargoBuildCommand =
-      "cargo build --profile release --tests --locked --workspace";
+    cargoExtraArgs = "--workspace --tests";
   };
   cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
     pname = "tauri-happ";
