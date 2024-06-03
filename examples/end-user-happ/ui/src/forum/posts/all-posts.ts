@@ -23,31 +23,37 @@ export class AllPosts extends LitElement {
   client!: AppClient;
 
   @state()
-  signaledHashes: Array<ActionHash> = [];
+  loading = true;
 
-  _fetchPosts = new Task(
-    this,
-    ([]) =>
-      this.client.callZome({
+  @state()
+  hashes: Array<ActionHash> = [];
+
+  async firstUpdated() {
+    this.client.on("signal", (signal) => {
+      if (signal.zome_name !== "posts") return;
+      const payload = signal.payload as PostsSignal;
+      if (payload.type !== "EntryCreated") return;
+      this.hashes = [payload.action.hashed.hash, ...this.hashes];
+    });
+    const links: Link[] = await this.client.callZome({
+      cap_secret: null,
+      role_name: "forum",
+      zome_name: "posts",
+      fn_name: "get_all_posts",
+      payload: null,
+    });
+    this.hashes = links.map((l) => l.target);
+    this.loading = false;
+    setInterval(async () => {
+      const links: Link[] = await this.client.callZome({
         cap_secret: null,
         role_name: "forum",
         zome_name: "posts",
         fn_name: "get_all_posts",
         payload: null,
-      }) as Promise<Array<Link>>,
-    () => [],
-  );
-
-  firstUpdated() {
-    this.client.on("signal", (signal) => {
-      if (signal.zome_name !== "posts") return;
-      const payload = signal.payload as PostsSignal;
-      if (payload.type !== "EntryCreated") return;
-      this.signaledHashes = [
-        payload.action.hashed.hash,
-        ...this.signaledHashes,
-      ];
-    });
+      });
+      this.hashes = links.map((l) => l.target);
+    }, 1000);
   }
 
   renderList(hashes: Array<ActionHash>) {
@@ -63,20 +69,14 @@ export class AllPosts extends LitElement {
   }
 
   render() {
-    return this._fetchPosts.render({
-      pending: () => html`
+    if (this.loading)
+      return html`
         <div
           style="display: flex; flex: 1; align-items: center; justify-content: center"
         >
           <mwc-circular-progress indeterminate></mwc-circular-progress>
         </div>
-      `,
-      complete: (links) =>
-        this.renderList([
-          ...this.signaledHashes,
-          ...links.map((l) => l.target),
-        ]),
-      error: (e: any) => html`<span>Error fetching the posts: ${e}.</span>`,
-    });
+      `;
+    return this.renderList(this.hashes);
   }
 }
