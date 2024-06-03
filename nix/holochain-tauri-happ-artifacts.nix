@@ -3,6 +3,7 @@ let
   src = craneLib.cleanCargoSource (craneLib.path ./reference-tauri-happ);
   commonArgs = {
     inherit src buildInputs nativeBuildInputs;
+    CARGO_PROFILE = "release";
 
     strictDeps = true;
     doCheck = false;

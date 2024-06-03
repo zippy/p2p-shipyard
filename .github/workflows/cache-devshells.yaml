@@ -37,6 +37,7 @@ jobs:
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
+          cachix watch-exec darksoil-studio -- nix flake check --accept-flake-config -L
           nix develop --accept-flake-config --profile holochainTauriDev -c true .#holochainTauriDev
           cachix push darksoil-studio holochainTauriDev
           nix develop --accept-flake-config --profile holochainTauriAndroidDev -c true .#holochainTauriAndroidDev
