@@ -97,6 +97,7 @@
           tauriHappCargoArtifacts = { pkgs, lib }:
             let craneLib = inputs.crane.mkLib pkgs;
             in craneLib.callPackage ./nix/holochain-tauri-happ-artifacts.nix {
+              inherit craneLib;
               buildInputs = tauriHappDeps.buildInputs { inherit pkgs lib; };
               nativeBuildInputs =
                 tauriHappDeps.nativeBuildInputs { inherit pkgs lib; };
