@@ -82,18 +82,24 @@
               ++ (lib.optionals pkgs.stdenv.isDarwin [ pkgs.libiconv ]);
           };
 
-          holochainTauriHappCargoArtifacts = { pkgs, lib }:
+          tauriHappDeps = {
+            buildInputs = { pkgs, lib }:
+              (tauriAppDeps.buildInputs { inherit pkgs lib; })
+              ++ (inputs.hc-infra.lib.holochainAppDeps.buildInputs {
+                inherit pkgs lib;
+              });
+            nativeBuildInputs = { pkgs, lib }:
+              (tauriAppDeps.nativeBuildInputs { inherit pkgs lib; })
+              ++ (inputs.hc-infra.lib.holochainAppDeps.nativeBuildInputs {
+                inherit pkgs lib;
+              });
+          };
+          tauriHappCargoArtifacts = { pkgs, lib }:
             let craneLib = inputs.crane.mkLib pkgs;
             in craneLib.callPackage ./nix/holochain-tauri-app-artifacts.nix {
-              buildInputs = (tauriAppDeps.buildInputs { inherit pkgs lib; })
-                ++ (inputs.hc-infra.lib.holochainAppDeps.buildInputs {
-                  inherit pkgs lib;
-                });
+              buildInputs = tauriHappDeps.buildInputs { inherit pkgs lib; };
               nativeBuildInputs =
-                (tauriAppDeps.nativeBuildInputs { inherit pkgs lib; })
-                ++ (inputs.hc-infra.lib.holochainAppDeps.nativeBuildInputs {
-                  inherit pkgs lib;
-                });
+                tauriHappDeps.nativeBuildInputs { inherit pkgs lib; };
             };
 
           # TODO
