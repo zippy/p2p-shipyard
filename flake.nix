@@ -146,6 +146,9 @@
 
       systems = builtins.attrNames inputs.holochain.devShells;
       perSystem = { inputs', config, self', pkgs, system, lib, ... }: rec {
+        checks.cargoArtifacts =
+          flake.lib.tauriHappCargoArtifacts { inherit pkgs lib; };
+
         devShells.tauriDev = pkgs.mkShell {
           packages = with pkgs; [
             nodejs_20

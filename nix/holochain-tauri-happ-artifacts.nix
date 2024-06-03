@@ -1,12 +1,12 @@
 { craneLib, buildInputs, nativeBuildInputs, debug ? false }:
 let
-  src = craneLib.cleanCargoSource (craneLib.path ./../examples/end-user-happ);
+  src = craneLib.cleanCargoSource (craneLib.path ./reference-tauri-happ);
   commonArgs = {
     inherit src buildInputs nativeBuildInputs;
 
     doCheck = false;
     cargoExtraArgs = "";
-    cargoPhaseCommand = "";
+    cargoCheckCommand = "";
     cargoBuildCommand =
       "cargo build --profile release --tests --offline --workspace";
   };
@@ -15,4 +15,3 @@ let
     version = "for-holochain-0.3.1-rc";
   });
 in cargoArtifacts
-
