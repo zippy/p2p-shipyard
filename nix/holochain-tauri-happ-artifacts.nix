@@ -8,7 +8,7 @@ let
     cargoExtraArgs = "";
     cargoCheckCommand = "";
     cargoBuildCommand =
-      "cargo build --profile release --tests --offline --workspace";
+      "cargo build --profile release --tests --locked --workspace";
   };
   cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
     pname = "tauri-happ";
