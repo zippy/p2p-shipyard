@@ -52,11 +52,18 @@ jobs:
           sh ./crates/scaffold-tauri-happ/run_test.sh
 
       - name: Cache scaffold-tauri-happ
-        if: github.event_name != 'pull_request' && github.ref_name == 'main'
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
           nix build --accept-flake-config -L .#scaffold-tauri-happ
           cachix push darksoil-studio $(nix path-info --accept-flake-config .#scaffold-tauri-happ)
+
+      - name: Pin scaffold-tauri-happ
+        if: github.event_name != 'pull_request' && github.ref_name == 'main'
+        env:
+          CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
+        run: |
+          nix build --accept-flake-config -L .#scaffold-tauri-happ
           cachix pin darksoil-studio scaffold-tauri-happ $(nix path-info --accept-flake-config .#scaffold-tauri-happ)
 

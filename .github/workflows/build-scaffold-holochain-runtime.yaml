@@ -51,12 +51,20 @@ jobs:
           cargo test -p scaffold-holochain-runtime
           sh ./crates/scaffold-holochain-runtime/run_test.sh
 
+
       - name: Cache scaffold-holochain-runtime
-        if: github.event_name != 'pull_request' && github.ref_name == 'main'
+        if: github.event_name == 'pull_request' && github.base_ref == 'main'
         env:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
           nix build --accept-flake-config -L .#scaffold-holochain-runtime
           cachix push darksoil-studio $(nix path-info --accept-flake-config .#scaffold-holochain-runtime)
+
+      - name: Pin scaffold-holochain-runtime
+        if: github.event_name != 'pull_request' && github.ref_name == 'main'
+        env:
+          CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
+        run: |
+          nix build --accept-flake-config -L .#scaffold-holochain-runtime
           cachix pin darksoil-studio scaffold-holochain-runtime $(nix path-info --accept-flake-config .#scaffold-holochain-runtime)
 
