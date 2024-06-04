@@ -5,7 +5,6 @@ let
     inherit src buildInputs nativeBuildInputs;
     CARGO_PROFILE = "release";
 
-    strictDeps = true;
     doCheck = false;
     cargoExtraArgs = "--workspace --tests";
   };
