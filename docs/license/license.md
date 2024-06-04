@@ -22,4 +22,4 @@ If you need support for integration, bug fixes, or feature requests for the p2p 
 
 ---
 
-Learn more about our approach in [our substack post](https://substack.com/@darksoil), and contribute to our crowdfunding in [our Open Collective page](https://opencollective.com/darksoil/projects/p2pshipyard).
+Learn more about our approach in [our substack post](https://darksoil.substack.com/p/1a72fe01-304f-46cc-b44c-99ea3bb7e830), and contribute to our crowdfunding in [our Open Collective page](https://opencollective.com/darksoil/projects/p2pshipyard).

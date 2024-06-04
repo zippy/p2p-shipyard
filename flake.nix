@@ -35,7 +35,7 @@
   outputs = inputs@{ ... }:
     inputs.holochain.inputs.flake-parts.lib.mkFlake { inherit inputs; } rec {
       flake = {
-        lib = {
+        lib = rec {
           tauriAppDeps = {
             buildInputs = { pkgs, lib }:
               (with pkgs; [
@@ -79,14 +79,29 @@
               (with pkgs; [ perl pkg-config makeWrapper ])
               ++ (lib.optionals pkgs.stdenv.isLinux
                 (with pkgs; [ wrapGAppsHook ]))
-              ++ (lib.optionals pkgs.stdenv.isDarwin [
-                pkgs.libiconv
-              ]);
-
-            holochainTauriAppDeps = pkgs:
-              let craneLib = inputs.crane.mkLib pkgs;
-              in craneLib.callPackage ./nix/holochain-tauri-app-deps.nix { };
+              ++ (lib.optionals pkgs.stdenv.isDarwin [ pkgs.libiconv ]);
           };
+
+          tauriHappDeps = {
+            buildInputs = { pkgs, lib }:
+              (tauriAppDeps.buildInputs { inherit pkgs lib; })
+              ++ (inputs.hc-infra.lib.holochainAppDeps.buildInputs {
+                inherit pkgs lib;
+              });
+            nativeBuildInputs = { pkgs, lib }:
+              (tauriAppDeps.nativeBuildInputs { inherit pkgs lib; })
+              ++ (inputs.hc-infra.lib.holochainAppDeps.nativeBuildInputs {
+                inherit pkgs lib;
+              });
+          };
+          tauriHappCargoArtifacts = { pkgs, lib }:
+            let craneLib = inputs.crane.mkLib pkgs;
+            in craneLib.callPackage ./nix/holochain-tauri-happ-artifacts.nix {
+              inherit craneLib;
+              buildInputs = tauriHappDeps.buildInputs { inherit pkgs lib; };
+              nativeBuildInputs =
+                tauriHappDeps.nativeBuildInputs { inherit pkgs lib; };
+            };
 
           # TODO
           # tauriApp = {pkgs,lib}: ;
@@ -131,6 +146,9 @@
 
       systems = builtins.attrNames inputs.holochain.devShells;
       perSystem = { inputs', config, self', pkgs, system, lib, ... }: rec {
+        checks.cargoArtifacts =
+          flake.lib.tauriHappCargoArtifacts { inherit pkgs lib; };
+
         devShells.tauriDev = pkgs.mkShell {
           packages = with pkgs; [
             nodejs_20
