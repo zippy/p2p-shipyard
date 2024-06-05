@@ -65,5 +65,6 @@ jobs:
           CACHIX_AUTH_TOKEN: "${{ secrets.DARKSOIL_CACHIX_AUTH_TOKEN }}"
         run: |
           nix build --accept-flake-config -L .#scaffold-tauri-happ
+          cachix push darksoil-studio $(nix path-info --accept-flake-config .#scaffold-tauri-happ)
           cachix pin darksoil-studio scaffold-tauri-happ $(nix path-info --accept-flake-config .#scaffold-tauri-happ)
 
