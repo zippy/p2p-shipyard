@@ -224,9 +224,10 @@ impl<R: Runtime> HolochainPlugin<R> {
         let allowed_origins = if tauri::is_dev() {
             AllowedOrigins::Any
         } else {
-            let mut origins: HashSet<String> = HashSet::new();
-            origins.insert(happ_origin(app_id).to_string());
-            AllowedOrigins::Origins(origins)
+            AllowedOrigins::Any
+            // let mut origins: HashSet<String> = HashSet::new();
+            // origins.insert(happ_origin(app_id).to_string());
+            // AllowedOrigins::Origins(origins)
         };
 
         let app_port = admin_ws
